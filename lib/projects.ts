@@ -11,6 +11,12 @@ export default function getProjects() {
       description:
         'Built in go, Flurry was my solution to an API gateway. For a simple application that needed microservices proxied out to different serverless urls, there are not many simple proxies that are easily composable. Flurry is a web proxy designed for easy configuration and plugins for authentication and logging out of the box. New plugins coming soon.',
       link: 'https://github.com/walln/Flurry2'
+    },
+    {
+      title: 'This Website',
+      description:
+        'This website is built in Next.js using tailwind css and typescript. Next.js allows for this site to implement incremental static genration as well as SSR for upcoming features.',
+      link: 'https://github.com/walln/site'
     }
   ];
 }
