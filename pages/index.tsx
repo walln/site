@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 
 import Container from '../components/Container';
 
 export default function Home() {
   return (
-    <Container>
+    <Container className="dark:bg-custom-dark">
       <motion.div
         className="flex flex-col justify-center items-start max-w-2xl mx-auto mb-16"
         animate={{ opacity: 1 }}
