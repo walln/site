@@ -14,8 +14,9 @@ export default function Home() {
           Hey, I’m Nick Wall
         </h1>
         <h2 className="prose text-gray-600 dark:text-gray-400 mb-16">
-          I’m a developer, and creator. I am a student at Southern Methodist University and
-          freelance developer. Welcome to my site.
+          I’m a developer, and creator. I love to make fullstack applications, and explore the
+          potentials of machine learning. Professionally, I am a student at Southern Methodist
+          University and freelance developer. Welcome to my site.
         </h2>
       </motion.div>
     </Container>

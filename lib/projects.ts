@@ -17,6 +17,11 @@ export default function getProjects() {
       description:
         'This website is built in Next.js using tailwind css and typescript. Next.js allows for this site to implement incremental static genration as well as SSR for upcoming features.',
       link: 'https://github.com/walln/site'
+    },
+    {
+      title: 'Algorithms',
+      description: 'Implementations of common algorithms and data structures in python 3.x',
+      link: 'https://github.com/walln/algorithms'
     }
   ];
 }
