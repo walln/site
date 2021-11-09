@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { motion } from "framer-motion";
+import Link from "next/link";
 
-import Container from '../components/Container';
+import Container from "../components/Container";
 
 export default function About() {
   return (
@@ -16,17 +16,20 @@ export default function About() {
         </h1>
         <div className="mb-8 prose leading-6 text-gray-600 dark:text-gray-400">
           <p>
-            I’m Nick. I'm a developer who is interested in web technologies, full stack-development,
-            and Artificial Intelligence. I am currently a student at&nbsp;
+            I’m Nick. I'm a developer who is interested in web technologies,
+            full stack-development, and Artificial Intelligence. I am currently
+            a student at&nbsp;
             <Link href="https://www.smu.edu/">
               <a>Southern Methodist University</a>
             </Link>
-            , and I am currently looking for employment opportunities.
+            , and I currently am employed at IBM however I am open to future
+            opportunities.
           </p>
           <p>
-            I currently study computer science with a focus on Machine Learning and Artificial
-            Intelligence, I am expected to complete my undergrad in May 2023 and following
-            graduation I will enter a joint program to complete my M.Sc. and MBA.
+            I currently study computer science with a focus on Machine Learning
+            and Artificial Intelligence, I am expected to complete my undergrad
+            in Fall 2022 and following graduation I will enter a joint program
+            to complete my Masters in Computer Science and MBA.
           </p>
         </div>
       </motion.div>
