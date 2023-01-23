@@ -1,6 +1,11 @@
 export default function getProjects() {
   return [
     {
+      title: "Test",
+      description: "Demoing the new layout",
+      link: "/projects/test",
+    },
+    {
       title: "GPT Suggest",
       description:
         "Next word prediction using OpenAI's GPT-2. Version 2.0 with Tab-complete is currently in development. *Will be updated to GPT-3 if I ever get beta access.",
@@ -24,23 +29,23 @@ export default function getProjects() {
         "Implementations of common algorithms and data structures in python 3.x",
       link: "https://github.com/walln/algorithms",
     },
-    {
-      title: "TEMPTEMPTEMP",
-      description:
-        "Implementations of common TEMPTEMPTEMP and data structures in python 3.x",
-      link: "https://github.com/walln/TEMPTEMPTEMP",
-    },
-    {
-      title: "TEMPTEMPTEMP",
-      description:
-        "Implementations of common TEMPTEMPTEMP and data structures in python 3.x",
-      link: "https://github.com/walln/TEMPTEMPTEMP",
-    },
-    {
-      title: "TEMPTEMPTEMP",
-      description:
-        "Implementations of common algorithms and data structures in python 3.x",
-      link: "https://github.com/walln/algorithms",
-    },
+    // {
+    //   title: "TEMPTEMPTEMP",
+    //   description:
+    //     "Implementations of common TEMPTEMPTEMP and data structures in python 3.x",
+    //   link: "https://github.com/walln/TEMPTEMPTEMP",
+    // },
+    // {
+    //   title: "TEMPTEMPTEMP",
+    //   description:
+    //     "Implementations of common TEMPTEMPTEMP and data structures in python 3.x",
+    //   link: "https://github.com/walln/TEMPTEMPTEMP",
+    // },
+    // {
+    //   title: "TEMPTEMPTEMP",
+    //   description:
+    //     "Implementations of common algorithms and data structures in python 3.x",
+    //   link: "https://github.com/walln/algorithms",
+    // },
   ];
 }

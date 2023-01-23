@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 
-import Container from "../components/Container";
-import ProjectCard from "../components/ProjectCard";
-import getProjects from "../lib/projects";
+import Container from "@/components/Container";
+import ProjectCard from "@/components/ProjectCard";
+import getProjects from "@/lib/projects";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 
@@ -44,34 +44,33 @@ interface project {
 export default function About({ projects }: { projects: project[] }) {
   return (
     <Container title="Projects – Nick Wall">
-      <motion.div
-        animate={{ opacity: 1 }}
-        initial={{ opacity: 0 }}
-        //   variants={fadeInUp}
-      >
-        <div className="flex flex-col justify-center items-start max-w-2xl mx-auto mb-16">
-          <h1 className="font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white">
+      <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
+        <div className="mx-auto mb-16 flex max-w-2xl flex-col items-start justify-center">
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-5xl">
             Projects
           </h1>
-          <div className="mb-8 prose leading-6 text-gray-400 ">
+          <div className="prose mb-8 leading-6 text-gray-100 ">
             <p>
               Here is a collection of my favorite projects that I have
               completed. I am always working on several projects, if you are
               interested in seeing some incomplete stuff then take a look at my
               &nbsp;
-              <Link href="https://github.com/walln">GitHub</Link>. Some of my
-              work is not publicly available, but I can demo some snippets upon
-              request.
+              <Link
+                href="https://github.com/walln"
+                className="font-bold text-white"
+              >
+                GitHub
+              </Link>
+              . Most of my work is not publicly available, but I can demo some
+              snippets upon request.
             </p>
           </div>
           {projects && (
             <motion.div
               variants={stagger}
-              // viewport={{ once: true }}
               className="space-y-6"
               initial="hidden"
               animate="show"
-              // whileInView={{ opacity: 1 }}
             >
               {projects.map((project) => (
                 <Link key={project.title} href={project.link} legacyBehavior>
@@ -79,7 +78,6 @@ export default function About({ projects }: { projects: project[] }) {
                     variants={fadeInUp}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="card"
                   >
                     <ProjectCard
                       title={project.title}

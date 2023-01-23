@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 export default function ProjectCard({
   title,
   description,
   href,
-  icon = 'default'
+  icon = "default",
 }: {
   title: string;
   description: string;
@@ -19,11 +19,11 @@ export default function ProjectCard({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <motion.div className="flex items-center border border-gray-200 dark:border-gray-800 rounded p-4 min-w-full">
-        {icon == 'default' && (
-          <div className="h-8 w-8 ml-2 mr-4">
+      <motion.div className="flex min-w-full items-center rounded border border-gray-200 p-4">
+        {icon == "default" && (
+          <div className="ml-2 mr-4 h-8 w-8">
             <span className="sr-only">GitHub</span>
-            <svg className="h-8 w-8 min-w-sm text-gray-900 dark:text-gray-100" viewBox="0 0 64 64">
+            <svg className="min-w-sm h-8 w-8 text-gray-100" viewBox="0 0 64 64">
               <g fill="currentColor">
                 <path
                   data-name="layer2"
@@ -34,16 +34,16 @@ export default function ProjectCard({
                   data-name="layer1"
                   d="M12.1 45.9c-.1.2-.3.2-.5.1s-.4-.3-.3-.5.3-.2.6-.1c.2.2.3.4.2.5zm1.3 1.5a.589.589 0 0 1-.8-.8.631.631 0 0 1 .7.1.494.494 0 0 1 .1.7zm1.3 1.8a.585.585 0 0 1-.7-.3.6.6 0 0 1 0-.8.585.585 0 0 1 .7.3c.2.3.2.7 0 .8zm1.7 1.8c-.2.2-.5.1-.8-.1-.3-.3-.4-.6-.2-.8a.619.619 0 0 1 .8.1.554.554 0 0 1 .2.8zm2.4 1c-.1.3-.4.4-.8.3s-.6-.4-.5-.7.4-.4.8-.3c.3.2.6.5.5.7zm2.6.2c0 .3-.3.5-.7.5s-.7-.2-.7-.5.3-.5.7-.5c.4.1.7.3.7.5zm2.4-.4q0 .45-.6.6a.691.691 0 0 1-.8-.3q0-.45.6-.6c.5-.1.8.1.8.3z"
                   fill="#202020"
-                ></path>{' '}
+                ></path>{" "}
               </g>
             </svg>
           </div>
         )}
-        {icon == 'react2025' && (
-          <div className="h-8 w-8 ml-2 mr-4">
+        {icon == "react2025" && (
+          <div className="ml-2 mr-4 h-8 w-8">
             <span className="sr-only">React 2025</span>
             <svg
-              className="h-8 w-8 min-w-sm text-gray-900 dark:text-gray-100"
+              className="min-w-sm h-8 w-8 text-gray-100"
               viewBox="0 0 267 305"
             >
               <g fill="currentColor">
@@ -52,11 +52,11 @@ export default function ProjectCard({
             </svg>
           </div>
         )}
-        {icon == 'nextjs' && (
-          <div className="h-8 w-8 ml-2 mr-4">
+        {icon == "nextjs" && (
+          <div className="ml-2 mr-4 h-8 w-8">
             <span className="sr-only">Learn Next.js</span>
             <svg
-              className="h-8 w-8 min-w-lg text-gray-900 dark:text-gray-100"
+              className="min-w-lg h-8 w-8 text-gray-100"
               viewBox=".5 -.2 1023 1024.1"
             >
               <g fill="currentColor">
@@ -66,10 +66,10 @@ export default function ProjectCard({
             </svg>
           </div>
         )}
-        {icon == 'fastfeedback' && (
-          <div className="h-8 w-8 ml-2 mr-4">
+        {icon == "fastfeedback" && (
+          <div className="ml-2 mr-4 h-8 w-8">
             <span className="sr-only">Fast Feedback</span>
-            <svg className="h-8 w-8 min-w-sm text-gray-900 dark:text-gray-100" viewBox="0 0 46 32">
+            <svg className="min-w-sm h-8 w-8 text-gray-100" viewBox="0 0 46 32">
               <path
                 d="M19.557.113C11.34.32 9.117 8.757 9.03 12.95c1.643-2.67 4.62-3.08 6.931-3.08 2.825.085 10.27.205 17.458 0C40.61 9.663 44.802 3.28 46 .112c-5.391-.085-18.228-.205-26.443 0zM14.422 14.234C3.332 14.234-.468 24.76.045 31.948c3.594-6.418 7.617-7.53 9.243-7.445h6.675c5.956 0 11.039-6.846 12.836-10.27H14.422z"
                 fill="currentColor"
@@ -78,10 +78,10 @@ export default function ProjectCard({
           </div>
         )}
         <div>
-          <h4 className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h4 className="text-lg font-bold tracking-tight text-gray-100">
             {title}
           </h4>
-          <p className="leading-5 text-gray-700 dark:text-gray-300">{description}</p>
+          <p className="leading-5 text-gray-300">{description}</p>
         </div>
       </motion.div>
     </a>
