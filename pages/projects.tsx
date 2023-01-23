@@ -53,7 +53,7 @@ export default function About({ projects }: { projects: project[] }) {
           <h1 className="font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white">
             Projects
           </h1>
-          <div className="mb-8 prose leading-6 text-gray-600 dark:text-gray-400">
+          <div className="mb-8 prose leading-6 text-gray-400 ">
             <p>
               Here is a collection of my favorite projects that I have
               completed. I am always working on several projects, if you are
@@ -67,9 +67,11 @@ export default function About({ projects }: { projects: project[] }) {
           {projects && (
             <motion.div
               variants={stagger}
+              // viewport={{ once: true }}
               className="space-y-6"
               initial="hidden"
               animate="show"
+              // whileInView={{ opacity: 1 }}
             >
               {projects.map((project) => (
                 <Link key={project.title} href={project.link} legacyBehavior>

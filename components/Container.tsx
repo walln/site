@@ -3,7 +3,38 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import NextLink from "next/link";
-import { Switch } from "@headlessui/react";
+import { clsx } from "clsx";
+// import { Switch } from "@headlessui/react";
+import { motion } from "framer-motion";
+
+import { Source_Code_Pro } from "@next/font/google";
+import Meta from "./Meta";
+import NavItem, { NavItemProps } from "./NavItem";
+
+const font = Source_Code_Pro({
+  subsets: ["latin"],
+  // default, can also use "swap" to ensure custom font always shows
+  display: "optional",
+  weight: "400",
+});
+
+const navItems: NavItemProps[] = [
+  { href: "/", label: "Home", type: "page" },
+  { href: "/about", label: "About", type: "page" },
+  { href: "/projects", label: "Projects", type: "page" },
+  { href: "/static/resume.pdf", label: "Resume", type: "static" },
+];
+
+// const stagger = {
+//   hidden: { opacity: 0 },
+//   show: {
+//     opacity: 1,
+//     transition: {
+//       delay: 0.2,
+//       delayChildren: 0.5,
+//     },
+//   },
+// };
 
 export default function Container(props) {
   const [mounted, setMounted] = useState(false);
@@ -22,78 +53,48 @@ export default function Container(props) {
   };
 
   return (
-    <div className="bg-white dark:bg-custom-dark h-screen">
-      <Head>
-        <title>{meta.title}</title>
-        <meta name="robots" content="follow, index" />
-        <meta content={meta.description} name="description" />
-        <meta property="og:url" content={`https://walln.dev${router.asPath}`} />
-        <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="Nick Wall" />
-        <meta property="og:description" content={meta.description} />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:image" content={meta.image} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@nickwal" />
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
-        <meta name="twitter:image" content={meta.image} />
-        {meta.date && (
-          <meta property="article:published_time" content={meta.date} />
-        )}
-      </Head>
-      <nav className="sticky-nav flex justify-between items-center max-w-4xl w-full p-8 my-0 md:my-8 mx-auto bg-white dark:bg-custom-dark bg-opacity-60">
-        {mounted && (
-          <Switch
-            checked={theme === "dark"}
-            onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className={`${
-              theme === "dark" ? "bg-gray-400" : "bg-gray-200"
-            } relative inline-flex h-4 rounded-full w-8`}
-          >
-            <span
-              className={`${
-                theme === "dark" ? "translate-x-4" : "translate-x-0"
-              } inline-block w-4 h-4 transform bg-black dark:bg-gray-500 rounded-full`}
-            />
-          </Switch>
-        )}
-
-        <div>
-          <NextLink
-            href="/"
-            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-          >
-            Home
-          </NextLink>
-          <NextLink
-            href="/about"
-            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-          >
-            About
-          </NextLink>
-          <NextLink
-            href="/projects"
-            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-          >
-            Projects
-          </NextLink>
-          <NextLink
-            rel="noopener noreferrer"
-            target="_blank"
-            href="/static/resume.pdf"
-            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-          >
-            Resume
-          </NextLink>
-        </div>
+    <div className={clsx("bg-black h-screen", font.className)}>
+      <Meta title="Nick Wall" />
+      <nav className="max-w-4xl w-full py-20 mx-auto px-8 bg-black">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                delayChildren: 0.5,
+                staggerChildren: 0.4,
+              },
+            },
+          }}
+          // viewport={{ once: true }}
+          // className="space-y-6"
+          className="flex flex-row"
+          initial="hidden"
+          animate="show"
+        >
+          {navItems.map((item) => (
+            <NavItem href={item.href} label={item.label} type={item.type} />
+          ))}
+        </motion.div>
       </nav>
-      <main
-        id="skip"
-        className="flex flex-col justify-center bg-white dark:bg-custom-dark px-8"
+      <motion.div
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              delay: 3.0,
+            },
+          },
+        }}
+        initial="hidden"
+        animate="show"
       >
-        {children}
-      </main>
+        <main id="skip" className="flex flex-col justify-center px-8">
+          {children}
+        </main>
+      </motion.div>
     </div>
   );
 }
