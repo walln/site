@@ -1,9 +1,9 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
-import NextLink from 'next/link';
-import { Switch } from '@headlessui/react';
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import NextLink from "next/link";
+import { Switch } from "@headlessui/react";
 
 export default function Container(props) {
   const [mounted, setMounted] = useState(false);
@@ -15,10 +15,10 @@ export default function Container(props) {
   const { children, ...customMeta } = props;
   const router = useRouter();
   const meta = {
-    title: 'Nick Wall',
+    title: "Nick Wall",
     description: `Full-stack developer and Machine Learning/AI enthusiast.`,
-    type: 'website',
-    ...customMeta
+    type: "website",
+    ...customMeta,
   };
 
   return (
@@ -38,46 +38,60 @@ export default function Container(props) {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
-        {meta.date && <meta property="article:published_time" content={meta.date} />}
+        {meta.date && (
+          <meta property="article:published_time" content={meta.date} />
+        )}
       </Head>
       <nav className="sticky-nav flex justify-between items-center max-w-4xl w-full p-8 my-0 md:my-8 mx-auto bg-white dark:bg-custom-dark bg-opacity-60">
         {mounted && (
           <Switch
-            checked={theme === 'dark'}
-            onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            checked={theme === "dark"}
+            onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
             className={`${
-              theme === 'dark' ? 'bg-gray-400' : 'bg-gray-200'
+              theme === "dark" ? "bg-gray-400" : "bg-gray-200"
             } relative inline-flex h-4 rounded-full w-8`}
           >
             <span
               className={`${
-                theme === 'dark' ? 'translate-x-4' : 'translate-x-0'
+                theme === "dark" ? "translate-x-4" : "translate-x-0"
               } inline-block w-4 h-4 transform bg-black dark:bg-gray-500 rounded-full`}
             />
           </Switch>
         )}
 
         <div>
-          <NextLink href="/">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">Home</a>
-          </NextLink>
-          <NextLink href="/about">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">About</a>
-          </NextLink>
-          <NextLink href="/projects">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">Projects</a>
-          </NextLink>
-          <a
+          <NextLink
+            href="/"
             className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-            target="_blank"
+          >
+            Home
+          </NextLink>
+          <NextLink
+            href="/about"
+            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
+          >
+            About
+          </NextLink>
+          <NextLink
+            href="/projects"
+            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
+          >
+            Projects
+          </NextLink>
+          <NextLink
             rel="noopener noreferrer"
+            target="_blank"
             href="/static/resume.pdf"
+            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
           >
             Resume
-          </a>
+          </NextLink>
         </div>
       </nav>
-      <main id="skip" className="flex flex-col justify-center bg-white dark:bg-custom-dark px-8">
+      <main
+        id="skip"
+        className="flex flex-col justify-center bg-white dark:bg-custom-dark px-8"
+      >
         {children}
       </main>
     </div>

@@ -20,7 +20,7 @@ export default function About() {
             full stack-development, and Artificial Intelligence. I am currently
             a student at&nbsp;
             <Link href="https://www.smu.edu/">
-              <a>Southern Methodist University</a>
+              Southern Methodist University
             </Link>
             , and I currently am employed at IBM however I am open to future
             opportunities.
