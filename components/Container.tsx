@@ -17,17 +17,17 @@ const font = Source_Code_Pro({
 });
 
 interface NavItem {
-  label: string;
+  text: string;
   href: string;
 }
 
 export const NavItems: NavItem[] = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/static/resume.pdf", label: "Resume" },
+  { href: "/", text: "Home" },
+  { href: "/projects", text: "Projects" },
+  { href: "/static/resume.pdf", text: "Resume" },
 ];
 
-function NavItem({ href, text }) {
+function NavItem({ href, text }: NavItem) {
   const router = useRouter();
   const isActive = router.asPath === href;
 
@@ -59,14 +59,19 @@ function NavItem({ href, text }) {
   );
 }
 
-export default function Container(props) {
+interface ContainerProps {
+  children: React.ReactNode;
+  title?: string;
+}
+
+export default function Container(props: ContainerProps) {
   const [isMobileMenuShowing, setIsMobileMenuShowing] = useState(false);
 
   return (
     <div
       className={clsx("flex  min-h-screen flex-col bg-black", font.className)}
     >
-      <Meta title="Nick Wall" />
+      <Meta title={props.title ?? "Nick Wall"} />
       <div className="flex min-h-full flex-col justify-center px-8">
         <motion.div
           variants={{
@@ -90,7 +95,7 @@ export default function Container(props) {
                 setIsMenuOpen={setIsMobileMenuShowing}
               />
               {NavItems.map((item) => (
-                <NavItem href={item.href} text={item.label} key={item.href} />
+                <NavItem href={item.href} text={item.text} key={item.href} />
               ))}
             </div>
           </nav>
@@ -110,7 +115,7 @@ export default function Container(props) {
         initial="hidden"
         animate="show"
         className={
-          (clsx("flex min-h-full flex-grow flex-col"),
+          (clsx("relative flex h-full min-h-full flex-grow"),
           isMobileMenuShowing ? "hidden" : "visible")
         }
       >
