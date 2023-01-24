@@ -4,7 +4,6 @@ import React from "react";
 
 import Container from "@/components/Container";
 import ProjectCard from "@/components/ProjectCard";
-import getProjects from "@/lib/projects";
 import { allProjects, Project } from "contentlayer/generated";
 import { compareDesc, format, parseISO } from "date-fns";
 
@@ -49,7 +48,7 @@ export default function About({ projects }: { projects: Project[] }) {
       <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }}>
         <div className="mx-auto mb-16 flex max-w-2xl flex-col items-start justify-center">
           <h1 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-5xl">
-            Projects
+            Projects and Research
           </h1>
           <div className="prose mb-8 leading-6 text-gray-100 ">
             <p>
