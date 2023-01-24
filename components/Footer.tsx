@@ -1,6 +1,12 @@
 import Link from "next/link";
 
-const ExternalLink = ({ href, children }) => (
+const ExternalLink = ({
+  href,
+  children,
+}: {
+  href: string;
+  children: string;
+}) => (
   <Link
     className="text-gray-500 transition hover:font-bold hover:text-white"
     target="_blank"
