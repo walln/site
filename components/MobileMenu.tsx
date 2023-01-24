@@ -90,7 +90,7 @@ export default function MobileMenu(props: MobileMenuProps) {
             <MobileMenuItem
               key={index}
               href={item.href}
-              label={item.label}
+              label={item.text}
               delay={150 + 250 * index}
             />
           ))}

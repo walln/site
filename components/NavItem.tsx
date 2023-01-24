@@ -42,8 +42,8 @@ export default function NavItem(props: NavItemProps) {
       <Link
         href={props.href}
         className="rounded-lg px-2 py-1 text-gray-100 hover:bg-gray-300"
-        rel={props.type == "static" && "noopener noreferrer"}
-        target={props.type == "static" && "_blank"}
+        rel={props.type == "static" ? "noopener noreferrer" : undefined}
+        target={props.type == "static" ? "_blank" : undefined}
       >
         {props.label}
       </Link>
