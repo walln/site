@@ -1,14 +1,11 @@
-import { ThemeProvider } from 'next-themes';
-import { AnimatePresence } from 'framer-motion';
-import '../styles/globals.css';
+import { AnimatePresence } from "framer-motion";
+import "@/styles/globals.css";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: any) {
   return (
-    <ThemeProvider attribute="class">
-      <AnimatePresence exitBeforeEnter>
-        <Component {...pageProps} />
-      </AnimatePresence>
-    </ThemeProvider>
+    <AnimatePresence mode="wait">
+      <Component {...pageProps} />
+    </AnimatePresence>
   );
 }
 

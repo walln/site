@@ -1,85 +1,145 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
-import NextLink from 'next/link';
-import { Switch } from '@headlessui/react';
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { clsx } from "clsx";
+import MobileMenu from "@/components/MobileMenu";
+import Footer from "@/components/Footer";
+import { Source_Code_Pro } from "@next/font/google";
+import { motion } from "framer-motion";
+import Meta from "@/components/Meta";
+import { useState } from "react";
 
-export default function Container(props) {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+let easing = [0.6, -0.05, 0.01, 0.99];
 
-  // After mounting, we have access to the theme
-  useEffect(() => setMounted(true), []);
+const font = Source_Code_Pro({
+  subsets: ["latin"],
+  display: "auto",
+  weight: "400",
+});
 
-  const { children, ...customMeta } = props;
+interface NavItem {
+  text: string;
+  href: string;
+}
+
+export const NavItems: NavItem[] = [
+  { href: "/", text: "Home" },
+  { href: "/projects", text: "Projects" },
+  { href: "/static/resume.pdf", text: "Resume" },
+];
+
+function NavItem({ href, text }: NavItem) {
   const router = useRouter();
-  const meta = {
-    title: 'Nick Wall',
-    description: `Full-stack developer and Machine Learning/AI enthusiast.`,
-    type: 'website',
-    ...customMeta
-  };
+  const isActive = router.asPath === href;
 
   return (
-    <div className="bg-white dark:bg-custom-dark h-screen">
-      <Head>
-        <title>{meta.title}</title>
-        <meta name="robots" content="follow, index" />
-        <meta content={meta.description} name="description" />
-        <meta property="og:url" content={`https://walln.dev${router.asPath}`} />
-        <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="Nick Wall" />
-        <meta property="og:description" content={meta.description} />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:image" content={meta.image} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@nickwal" />
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
-        <meta name="twitter:image" content={meta.image} />
-        {meta.date && <meta property="article:published_time" content={meta.date} />}
-      </Head>
-      <nav className="sticky-nav flex justify-between items-center max-w-4xl w-full p-8 my-0 md:my-8 mx-auto bg-white dark:bg-custom-dark bg-opacity-60">
-        {mounted && (
-          <Switch
-            checked={theme === 'dark'}
-            onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className={`${
-              theme === 'dark' ? 'bg-gray-400' : 'bg-gray-200'
-            } relative inline-flex h-4 rounded-full w-8`}
-          >
-            <span
-              className={`${
-                theme === 'dark' ? 'translate-x-4' : 'translate-x-0'
-              } inline-block w-4 h-4 transform bg-black dark:bg-gray-500 rounded-full`}
-            />
-          </Switch>
+    <motion.div
+      variants={{
+        hidden: { scale: 0, top: 100, opacity: 0 },
+        show: { scale: 1, top: 30, opacity: 1 },
+      }}
+      animate={{
+        transition: {
+          duration: 1.0,
+          ease: easing,
+        },
+      }}
+    >
+      <NextLink
+        href={href}
+        className={clsx(
+          isActive
+            ? "font-semibold text-gray-200"
+            : "font-normal text-gray-400 ",
+          "mx-3 hidden rounded-lg p-1 transition-all hover:bg-white hover:text-black sm:px-3 sm:py-2 md:inline-block"
         )}
+      >
+        <span className="capsize">{text}</span>
+      </NextLink>
+    </motion.div>
+  );
+}
 
-        <div>
-          <NextLink href="/">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">Home</a>
-          </NextLink>
-          <NextLink href="/about">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">About</a>
-          </NextLink>
-          <NextLink href="/projects">
-            <a className="p-1 sm:p-2 text-gray-900 dark:text-gray-100">Projects</a>
-          </NextLink>
-          <a
-            className="p-1 sm:p-2 text-gray-900 dark:text-gray-100"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="/static/resume.pdf"
-          >
-            Resume
-          </a>
-        </div>
-      </nav>
-      <main id="skip" className="flex flex-col justify-center bg-white dark:bg-custom-dark px-8">
-        {children}
-      </main>
+interface ContainerProps {
+  children: React.ReactNode;
+  title?: string;
+}
+
+export default function Container(props: ContainerProps) {
+  const [isMobileMenuShowing, setIsMobileMenuShowing] = useState(false);
+
+  return (
+    <div
+      className={clsx("flex  min-h-screen flex-col bg-black", font.className)}
+    >
+      <Meta title={props.title ?? "Nick Wall"} />
+      <div className="flex min-h-full flex-col justify-center px-8">
+        <motion.div
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                delayChildren: 0.5,
+                staggerChildren: 0.4,
+              },
+            },
+          }}
+          className="flex flex-row"
+          initial="hidden"
+          animate="show"
+        >
+          <nav className="relative mx-auto flex w-full max-w-2xl items-center justify-between  border-gray-700 pt-8 pb-8 text-gray-100  sm:pb-16 ">
+            <div className="ml-[-1.60rem] flex flex-row">
+              <MobileMenu
+                isMenuOpen={isMobileMenuShowing}
+                setIsMenuOpen={setIsMobileMenuShowing}
+              />
+              {NavItems.map((item) => (
+                <NavItem href={item.href} text={item.text} key={item.href} />
+              ))}
+            </div>
+          </nav>
+        </motion.div>
+      </div>
+      <motion.div
+        layout
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              delay: 3.0,
+            },
+          },
+        }}
+        initial="hidden"
+        animate="show"
+        className={
+          (clsx("relative flex h-full min-h-full flex-grow"),
+          isMobileMenuShowing ? "hidden" : "visible")
+        }
+      >
+        <main className="flex min-h-full justify-center px-8">
+          {props.children}
+        </main>
+      </motion.div>
+      <motion.div
+        id="test"
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              delay: 3.9,
+            },
+          },
+        }}
+        initial="hidden"
+        animate="show"
+        className={clsx(isMobileMenuShowing ? "hidden" : "visible")}
+      >
+        <Footer />
+      </motion.div>
     </div>
   );
 }
