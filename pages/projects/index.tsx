@@ -52,20 +52,21 @@ export default function About({ projects }: { projects: Project[] }) {
           </h1>
           <div className="prose mb-8 leading-6 text-gray-100 ">
             <p>
-              Here is a collection of my favorite projects that I have completed
-              or am working on. I am always working on several projects, if you
-              are interested in seeing some incomplete stuff then take a look at
-              my &nbsp;
+              Here is a collection of my favorite projects I have completed or
+              am working on. I always have several projects I am working on, so
+              if you are interested in the most up-to-date and in-progress work,
+              check out my&nbsp;
               <Link
                 href="https://github.com/walln"
                 className="font-bold text-white"
               >
                 GitHub
               </Link>
-              . A lot not publicly available, but reach out to me if you are
-              interested in talking about some of the things I have built either
-              professionally, that I have not open-sourced, or research that I
-              have done that is not published or in a state that I am releasing.
+              . Much of my work is closed-source and not on my GitHub, but reach
+              out to me if you are interested. Also, I am open to talking about
+              some of the things I have built, either professionally that is not
+              open-sourced or research that I have done that is yet to be
+              published or in a state that I am releasing.
             </p>
           </div>
           {projects && (
