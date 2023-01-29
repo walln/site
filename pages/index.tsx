@@ -14,7 +14,7 @@ export default function HomePage() {
             </h2>
             <p className="mb-4 text-gray-300">
               I am a student, software developer, and artificial intelligence
-              research engineer, captivated with exploring the cutting edge of
+              research engineer, captivated with exploring the cutting-edge of
               technology and pushing the limits of what is possible.
             </p>
             <p className="mb-6 text-gray-100">
