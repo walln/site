@@ -1,0 +1,12 @@
+{
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit"
+	},
+	"[markdown]": {
+		"editor.wordWrap": "on"
+	},
+	"[astro]": {
+		"editor.defaultFormatter": "astro-build.astro-vscode"
+	}
+}

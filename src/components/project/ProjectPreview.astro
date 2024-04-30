@@ -1,0 +1,30 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types";
+import type { CollectionEntry } from "astro:content";
+
+import FormattedDate from "../FormatDate.astro";
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & {
+	project: CollectionEntry<"project">;
+	withDesc?: boolean;
+};
+
+const { as: Tag = "div", project, withDesc = false } = Astro.props;
+const projectDate = project.data.updatedDate ?? project.data.publishDate;
+---
+
+<FormattedDate
+	class="min-w-[120px] text-gray-600 dark:text-gray-400"
+	date={projectDate}
+/>
+<Tag>
+	{project.data.draft && <span class="text-red-500">(Draft) </span>}
+	<a class="walln-link" data-astro-prefetch href={`/projects/${project.slug}/`}>
+		{project.data.title}
+	</a>
+</Tag>
+{
+	withDesc && (
+		<q class="line-clamp-3 block italic">{project.data.description}</q>
+	)
+}
