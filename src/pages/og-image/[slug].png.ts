@@ -5,29 +5,34 @@ import { Resvg } from "@resvg/resvg-js";
 import { siteConfig } from "@/site.config";
 import { getFormattedDate } from "@/utils/date";
 import { getAllProjects } from "@/data/project";
-import {readFileSync} from 'fs'
-import {resolve} from 'path'
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 function loadFontBuffer(fontPath: string): ArrayBuffer {
-  // Resolve the font path to an absolute path
-  const absolutePath = resolve(fontPath);
-  // Read the file synchronously
-  const fontBuffer = readFileSync(absolutePath);
-  // Convert Buffer to ArrayBuffer
-  const arrayBuffer = new Uint8Array(fontBuffer).buffer;
-  return arrayBuffer;
+	// Resolve the font path to an absolute path
+	const absolutePath = resolve(fontPath);
+	// Read the file synchronously
+	const fontBuffer = readFileSync(absolutePath);
+	// Convert Buffer to ArrayBuffer
+	const arrayBuffer = new Uint8Array(fontBuffer).buffer;
+	return arrayBuffer;
 }
-
 
 const ogOptions: SatoriOptions = {
 	width: 1200,
 	height: 630,
-  fonts: [ {
-    name: "Geist Mono",
-    data: Buffer.from(loadFontBuffer('./node_modules/@fontsource/geist-mono/files/geist-mono-latin-300-normal.woff')),
-    weight: 300,
-    style: "normal",
-  }]
+	fonts: [
+		{
+			name: "Geist Mono",
+			data: Buffer.from(
+				loadFontBuffer(
+					"./node_modules/@fontsource/geist-mono/files/geist-mono-latin-300-normal.woff",
+				),
+			),
+			weight: 300,
+			style: "normal",
+		},
+	],
 };
 
 const markup = (title: string, pubDate: string) =>
@@ -54,6 +59,8 @@ export async function GET(context: APIContext) {
 		weekday: "long",
 		month: "long",
 	});
+
+	// @ts-expect-error Mismatch in types due to dep versions. (can fix later)
 	const svg = await satori(markup(title, projectDate), ogOptions);
 	const png = new Resvg(svg).render().asPng();
 	return new Response(png, {
@@ -66,22 +73,27 @@ export async function GET(context: APIContext) {
 
 export async function getStaticPaths() {
 	const projects = await getAllProjects();
-	const projectData =  projects
-		.filter(({ data }) => !data.ogImage)
-		.map((project) => ({
-			params: { slug: project.slug },
+	const projectData: {
+		params: { slug: string };
+		props: { title: string; pubDate: Date };
+	}[] = [
+		...projects
+			.filter(({ data }) => !data.ogImage)
+			.map((project) => ({
+				params: { slug: project.slug },
+				props: {
+					title: project.data.title,
+					pubDate: project.data.updatedDate ?? project.data.publishDate,
+				},
+			})),
+		{
+			params: { slug: "social-card" },
 			props: {
-				title: project.data.title,
-				pubDate: project.data.updatedDate ?? project.data.publishDate,
+				title: "Test",
+				pubDate: new Date(),
 			},
-		}));
-  projectData.push({
-    params: { slug: "social-card" },
-    props: {
-      title: "Test",
-      pubDate: new Date(),
-    },
-  })
+		},
+	];
 
-  return projectData
+	return projectData;
 }
