@@ -89,7 +89,7 @@ export async function getStaticPaths() {
 		{
 			params: { slug: "social-card" },
 			props: {
-				title: "Test",
+				title: "My Site",
 				pubDate: new Date(),
 			},
 		},
