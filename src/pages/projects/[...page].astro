@@ -11,7 +11,6 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const allProjects = await getAllProjects();
 	const allProjectsByDate = sortMDByDate(allProjects);
 	const uniqueTags = getUniqueTags(allProjects);
-	console.log("uniqueTags", uniqueTags);
 	return paginate(allProjectsByDate, { pageSize: 4, props: { uniqueTags } });
 }) satisfies GetStaticPaths;
 
