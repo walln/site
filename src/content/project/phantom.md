@@ -3,7 +3,6 @@ title: Phantom - A Rust based deep learning framework
 publishDate: 2024-05-02
 description: A forward mode automatic differentiation and deep learning libary written from scrach in rust capable of training neural networks.
 tags: ["machine-learning", "performance" ,"gpu-kernels", "rust"]
-updatedDate: 2024-05-02
 
 ---
 ## What is Phantom?
