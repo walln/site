@@ -1,6 +1,6 @@
 ---
+import SpeedInsights from "@vercel/speed-insights/astro";
 import type { SiteMeta } from "@/types";
-
 import { siteConfig } from "@/site.config";
 
 import "../styles/global.css";
@@ -70,3 +70,5 @@ const socialImageURL = new URL(
 <link href="/sitemap-index.xml" rel="sitemap" />
 
 <meta content={Astro.generator} name="generator" />
+
+<SpeedInsights />

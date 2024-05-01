@@ -29,6 +29,7 @@
 		"@fontsource/geist-sans": "^5.0.3",
 		"@types/react": "^18.3.1",
 		"@types/react-dom": "^18.3.0",
+		"@vercel/speed-insights": "^1.0.10",
 		"astro": "^4.7.0",
 		"astro-expressive-code": "^0.35.2",
 		"astro-icon": "^1.1.0",
