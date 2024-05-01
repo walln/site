@@ -5,8 +5,8 @@ import { Resvg } from "@resvg/resvg-js";
 import { siteConfig } from "@/site.config";
 import { getFormattedDate } from "@/utils/date";
 import { getAllProjects } from "@/data/project";
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 function loadFontBuffer(fontPath: string): ArrayBuffer {
 	// Resolve the font path to an absolute path
