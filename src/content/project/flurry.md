@@ -2,7 +2,7 @@
 title: Flurry
 publishDate: 2023-01-23
 description: A simple, performance, and highly-configurable proxy server written with Golang.
-tags: ["backend-development", "performance"]
+tags: ["backend-development", "performance", "golang"]
 ---
 
 Built with Golang, Flurry was my solution for an API gateway. Very few simple proxies are easily composable for a simple application that needs microservices proxied out to different hosts (mainly behind a VPC). Flurry is a web proxy designed for easy configuration and plugins for authentication and logging out of the box. New plugins are easy to create and configure.

@@ -2,7 +2,7 @@
 title: Scratch
 publishDate: 2023-01-24
 description: Machine learning architectures and methods implemented from scratch.
-tags: ["machine-learning", "performance", "gpu-kernels"]
+tags: ["machine-learning", "performance", "gpu-kernels", "python"]
 updatedDate: 2024-04-30
 ---
 

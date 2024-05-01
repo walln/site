@@ -2,7 +2,7 @@
 title: Algorithms
 publishDate: 2023-01-22
 description: Common data structures and algorithms I often end up reimplementing in python.
-tags: ["performance"]
+tags: ["performance", "python"]
 ---
 
 ## About Algorithms
