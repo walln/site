@@ -27,6 +27,7 @@ const projectsCollection = defineCollection({
 			title: z.string().max(60),
 			updatedDate: z
 				.string()
+				.or(z.date())
 				.optional()
 				.transform((str) => (str ? new Date(str) : undefined)),
 		}),

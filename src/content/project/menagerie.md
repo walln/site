@@ -2,7 +2,8 @@
 title: Menagerie
 description: A menagerie of deep learning models and techniques.
 draft: true
-publishDate: 2024-04-30
+publishDate: 2024-05-02
+tags: ["machine-learning", "llms", "performance"]
 ---
 
 ```python
