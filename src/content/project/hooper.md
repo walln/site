@@ -14,7 +14,7 @@ Hooper has been a good opportunity to put together my range of skills from model
 
 ## Tech Stack
 
-The Hooper service runs on [Next.js](https://nextjs.org) with streaming using the [AI SDK](https://sdk.vercel.ai). The site is hosted on AWS, Cloudflare, and Vercel and uses [SST ion](https://ion.sst.dev) to manage the infrastructure. I also host vLLM on [Modal](https://modal.com) with my own hosted LLM that I have tuned for the specific NBA jargon. Also on Modal is training for the model and some background services for the realtime data. I use [Turso](https://turso.tech) for my database because SQLite is underrated and awesome.
+The Hooper service runs on [Next.js](https://nextjs.org) with streaming using the [AI SDK](https://sdk.vercel.ai). The site is hosted on AWS, Cloudflare, and Vercel and uses [SST ion](https://ion.sst.dev) to manage the infrastructure. I also host vLLM on [Modal](https://modal.com) with my own hosted LLM that I have tuned for the specific NBA jargon. Also on Modal is training for the model and some background services for the realtime data. I use [Turso](https://turso.tech) for my database because SQLite is underrated and awesome. I also use [Upstash](https://upstash.com) for redis that backs my rate limitig.
 
 ### Try it out
 
