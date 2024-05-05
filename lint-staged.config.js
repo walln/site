@@ -5,6 +5,7 @@ const config = {
 	// TODO: Update to yaml when available
 	"**/*.json": ["biome lint", "biome format"],
 	"**/*.py": ["rye lint", "rye format --check"],
+	"**/*.md": ["cspell --no-must-find-files"],
 };
 
 export default config;

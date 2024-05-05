@@ -25,11 +25,11 @@ The following methodologies are currently implemented in the `main` branch:
 
 
 #### Deep Learning Models
-- CNN - Training for a Convnet using Flax with all the bells-and-whistles (paralleized training, weights and biases logging, etc.)
+- CNN - Training for a ConvNet using Flax with all the bells-and-whistles (parallelized training, weights and biases logging, etc.)
 - ResNet 1.5 - Training for a ResNet (all sizes) using Equinox with lots of extra features and performance optimizations.
 
 #### Large Language Models
-- BERT - Training BERT with Equniox. Optimized training code with automatic mixed precision.
+- BERT - Training BERT with Equinox. Optimized training code with automatic mixed precision.
 
 ### In Progress
 

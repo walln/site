@@ -7,7 +7,7 @@ tags: ["machine-learning", "performance" ,"rust"]
 
 ## About Sieve
 
-[Sieve](https://github.com/walln/sieve) is a toy implementation of Approximate Nearest Neighbors search. This index works by building an in-memory tree of the vectors randomly selecting vectors during the construction of the index and creating hyperplanes to use to quickly search the vector space. Vectors can then be queried using squared euclidian distance to find similar vectors within the vector space.
+[Sieve](https://github.com/walln/sieve) is a toy implementation of Approximate Nearest Neighbors search. This index works by building an in-memory tree of the vectors randomly selecting vectors during the construction of the index and creating hyperplanes to use to quickly search the vector space. Vectors can then be queried using squared euclidean distance to find similar vectors within the vector space.
 
 Lets look at an example of using Sieve to query a vector space.
 
@@ -33,11 +33,11 @@ fn main() -> Result<(), Error> {
 
 ```
 
-This code will create an index, with a few vectors and search for the closet one to the query vector using squared euclidian distance. In this case, the first vector `[1.0, 2.0]` already exists so it will be a perfect match.
+This code will create an index, with a few vectors and search for the closet one to the query vector using squared euclidean distance. In this case, the first vector `[1.0, 2.0]` already exists so it will be a perfect match.
 
 
 ## Sieve's future
 
-Going forward I would like to experiment more with this project. This is the closest I have been to writing a database (although I have toyed with writing a multi-node Redis implementation many times) and I would like to get this to support on disk formats wrather than just in memory. I also want to implement more distance metrics and also automatic hyperparmeter tuning to find the most optimal values for the data in the index.
+Going forward I would like to experiment more with this project. This is the closest I have been to writing a database (although I have toyed with writing a multi-node Redis implementation many times) and I would like to get this to support on disk formats rather than just in memory. I also want to implement more distance metrics and also automatic hyperparameter tuning to find the most optimal values for the data in the index.
 
 The code for Sieve can be found on [GitHub](https://github.com/walln/sieve).

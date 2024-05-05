@@ -1,0 +1,42 @@
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+version: '0.2'
+ignorePaths:
+  - node_modules
+  - bun.lockb
+  - .tsbuildinfo
+  - .gitignore
+  - dist
+  - .astro
+  - '**/*.svg'
+words:
+# Repo specific words
+  - walln
+  - menagerie
+  # - resvg
+  # - fontsource
+  # - vercel
+  # - haspopup
+  # - datetime
+  # - linecap
+  # - linejoin
+
+## Content
+# Site terms
+  - astro
+  - vercel
+  - turso
+  - upstash
+  - pagefind
+# Flurry terms
+  - proxied
+  - HMAC
+# ML Terms
+  - pretrained
+  - pretraining
+  - multimodal
+  - llms
+  - backpropogation
+  - conv
+  - downcasting
+
+
