@@ -9,6 +9,7 @@ import { remarkReadingTime } from "./src/utils/remark-reading-time";
 import expressiveCode from "astro-expressive-code";
 import { expressiveCodeOptions } from "./src/site.config";
 import mdx from "@astrojs/mdx";
+import pagefind from "astro-pagefind";
 
 import vercel from "@astrojs/vercel/static";
 
@@ -24,6 +25,7 @@ export default defineConfig({
 		react(),
 		sitemap(),
 		mdx(),
+		pagefind(),
 	],
 	redirects: {
 		"/resume": "/resume.pdf",

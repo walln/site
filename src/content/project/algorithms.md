@@ -11,7 +11,7 @@ This library contains data structures and algorithms I often end up reimplementi
 
 The source code is available on [GitHub](https://github.com/walln/algorithms)
 
-While not the most feature-rich, this repo prevents me from rebuilding the same things repeatedly. Because there are surprisingly few settled on DSAs in the standard or popular libraries.
+While not the most feature-rich, this repo prevents me from rebuilding the same things repeatedly. Because there are surprisingly few settled on data structures and algorithms in the standard or popular libraries.
 
 ### Current Features
 

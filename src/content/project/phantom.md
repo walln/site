@@ -1,7 +1,7 @@
 ---
 title: Phantom - A Rust based deep learning framework
 publishDate: 2024-05-02
-description: A forward mode automatic differentiation and deep learning libary written from scrach in rust capable of training neural networks.
+description: A forward mode automatic differentiation and deep learning library written from scratch in rust capable of training neural networks.
 tags: ["machine-learning", "performance" ,"gpu-kernels", "rust"]
 
 ---
@@ -29,7 +29,7 @@ fn simple_arithmetic() -> Result<(), Error> {
 
 
 
-Now that we have our tensors and can do some simple math with them lets actually compute the gradients. To compute the gradiens just call `backward` on the specified tensor. The gradients are calculated and returned as a `GradientMap` that supports standard HashMap operations.
+Now that we have our tensors and can do some simple math with them lets actually compute the gradients. To compute the gradients just call `backward` on the specified tensor. The gradients are calculated and returned as a `GradientMap` that supports standard HashMap operations.
 
 ```rust title=gradients.rs
 fn simple_gradients() -> Result<(), Error> {

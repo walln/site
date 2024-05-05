@@ -24,4 +24,4 @@ It is definitely overkill to use a web framework for such a simple website, but 
 - [Satori](https://github.com/vercel/satori): Dynamic OpenGraph image generation.
 - [Astro Icon](https://github.com/natemoo-re/astro-icon): Icon library support for Astro.
 - [Expressive Code](https://expressive-code.com/): MDX extension for enhanced styling and features.
-- [Biome](https://biomejs.dev): Modern Javascript tooling (linting and formatting) because somehow in 2024 Javascript toolchains havent converged on the bare minimum tools for a programming language.
+- [Biome](https://biomejs.dev): Modern Javascript tooling (linting and formatting) because somehow in 2024 Javascript toolchains haven't converged on the bare minimum tools for a programming language.

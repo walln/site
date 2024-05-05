@@ -8,6 +8,6 @@ When a famous artist has someone write songs for them, it is referred to as *gho
 
 [The source code is available on Github](https://github.com/walln/ghostwriter)
 
-Currently this repo only includes a custom trained (severly under-trained) GPT-2 model but I am working on fine-tunes of more modern LLMs trained by teams with more resources than me.
+Currently this repo only includes a custom trained (severely under-trained) GPT-2 model but I am working on fine-tunes of more modern LLMs trained by teams with more resources than me.
 
 This is merely an experiment and a toy. I do not claim any copyright or encourage monetizing works created by these models.
