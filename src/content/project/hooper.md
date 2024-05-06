@@ -1,7 +1,7 @@
 ---
 title: Hooper
 description: An AI chatbot with generative UI built to discuss the NBA with realtime news and stats.
-publishDate: 2024-05-02
+publishDate: 2024-05-02 CST
 tags: ["machine-learning", "llms", "performance", "python" , "web-development", "backend-development"]
 ---
 ## What is Hooper?

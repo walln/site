@@ -1,6 +1,6 @@
 ---
 title: Flurry
-publishDate: 2023-01-23
+publishDate: 2023-01-23 CST
 description: A simple, performance, and highly-configurable proxy server written with Golang.
 tags: ["backend-development", "performance", "golang"]
 ---

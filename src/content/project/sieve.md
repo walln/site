@@ -1,6 +1,6 @@
 ---
 title: Sieve - Approximate Nearest Neighbors index in Rust
-publishDate: 2024-05-01
+publishDate: 2024-05-01 CST
 description: An in-memory approximate nearest neighbors vector search index built with Rust.
 tags: ["machine-learning", "performance" ,"rust"]
 ---
