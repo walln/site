@@ -39,6 +39,8 @@ words:
   - conv
   - downcasting
   - overfit
+  - autoencoders
+  - interpretability
 # Outcomes Terms
   - functors
 # Programming language terms
