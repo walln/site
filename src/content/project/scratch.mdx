@@ -81,7 +81,7 @@ I have developed annotated implementations of many popular deep learning models 
 
 Beyond just models, there are many common deep learning components that are implemented as well such as common layers for composability such as:
 
-- MultiQueryAttention as proposed in [Fast Transformer Decoding: One Write-Head is All You Need.](https://arxiv.org/abs/1911.02150) This is one of my favorites, Noam Shazeer's strikes isAPropagatingComponent, just look how simple this is: <Latex formula="
+- MultiQueryAttention as proposed in [Fast Transformer Decoding: One Write-Head is All You Need.](https://arxiv.org/abs/1911.02150) This is one of my favorites, Noam Shazeer's strikes again, just look how simple this is: <Latex formula="
 \text{Q} = \text{einsum}('bnd,hdk \rightarrow bhnk', X, P_q) \\
 \text{K} = \text{einsum}('bmd,dk \rightarrow bmk', M, P_k) \\
 \text{V} = \text{einsum}('bmd,dv \rightarrow bmv', M, P_v) \\
