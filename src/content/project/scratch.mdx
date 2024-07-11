@@ -11,15 +11,22 @@ import LatexInLine from "../../components/project/LatexInLine.astro";
 
 ## About Scratch
 
-This is a collection of ML models and methods implemented from scratch for my learning and reference.  I use this project to digest new technologies and research as well as just to implement things for fun. Not all of the implementations are optimized but they are all easy to read and understand. 
+This is a collection of ML models and methods implemented from scratch for my learning and reference.
+I use this project to digest new technologies and research as well as just to implement things for fun. 
+Not all of the implementations are optimized but they are all easy to read and understand. 
 
 [The source code is available on Github.](https://github.com/walln/scratch)
 
-I am always adding new models and methods as I find notable papers or need to implement them myself to fully grok the implementation details. If you want to suggest something for my roadmap, please open an issue on [GitHub](https://github.com/walln/scratch/issues).
+I am always adding new models and methods as I find notable papers or need to implement them myself to fully grok the implementation details. 
+If you want to suggest something for my roadmap, please open an issue on [GitHub](https://github.com/walln/scratch/issues).
 
 ## Update: July 2024
 
-I have fully migrated the entire project to being written in JAX. Flax's new `NNX` API seems really promising and I am excited to see how it will evolve. I have no problem being an early adopter and I personally think this is the correct direction for ML research and development. NNX is a very powerful API as it has a 2 part solution. Using a graph with reference semantics to enable intuitive Module Graph operations such as weight tying, model surgery, and more while still preserving the utility of PyTrees as the core data structure gets the best of both worlds.
+I have fully migrated the entire project to being written in JAX. Flax's new `NNX` API seems really promising and I 
+am excited to see how it will evolve. I have no problem being an early adopter and I personally think this is the correct direction 
+for ML research and development. NNX is a very powerful API as it has a 2 part solution. 
+Using a graph with reference semantics to enable intuitive Module Graph operations such as weight tying, 
+model surgery, and more while still preserving the utility of PyTrees as the core data structure gets the best of both worlds.
 
 This simplicity is what sold me to try NNX and dedicate the energy to building a comprehensive set of implementations since no one else has done it yet.
 
@@ -67,7 +74,8 @@ This is a really great improvement in the JAX ecosystem. It has so many benefits
 
 ---
 
-I have fully moved over all of the deep learning models to using NNX and have added some new models as well. Additionally, I have moved the more tradtional ML methods over to using JAX as well.
+I have fully moved over all of the deep learning models to using NNX and have added some new models as well. 
+Additionally, I have moved the more tradtional ML methods over to using JAX as well.
 
 
 ## Currently Implemented
@@ -77,11 +85,14 @@ The following methodologies are currently implemented in the `main` branch:
 
 ### Deep Learning
 
-I have developed annotated implementations of many popular deep learning models as outlined in their respective papers. The models are optimized for readability and ease of understanding. This is not to suggest that they are not performant, but rather I choose to spell out the details of the implementation for clarity.
+I have developed annotated implementations of many popular deep learning models as outlined in their respective papers. 
+The models are optimized for readability and ease of understanding. 
+This is not to suggest that they are not performant, but rather I choose to spell out the details of the implementation for clarity.
 
 Beyond just models, there are many common deep learning components that are implemented as well such as common layers for composability such as:
 
-- MultiQueryAttention as proposed in [Fast Transformer Decoding: One Write-Head is All You Need.](https://arxiv.org/abs/1911.02150) This is one of my favorites, Noam Shazeer's strikes again, just look how simple this is: <Latex formula="
+- MultiQueryAttention as proposed in [Fast Transformer Decoding: One Write-Head is All You Need.](https://arxiv.org/abs/1911.02150) 
+This is one of my favorites, Noam Shazeer's strikes again, just look how simple this is: <Latex formula="
 \text{Q} = \text{einsum}('bnd,hdk \rightarrow bhnk', X, P_q) \\
 \text{K} = \text{einsum}('bmd,dk \rightarrow bmk', M, P_k) \\
 \text{V} = \text{einsum}('bmd,dv \rightarrow bmv', M, P_v) \\
@@ -96,23 +107,64 @@ Beyond just models, there are many common deep learning components that are impl
 
 With new layers being added constantly such as GNN elements, advancements in MoE routing, and more.
 
-I also have an interest in new optimization techniques such as schedule-free optimizers and distributed aware training such as DistributedShampoo as outlined in [Scalable Scond Order Optimization for Deep Learning](https://arxiv.org/pdf/2002.09018). Examples such as theese are on my roadmap.
+I also have an interest in new optimization techniques such as schedule-free optimizers and distributed aware training such as 
+DistributedShampoo as outlined in [Scalable Scond Order Optimization for Deep Learning](https://arxiv.org/pdf/2002.09018). 
+Examples such as theese are on my roadmap.
 
 ### Language Modeling
 
-I have implemented a number of language modeling models that are used in industry and have been used to train state-of-the-art models. This includes models used in a variety of different applications such as text generation, classification, and summarization. I intend to add new models and reimplement them. I plan to add GPT-2, GPT-Neo, LLaMA, Mistral/Mixtral, and a few others that have become so incredibly popular. Additionally, I will be adding a few less popular models that had papers I really found interesting and of high quality such as MPT, T5, Mixture of Depths, and more. Gemma 2 seems like an interesting project as well because I really liked Gemma 1, it performed well, but I have found the exisiting fine tuning code for v2 to be really underwhelming in its results.
+I have implemented a number of language modeling models that are used in industry and have been used to train state-of-the-art models. 
+This includes models used in a variety of different applications such as text generation, classification, and summarization. 
+I intend to add new models and reimplement them. I plan to add GPT-2, GPT-Neo, LLaMA, Mistral/Mixtral, 
+and a few others that have become so incredibly popular. Additionally, I will be adding a few less popular models that had papers 
+I really found interesting and of high quality such as MPT, T5, Mixture of Depths, and more. Gemma 2 seems like an 
+interesting project as well because I really liked Gemma 1, it performed well, but I have found the exisiting fine tuning code for v2 
+to be really underwhelming in its results.
+
+#### Llama 
+
+The Llama series of models have become ubiquitous as they are simple to implement, have incredible performance, and are very easy to fine tune. 
+I believe that the choice to not deviate from standard transformer components of the 2022-2024 era 
+(RMS pre-norm, Grouped Query Attention, and so on) are the key to their success. 
+Scratch contains implementations of Llama 2 and Llama 3, as the only difference between Llama 1 and 2 is data.
+
+LLama has been the foundation of so much research as well as engineering developments. This is most notable in the movement towards
+local LLMs with projects like llama.cpp ollama, and so much more. Going forward, I intend to use the llama models as a baseline implementation
+for a feature to convert HuggingFace Safetensors checkpoints into orbax weights to enable using pretrained checkpoints with all of the models
+in the scratch repository.
 
 #### BERT
 
-I have implemented [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805) because it is so ubiquitous as one of the original papers implementing the Transformer architecture for language modeling. BERT is really interesting because its popularity arose not from generative CLM objectives, but for its performance on a variety of different tasks such as question answering, sentiment analysis, and summarization. To honor the original glory of BERT, my implementation comes in several flavors: `BertForSequenceClassification`, `BertForTokenClassification`, `BertForQuestionAnswering`.
+I have implemented [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805) 
+because it is so ubiquitous as one of the original papers implementing the Transformer architecture for language modeling. 
+BERT is really interesting because its popularity arose not from generative CLM objectives, 
+but for its performance on a variety of different tasks such as question answering, sentiment analysis, and summarization. 
+To honor the original glory of BERT, my implementation comes in several flavors: 
+`BertForSequenceClassification`, `BertForTokenClassification`, `BertForQuestionAnswering`.
 
 #### OLMo
 
-[OLMo: Accelerating the Science of Language Models](https://arxiv.org/abs/2402.00838) is a paper that I thought was really underappreciated. The work the team primarily out of Allen Institute for Artificial Intelligence (AI2) and the University of Washington did is honestly groundbreaking. It is so rare for the entire stack for generative language models to be open sourced and well documented. So many things go wrong, and require expert knowledge that is not even documented anwhere other than the discussions between practitioners. OLMo is a great example of how the community can come together to build a better future for generative language models. Even though the model is not SOTA, it is still really impressive and has lots of interesting notes about training a large scale model. Many of the issues they face are not really relevenat on the JAX stack that I implemented but forcing me to consider them and highlight the JAX way of doing things is definitely a useful exercise.
+[OLMo: Accelerating the Science of Language Models](https://arxiv.org/abs/2402.00838) is a paper that I thought was really underappreciated. 
+The work the team primarily out of Allen Institute for Artificial Intelligence (AI2) and the University of Washington did is honestly groundbreaking. 
+It is so rare for the entire stack for generative language models to be open sourced and well documented. 
+So many things go wrong, and require expert knowledge that is not even documented anwhere other than the discussions between practitioners. 
+OLMo is a great example of how the community can come together to build a better future for generative language models. 
+Even though the model is not SOTA, it is still really impressive and has lots of interesting notes about training a large scale model. 
+Many of the issues they face are not really relevenat on the JAX stack that I implemented but forcing me to consider them and highlight the 
+JAX way of doing things is definitely a useful exercise.
 
 #### Mamba 2
 
-When the original Mamba paper was released I was so intrigued. The linear and sub-quadratic attention mechanisms that have been proposed over the last few years have always felt like a band-aid solution to a fundemental problem. I really like the exploration of SSMs and leveraging a hardware-informed design. My only real complaint with the original Mamba paper is that the direction of AI research into transformers has forced hardware designers to double down on Matrix Multiplication. As a result, any architecture needs to just accept the reality of matmuls to maximize the hardware we have. Mamba 2 in [Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality](https://arxiv.org/abs/2405.21060) does this and the theory of the state space duality is utterly fascinating. The details of the paper are fascinating and my implementation is annotated to attempt to make clear how the decomposition of the SSM and the scalar case genaralization with the semiseperable matrix enable redefining the SSM as effectively a linear attention mechanism.
+When the original Mamba paper was released I was so intrigued. The linear and sub-quadratic attention mechanisms 
+that have been proposed over the last few years have always felt like a band-aid solution to a fundemental problem. 
+I really like the exploration of SSMs and leveraging a hardware-informed design. 
+My only real complaint with the original Mamba paper is that the direction of AI research into transformers has forced 
+hardware designers to double down on Matrix Multiplication. 
+As a result, any architecture needs to just accept the reality of matmuls to maximize the hardware we have. 
+Mamba 2 in [Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality](https://arxiv.org/abs/2405.21060) 
+does this and the theory of the state space duality is utterly fascinating. 
+The details of the paper are fascinating and my implementation is annotated to attempt to make clear how the decomposition of the SSM 
+and the scalar case genaralization with the semiseperable matrix enable redefining the SSM as effectively a linear attention mechanism.
 
 The details in the paper and the write up by the authors are must reads in my opinion.
 
@@ -139,36 +191,54 @@ The progression that they define then reveals a dual form that is similar to com
 M = L \circ C B^T \in \mathbb{R}^{(\text{T}, \tau)}
 "/>
 
-This blew my mind when it first clicked. If you have not read any of the work from [Tri Dao](https://x.com/tri_dao?lang=en) and [Albert Gu](https://x.com/_albertgu?lang=en) I would recommend you do so. Their work is so fascinating and reveals how much the way we think about sequence tasks can be rediscovered from first principles.
+This blew my mind when it first clicked. If you have not read any of the work from [Tri Dao](https://x.com/tri_dao?lang=en) 
+and [Albert Gu](https://x.com/_albertgu?lang=en) I would recommend you do so. 
+Their work is so fascinating and reveals how much the way we think about sequence tasks can be rediscovered from first principles.
 
 
 
 ### Vision Models
 
-Currently the vision models are exclusively focused on image recognition. I have implemented a number of vision models that are used in the industry and have been used to train state-of-the-art models. I intend to extend this section to include more vision objectives, architecture, and techniques. Focusing on a simpler objective enabled me to really standardize a set of primitives that would be useful for other models such as my dataset interface, the trainer design, and the development feedback loop.
+Currently the vision models are exclusively focused on image recognition. 
+I have implemented a number of vision models that are used in the industry and have been used to train state-of-the-art models. 
+I intend to extend this section to include more vision objectives, architecture, and techniques. 
+Focusing on a simpler objective enabled me to really standardize a set of primitives that would be useful for other 
+models such as my dataset interface, the trainer design, and the development feedback loop.
 
 #### ResNet 1.5
 
-I have implemented [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) with certain adjustments that have become popular in the industry. ResNet 1.5 is a very popular architecture that has been used across many different fields, and is a reference architecture for much emerging research. The ResNet architecture really spearheaded the use of residual connections in deep models.
+I have implemented [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) with certain adjustments that have become
+popular in the industry. ResNet 1.5 is a very popular architecture that has been used across many different fields, 
+and is a reference architecture for much emerging research. 
+The ResNet architecture really spearheaded the use of residual connections in deep models.
 
 #### Vision Transformer
 
-I have implemented [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/abs/2010.11929). The Vision Transformer pioneered the use of Transformers outside of NLP and has been a very popular architecture in the deep learning community. The main contribution of the Vision Transformer is the use of spatial patches to capture information from the input image.
+I have implemented [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/abs/2010.11929). 
+The Vision Transformer pioneered the use of Transformers outside of NLP and has been a very popular architecture in the deep learning community.
+The main contribution of the Vision Transformer is the use of spatial patches to capture information from the input image.
 
 #### Swin Transformer
 
-I have implemented [Swin Transformer: Hierarchical Vision Transformer using Shifted Windows](https://arxiv.org/abs/2103.14030) with a focus on the Swin Transformer V2 architecture. The Swin Transformer is a very ineresting evolution of Vision Transformers as it implements a new attention mechanism that leverages the spatial information of the input image with a shifting window. The shifting window allows the model to focus on different parts of the image at different scales.
+I have implemented [Swin Transformer: Hierarchical Vision Transformer using Shifted Windows](https://arxiv.org/abs/2103.14030) 
+with a focus on the Swin Transformer V2 architecture. 
+The Swin Transformer is a very ineresting evolution of Vision Transformers as it implements a new attention mechanism that leverages
+the spatial information of the input image with a shifting window. The shifting window allows the model to focus on different parts
+of the image at different scales.
 
 #### Convolutional Neural Network
 
-For completness and the ability to compare against other models, I have implemented a simple CNN using modern techniques aligned with the original description in [Gradient-based learning applied to document recognition](https://ieeexplore.ieee.org/document/726791).
+For completness and the ability to compare against other models, I have implemented a simple CNN using modern techniques 
+aligned with the original description in [Gradient-based learning applied to document recognition](https://ieeexplore.ieee.org/document/726791).
 
 ### Classical Machine Learning Methods
 
 #### Regression Methods
 
-Linear Regression is one of the most well understood methods of statistical learning. I have implemented a number of regression methods in a way that is so natural to JAX. 
-The Linear Regression implementation <LatexInLine formula="\hat{y} = \mathbf{w}^T \mathbf{x} + b" /> with L1 and L2 regularizations in the Lasso and Ridge cases
+Linear Regression is one of the most well understood methods of statistical learning. 
+I have implemented a number of regression methods in a way that is so natural to JAX. 
+The Linear Regression implementation <LatexInLine formula="\hat{y} = \mathbf{w}^T \mathbf{x} + b" /> 
+with L1 and L2 regularizations in the Lasso and Ridge cases
  
 <Latex formula="
 \mathcal{L}(\mathbf{w}, b) = \frac{1}{2n} \sum_{i=1}^{n} (\hat{y}_i - y_i)^2 + \lambda \|\mathbf{w}\|_1
@@ -178,7 +248,8 @@ The Linear Regression implementation <LatexInLine formula="\hat{y} = \mathbf{w}^
 \mathcal{L}(\mathbf{w}, b) = \frac{1}{2n} \sum_{i=1}^{n} (\hat{y}_i - y_i)^2 + \frac{\lambda}{2} \|\mathbf{w}\|_2^2
 "/>
 
-as well as ElasticNet demonstrate a highly composable API that is easy to reason about and easy to extend. The implementation is annotated with notes that explain the math and the implementation details.
+as well as ElasticNet demonstrate a highly composable API that is easy to reason about and easy to extend. 
+The implementation is annotated with notes that explain the math and the implementation details.
 
 <Latex formula="
 \mathcal{L}(\mathbf{w}, b) = \frac{1}{2n} \sum_{i=1}^{n} (\hat{y}_i - y_i)^2 + \lambda_1 \|\mathbf{w}\|_1 + \frac{\lambda_2}{2} \|\mathbf{w}\|_2^2
@@ -194,8 +265,12 @@ to enable classification use cases.
 
 #### K-Nearest Neighbors
 
-K Nearest Neighbors is a simple and intuitive method of regression. As outlined in [Nearest Neighbor pattern classification](https://ieeexplore.ieee.org/document/1053964), KNNs use the training data distribution as a clustering approximation.
-The KNN algorithm is non-parametric and lazy, meaning it makes no assumptions about the underlying data distribution and does not learn a discriminative function from the training data. Instead, it stores all the training data and performs computation only during the prediction phase.
+K Nearest Neighbors is a simple and intuitive method of regression. 
+As outlined in [Nearest Neighbor pattern classification](https://ieeexplore.ieee.org/document/1053964), 
+KNNs use the training data distribution as a clustering approximation.
+The KNN algorithm is non-parametric and lazy, meaning it makes no assumptions about the underlying data 
+distribution and does not learn a discriminative function from the training data. 
+Instead, it stores all the training data and performs computation only during the prediction phase.
 
 <Latex formula="\hat{y}_q = 
 \begin{cases} 
@@ -205,15 +280,20 @@ The KNN algorithm is non-parametric and lazy, meaning it makes no assumptions ab
 
 #### Support Vector Machines (SVMs)
 
-Support Vector Machines (SVMs) are supervised learning models used for classification and regression tasks. Introduced in the paper [Support-vector networks](https://link.springer.com/article/10.1007/BF00994018) by Cortes and Vapnik, SVMs aim to find the optimal hyperplane that maximizes the margin between different classes in the feature space.
+Support Vector Machines (SVMs) are supervised learning models used for classification and regression tasks. 
+Introduced in the paper [Support-vector networks](https://link.springer.com/article/10.1007/BF00994018) by Cortes and Vapnik, 
+SVMs aim to find the optimal hyperplane that maximizes the margin between different classes in the feature space.
 
-SVMs work by transforming the input data into a higher-dimensional space using a kernel function and then finding the hyperplane that best separates the classes in this space. The points that lie closest to the decision boundary are called support vectors, and they play a crucial role in defining the hyperplane.
+SVMs work by transforming the input data into a higher-dimensional space using a kernel function and then finding the hyperplane 
+that best separates the classes in this space. The points that lie closest to the decision boundary are called support vectors, 
+and they play a crucial role in defining the hyperplane.
 
 For classification, the decision function for SVMs can be defined as:
 
 <Latex formula="f(\mathbf{x}) = \text{sign}(\mathbf{w}^T \mathbf{x} + b)"/>
 
-For regression, SVMs use a method called Support Vector Regression (SVR), which aims to fit the error within a certain threshold. The decision function for SVR is:
+For regression, SVMs use a method called Support Vector Regression (SVR), which aims to fit the error within a certain threshold. 
+The decision function for SVR is:
 
 <Latex formula="f(\mathbf{x}) = \sum_{i=1}^{n} (\alpha_i - \alpha_i^*) K(\mathbf{x}_i, \mathbf{x}) + b"/>
 
@@ -223,4 +303,6 @@ where:
 - <LatexInLine formula="K(\mathbf{x}_i, \mathbf{x})"/> is the kernel function
 - <LatexInLine formula="b"/> is the bias term
 
-SVMs are powerful models that are particularly effective in high-dimensional spaces and are known for their robustness against overfitting, especially in cases where the number of dimensions exceeds the number of samples.
+SVMs are powerful models that are particularly effective in high-dimensional spaces and are known for their robustness against overfitting,
+especially in cases where the number of dimensions exceeds the number of samples.
+
