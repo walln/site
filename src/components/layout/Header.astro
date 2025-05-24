@@ -1,7 +1,8 @@
 ---
+import Pagefind from "@/components/Pagefind.astro";
 import { menuLinks } from "@/site.config";
 
-import Search from "@/components/Search.astro";
+// import Search from "@/components/Search.astro";
 
 const url = new URL(Astro.request.url);
 ---
@@ -45,9 +46,10 @@ const url = new URL(Astro.request.url);
 				}
 			</nav>
 		</div>
-		<div class="flex items-center gap-2">
+		<!-- <div class="flex items-center gap-2">
 			<Search />
-		</div>
+		</div> -->
+		<Pagefind />
 	</div>
 
 	<!-- Mobile menu toggle -->
