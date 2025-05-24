@@ -1,5 +1,6 @@
 import type React from "react";
 import { motion } from "motion/react";
+import TextScramble from "@/components/motion/TextScramble";
 
 interface Project {
 	slug: string;
@@ -33,14 +34,10 @@ const RecentProjects: React.FC<RecentProjectsProps> = ({
 	return (
 		<section className="section-terminal">
 			<h2 className="section-terminal-title">
-				<motion.span
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ duration: 0.5 }}
-					className="text-accent-green"
-				>
-					$ tail -f /var/log/projects.log
-				</motion.span>
+				<TextScramble
+					text="$ tail -f /var/log/projects.log"
+					scrambleCharsClass="text-gray-500"
+				/>
 			</h2>
 
 			<motion.div
