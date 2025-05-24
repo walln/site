@@ -9,7 +9,7 @@ import Header from "@/components/layout/Header.astro";
 import CommandPalette from "@/components/CommandPalette.astro";
 import { siteConfig } from "@/site.config";
 
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 
 import "@fontsource/geist-mono";
 
@@ -38,7 +38,7 @@ const {
 			ogImage={ogImage}
 			title={title}
 		/>
-		<ViewTransitions />
+		<ClientRouter />
 	</head>
 	<body class={showScanlines ? "scanlines" : ""}>
 		{/* <ThemeProvider /> */}
