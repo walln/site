@@ -102,7 +102,6 @@ const TextScramble: React.FC<TextScrambleProps> = ({
 		};
 	}, [text, delay, setText]);
 
-	// eslint-disable-next-line react/no-danger
 	return (
 		<span
 			className="scramble-container inline-block relative z-30"
