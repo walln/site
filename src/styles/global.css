@@ -3,35 +3,489 @@
 @tailwind utilities;
 
 @layer base {
-	:root,
-	:root[data-theme="light"] {
-		color-scheme: light;
-		--theme-bg: 0deg 0% 98%;
-		--theme-link: 330deg 49% 67%;
-		--theme-text: 203deg 11% 15%;
-		/* --theme-accent: 351deg 66% 48%; */
-		--theme-accent: 252deg 60% 62%;
-		--theme-accent-2: 0deg 0% 7%;
-		--theme-quote: 351deg 66% 48%;
-		/* --theme-quote: 163deg 99% 56%; */
-	}
-
-	:root[data-theme="dark"] {
-		color-scheme: dark;
-		--theme-bg: 210deg 6% 12%;
-		--theme-link: 330deg 49% 67%;
-		--theme-text: 220deg 3% 79%;
-		/* --theme-accent: 159deg 64% 45%; */
-		--theme-accent: 252deg 100% 82%;
-		--theme-accent-2: 0deg 0% 93%;
-		--theme-quote: 102deg 100% 86%;
+	:root {
+		color-scheme: dark; /* Force dark scheme */
+		--theme-bg: #000000; /* Black */
+		--theme-text: #ffffff; /* White */
+		--theme-accent: #39ff14; /* Bright Green */
+		--theme-accent-2: #e0e0e0; /* Light Gray for headings */
+		--theme-link: #39ff14; /* Bright Green for links */
+		--theme-quote: #888888; /* Mid Gray for quotes */
+		--theme-accent-green: #39ff14; /* Bright Green */
+		--theme-accent-yellow: #ffff00; /* Bright Yellow */
+		--theme-accent-red: #ff0000; /* Bright Red */
 	}
 
 	html {
-		@apply scroll-smooth font-mono;
+		@apply scroll-smooth;
+		/* font-mono is already in tailwind.config.ts as default, ensure body has it too */
 	}
 
 	body {
 		@apply mx-auto flex min-h-screen max-w-3xl flex-col bg-bg px-8 pt-16 font-mono text-sm font-normal text-text antialiased;
+		/* Ensure body text color is white and background is black */
+		background-color: var(--theme-bg);
+		color: var(--theme-text);
+		/* Add subtle noise texture */
+		position: relative;
+		overflow-x: hidden;
 	}
+
+	/* CRT monitor effect container */
+	body::before {
+		content: "";
+		@apply fixed inset-0 pointer-events-none;
+		background: radial-gradient(
+			ellipse at center,
+			transparent 0%,
+			rgba(0, 0, 0, 0.6) 100%
+		);
+		z-index: 1;
+	}
+
+	/* Animated background grid pattern */
+	body::after {
+		content: "";
+		@apply fixed inset-0 pointer-events-none;
+		background-image: 
+			linear-gradient(rgba(255, 255, 255, 0.03) 2px, transparent 2px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.03) 2px, transparent 2px),
+			linear-gradient(rgba(57, 255, 20, 0.02) 4px, transparent 4px),
+			linear-gradient(90deg, rgba(57, 255, 20, 0.02) 4px, transparent 4px);
+		background-size: 50px 50px, 50px 50px, 100px 100px, 100px 100px;
+		animation: grid-move 20s linear infinite;
+		opacity: 1;
+		z-index: 2;
+	}
+
+	@keyframes grid-move {
+		0% {
+			transform: translate(0, 0);
+		}
+		100% {
+			transform: translate(50px, 50px);
+		}
+	}
+
+	/* Ensure main content appears above background effects */
+	main, header, footer {
+		position: relative;
+		z-index: 10;
+	}
+}
+
+@layer components {
+	.section-terminal {
+		@apply border-2 border-double border-quote p-6 relative;
+		/* Dotted background using a radial gradient */
+		background-image: radial-gradient(
+			circle at 1px 1px,
+			var(--theme-quote) 0.5px,
+			transparent 0
+		);
+		background-size: 10px 10px; /* Adjust size of the grid */
+		/* Add subtle glow effect */
+		box-shadow: 
+			inset 0 0 20px rgba(255, 255, 255, 0.02),
+			0 0 20px rgba(0, 0, 0, 0.5);
+		/* Subtle background gradient */
+		background-color: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(1px);
+		/* Ensure proper stacking context */
+		z-index: 0;
+	}
+
+	.section-terminal-title {
+		@apply uppercase absolute -top-3 left-4 px-2;
+		/* Use the main background color to "erase" the border */
+		background-color: var(--theme-bg);
+		/* Ensure it uses the title styling from Tailwind config (text-accent-2) */
+		@apply text-accent-2;
+		/* Add subtle text shadow for depth */
+		text-shadow: 
+			0 1px 2px rgba(0, 0, 0, 0.5),
+			0 0 1px rgba(255, 255, 255, 0.1);
+		/* Fix z-index to ensure title appears above border */
+		z-index: 20;
+		position: relative;
+	}
+
+	/* Status indicator lights */
+	.status-light {
+		@apply inline-block w-2 h-2 rounded-full;
+	}
+
+	.status-light.online {
+		@apply bg-accent-green animate-pulse;
+		box-shadow: 0 0 4px var(--theme-accent-green);
+	}
+
+	.status-light.warning {
+		@apply bg-accent-yellow animate-pulse;
+		box-shadow: 0 0 4px var(--theme-accent-yellow);
+	}
+
+	.status-light.error {
+		@apply bg-accent-red animate-pulse;
+		box-shadow: 0 0 4px var(--theme-accent-red);
+	}
+
+	/* Terminal cursor */
+	.terminal-cursor {
+		@apply inline-block bg-text animate-pulse;
+		animation: blink 1s step-end infinite;
+	}
+
+	/* Progress bars */
+	.progress-bar {
+		@apply relative h-2 bg-black overflow-hidden;
+		border: 1px solid var(--theme-quote);
+	}
+
+	.progress-bar::before {
+		content: "";
+		@apply absolute inset-0;
+		background-image: repeating-linear-gradient(
+			45deg,
+			transparent,
+			transparent 2px,
+			rgba(255, 255, 255, 0.05) 2px,
+			rgba(255, 255, 255, 0.05) 4px
+		);
+	}
+
+	.progress-bar .progress-fill {
+		@apply h-full relative;
+		transition: width 0.3s ease;
+	}
+
+	/* Terminal command styles */
+	.terminal-prompt {
+		@apply text-accent-green;
+	}
+
+	.terminal-prompt::before {
+		content: "$ ";
+		@apply text-quote;
+	}
+
+	/* HUD panel effects */
+	.hud-panel {
+		@apply relative border border-quote p-4;
+		background: linear-gradient(
+			135deg,
+			rgba(57, 255, 20, 0.02) 0%,
+			transparent 40%
+		);
+	}
+
+	.hud-panel::before {
+		content: "";
+		@apply absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent-green to-transparent opacity-50;
+	}
+
+	/* Enhanced scanline effect with flicker */
+	.scanlines::before {
+		content: "";
+		@apply fixed inset-0 pointer-events-none z-50;
+		background: 
+			repeating-linear-gradient(
+				0deg,
+				rgba(0, 0, 0, 0),
+				rgba(0, 0, 0, 0) 1px,
+				rgba(0, 0, 0, 0.03) 1px,
+				rgba(0, 0, 0, 0.03) 2px
+			),
+			repeating-linear-gradient(
+				90deg,
+				rgba(255, 255, 255, 0.02),
+				rgba(255, 255, 255, 0.01) 1px,
+				transparent 2px,
+				transparent 4px
+			);
+		animation: scanlines 8s linear infinite, flicker 0.15s infinite;
+	}
+
+	@keyframes flicker {
+		0% {
+			opacity: 0.97;
+		}
+		10% {
+			opacity: 0.98;
+		}
+		20% {
+			opacity: 0.97;
+		}
+		30% {
+			opacity: 0.99;
+		}
+		40% {
+			opacity: 0.97;
+		}
+		50% {
+			opacity: 0.98;
+		}
+		60% {
+			opacity: 0.97;
+		}
+		70% {
+			opacity: 0.98;
+		}
+		80% {
+			opacity: 0.97;
+		}
+		90% {
+			opacity: 0.99;
+		}
+		100% {
+			opacity: 0.97;
+		}
+	}
+
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes scanlines {
+		0% {
+			transform: translateY(0);
+		}
+		100% {
+			transform: translateY(10px);
+		}
+	}
+
+	/* Data table styles */
+	.data-table {
+		@apply w-full text-xs;
+	}
+
+	.data-table th {
+		@apply text-left uppercase text-quote p-2 border-b border-dashed border-quote;
+	}
+
+	.data-table td {
+		@apply p-2 border-b border-dotted;
+		border-color: var(--theme-quote);
+	}
+
+	/* Terminal button styles */
+	.terminal-btn {
+		@apply px-4 py-2 border border-accent text-accent uppercase text-xs tracking-wider transition-all;
+		background: transparent;
+	}
+
+	.terminal-btn:hover {
+		@apply bg-accent text-bg;
+		box-shadow: 0 0 10px var(--theme-accent-green);
+	}
+
+	/* Enhanced grid overlay with animation */
+	.grid-overlay {
+		@apply fixed inset-0 pointer-events-none z-40;
+		background-image: 
+			linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+		background-size: 20px 20px;
+		animation: grid-fade 4s ease-in-out infinite;
+	}
+
+	@keyframes grid-fade {
+		0%, 100% {
+			opacity: 0.2;
+		}
+		50% {
+			opacity: 0.3;
+		}
+	}
+
+	/* Noise texture overlay */
+	.noise-overlay {
+		@apply fixed inset-0 pointer-events-none z-30;
+		opacity: 0.08;
+		background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="1"/></svg>');
+	}
+
+	/* Matrix-style digital rain effect for special sections */
+	.digital-rain {
+		@apply absolute inset-0 overflow-hidden pointer-events-none;
+		opacity: 0.08;
+	}
+
+	.digital-rain::before {
+		content: "10101010 11001100 01010101 00110011";
+		@apply absolute text-quote text-xs;
+		animation: rain-fall 15s linear infinite;
+		white-space: pre;
+		transform: rotate(90deg);
+		transform-origin: top left;
+	}
+
+	.digital-rain::after {
+		content: "01010101 00110011 10101010 11001100";
+		@apply absolute text-xs;
+		color: var(--theme-quote);
+		opacity: 0.7;
+		animation: rain-fall 20s linear infinite reverse;
+		white-space: pre;
+		transform: rotate(90deg);
+		transform-origin: top left;
+		left: 20px;
+		animation-delay: 5s;
+	}
+
+	@keyframes rain-fall {
+		0% {
+			transform: rotate(90deg) translateX(-100%);
+		}
+		100% {
+			transform: rotate(90deg) translateX(100%);
+		}
+	}
+
+	/* Glitch effect for special emphasis */
+	.glitch {
+		position: relative;
+		animation: glitch 2s infinite;
+	}
+
+	.glitch::before,
+	.glitch::after {
+		content: attr(data-text);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.glitch::before {
+		animation: glitch-1 0.5s infinite;
+		color: var(--theme-accent-green);
+		z-index: -1;
+	}
+
+	.glitch::after {
+		animation: glitch-2 0.5s infinite;
+		color: var(--theme-accent-red);
+		z-index: -2;
+	}
+
+	@keyframes glitch {
+		0%, 100% {
+			transform: translate(0);
+		}
+		20% {
+			transform: translate(-1px, 1px);
+		}
+		40% {
+			transform: translate(-1px, -1px);
+		}
+		60% {
+			transform: translate(1px, 1px);
+		}
+		80% {
+			transform: translate(1px, -1px);
+		}
+	}
+
+	@keyframes glitch-1 {
+		0%, 100% {
+			clip-path: inset(0 0 0 0);
+			transform: translate(0);
+		}
+		20% {
+			clip-path: inset(20% 0 60% 0);
+			transform: translate(-2px);
+		}
+		40% {
+			clip-path: inset(40% 0 40% 0);
+			transform: translate(2px);
+		}
+		60% {
+			clip-path: inset(60% 0 20% 0);
+			transform: translate(-1px);
+		}
+		80% {
+			clip-path: inset(80% 0 0 0);
+			transform: translate(1px);
+		}
+	}
+
+	@keyframes glitch-2 {
+		0%, 100% {
+			clip-path: inset(0 0 0 0);
+			transform: translate(0);
+		}
+		20% {
+			clip-path: inset(0 0 80% 0);
+			transform: translate(1px);
+		}
+		40% {
+			clip-path: inset(20% 0 60% 0);
+			transform: translate(-1px);
+		}
+		60% {
+			clip-path: inset(40% 0 40% 0);
+			transform: translate(2px);
+		}
+		80% {
+			clip-path: inset(60% 0 20% 0);
+			transform: translate(-2px);
+		}
+	}
+
+	/* Loading bar animation */
+	@keyframes slide {
+		0% {
+			transform: translateX(-100%);
+		}
+		100% {
+			transform: translateX(200%);
+		}
+	}
+	
+	.animate-slide {
+		animation: slide 1.5s ease-in-out infinite;
+	}
+
+	.terminal-widget tbody td {
+		@apply p-2 border-b border-dotted;
+		border-color: var(--theme-quote);
+	}
+
+	.code-line-number {
+		@apply absolute text-quote text-xs;
+		left: -2.5rem;
+		width: 2rem;
+		text-align: right;
+		user-select: none;
+	}
+
+	.code-line-highlight {
+		@apply absolute text-quote text-xs;
+		left: -3.5rem;
+		width: 1rem;
+	}
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--theme-bg);
+	border-left: 1px solid var(--theme-quote);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--theme-quote);
+	border-left: 1px solid var(--theme-accent-green);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--theme-accent-green);
 }

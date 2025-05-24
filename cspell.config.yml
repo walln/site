@@ -12,6 +12,7 @@ words:
 # Repo specific words
   - walln
   - menagerie
+  - loadax
   # - resvg
   # - fontsource
   # - vercel
@@ -42,6 +43,9 @@ words:
   - autoencoders
   - interpretability
   - abliterator
+  - dataloading
+  - fsdp
+  - numpy
 # Outcomes Terms
   - functors
 # Programming language terms

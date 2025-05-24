@@ -1,0 +1,224 @@
+---
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`tmux-container ${className || ""}`}>
+    <div class="tmux-panes">
+        <slot />
+    </div>
+
+    <!-- tmux status bar -->
+    <div class="tmux-status-bar">
+        <div class="flex justify-between items-center">
+            <div class="flex gap-4">
+                <span class="tmux-status-item active">[0] main</span>
+                <span class="tmux-status-item">[1] server</span>
+                <span class="tmux-status-item">[2] logs</span>
+            </div>
+            <div class="flex gap-4">
+                <span class="text-quote">"wall@terminal"</span>
+                <span class="text-quote" id="tmux-time"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tmux-container {
+        @apply relative border border-quote bg-black rounded-sm;
+        height: 70vh;
+        min-height: 500px;
+        max-height: 800px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    .tmux-panes {
+        @apply flex-1 flex;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Tablet and smaller */
+    @media (max-width: 1024px) {
+        .tmux-container {
+            height: auto;
+            min-height: 600px;
+            max-height: none;
+        }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .tmux-container {
+            min-height: 500px;
+        }
+
+        .tmux-panes {
+            flex-direction: column;
+        }
+
+        :global(.tmux-pane) {
+            border-right: none !important;
+            border-bottom: 1px solid hsl(var(--theme-quote));
+            min-height: 250px;
+            flex: none !important;
+        }
+
+        :global(.tmux-pane:last-child) {
+            border-bottom: none;
+        }
+
+        :global(.tmux-pane-horizontal) {
+            border-bottom: 1px solid hsl(var(--theme-quote)) !important;
+        }
+
+        :global(.tmux-pane-horizontal:last-child) {
+            border-bottom: none !important;
+        }
+    }
+
+    /* tmux pane styling */
+    :global(.tmux-pane) {
+        @apply relative border-r border-quote overflow-hidden;
+        background-color: #000;
+        transition:
+            flex 0.3s ease-in-out,
+            width 0.3s ease-in-out;
+    }
+
+    :global(.tmux-pane:last-child) {
+        border-right: none;
+    }
+
+    /* Pane title bar */
+    :global(.tmux-pane-title) {
+        @apply bg-black text-quote text-xs px-2 py-1 border-b;
+        font-family: monospace;
+        border-bottom-color: hsl(var(--theme-quote) / 0.3);
+    }
+
+    :global(.tmux-pane-content) {
+        @apply p-4 overflow-y-auto;
+        height: calc(100% - 1.75rem);
+    }
+
+    /* Active pane indicator */
+    :global(.tmux-pane.active) {
+        @apply border-accent-green;
+        border-color: hsl(var(--theme-accent-green) / 0.5);
+    }
+
+    :global(.tmux-pane.active .tmux-pane-title) {
+        @apply text-accent-green;
+        background-color: hsl(var(--theme-accent-green) / 0.05);
+        border-bottom-color: hsl(var(--theme-accent-green) / 0.3);
+    }
+
+    /* Horizontal split */
+    :global(.tmux-pane-horizontal) {
+        @apply border-b border-quote border-r-0;
+    }
+
+    :global(.tmux-pane-horizontal:last-child) {
+        border-bottom: none;
+    }
+
+    /* Status bar */
+    .tmux-status-bar {
+        @apply bg-black text-quote text-xs px-2 py-1 border-t;
+        font-family: monospace;
+        border-top-color: hsl(var(--theme-quote) / 0.3);
+    }
+
+    .tmux-status-item {
+        @apply px-2 py-0.5 text-quote;
+        background-color: hsl(var(--theme-quote) / 0.1);
+    }
+
+    .tmux-status-item.active {
+        @apply text-accent-green;
+        background-color: hsl(var(--theme-accent-green) / 0.1);
+    }
+
+    /* Terminal content styling */
+    :global(.terminal-content) {
+        font-family: "Geist Mono", monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        /* Ensure scrolling works properly */
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--theme-quote) / 0.5) #000;
+    }
+
+    /* Custom scrollbar for terminal content */
+    :global(.terminal-content::-webkit-scrollbar) {
+        width: 6px;
+    }
+
+    :global(.terminal-content::-webkit-scrollbar-track) {
+        background: #000;
+    }
+
+    :global(.terminal-content::-webkit-scrollbar-thumb) {
+        background: hsl(var(--theme-quote) / 0.5);
+        border-radius: 3px;
+    }
+
+    :global(.terminal-content::-webkit-scrollbar-thumb:hover) {
+        background: hsl(var(--theme-quote) / 0.7);
+    }
+
+    :global(.terminal-line) {
+        @apply mb-1;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+</style>
+
+<script>
+    // Update tmux status bar time
+    function updateTmuxTime() {
+        const timeElement = document.getElementById("tmux-time");
+        if (timeElement) {
+            const now = new Date();
+            const time = now.toLocaleTimeString("en-US", {
+                hour12: false,
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+            timeElement.textContent = time;
+        }
+    }
+
+    updateTmuxTime();
+    setInterval(updateTmuxTime, 1000);
+
+    // Handle pane switching (for future interactivity)
+    document.addEventListener("DOMContentLoaded", () => {
+        const panes = document.querySelectorAll(".tmux-pane");
+
+        panes.forEach((pane, index) => {
+            pane.addEventListener("click", () => {
+                // Remove active from all panes
+                panes.forEach((p) => p.classList.remove("active"));
+                // Add active to clicked pane
+                pane.classList.add("active");
+
+                // Update status bar
+                const statusItems =
+                    document.querySelectorAll(".tmux-status-item");
+                statusItems.forEach((item, idx) => {
+                    item.classList.toggle("active", idx === index);
+                });
+            });
+        });
+    });
+</script>

@@ -3,9 +3,10 @@ import type { SiteMeta } from "@/types";
 
 import Head from "@/components/Head.astro";
 import SkipLink from "@/components/SkipLink.astro";
-import ThemeProvider from "@/components/theme/ThemeProvider.astro";
+// import ThemeProvider from "@/components/theme/ThemeProvider.astro";
 import Footer from "@/components/layout/Footer.astro";
 import Header from "@/components/layout/Header.astro";
+import CommandPalette from "@/components/CommandPalette.astro";
 import { siteConfig } from "@/site.config";
 
 import { ViewTransitions } from "astro:transitions";
@@ -14,10 +15,18 @@ import "@fontsource/geist-mono";
 
 interface Props {
 	meta: SiteMeta;
+	showGrid?: boolean;
+	showScanlines?: boolean;
+	showNoise?: boolean;
+	hideChrome?: boolean;
 }
 
 const {
 	meta: { articleDate, description = siteConfig.description, ogImage, title },
+	showGrid = true,
+	showScanlines = true,
+	showNoise = true,
+	hideChrome = false,
 } = Astro.props;
 ---
 
@@ -31,13 +40,67 @@ const {
 		/>
 		<ViewTransitions />
 	</head>
-	<body>
-		<ThemeProvider />
+	<body class={showScanlines ? "scanlines" : ""}>
+		{/* <ThemeProvider /> */}
+		{showGrid && <div class="grid-overlay" />}
+		{showNoise && <div class="noise-overlay" />}
 		<SkipLink />
-		<Header />
-		<main id="main">
-			<slot />
-		</main>
-		<Footer />
+
+		<!-- System Header Bar -->
+		{
+			!hideChrome && (
+				<div class="fixed top-0 left-0 right-0 bg-bg border-b border-quote z-50">
+					<div class="max-w-3xl mx-auto px-8 py-1 flex justify-between items-center text-xs bg-black">
+						<div class="flex gap-4">
+							<span class="text-quote uppercase">
+								System:{" "}
+								<span class="text-accent-green opacity-70">
+									ACTIVE
+								</span>
+							</span>
+							<span class="text-quote">Terminal v1.0.0</span>
+						</div>
+						<div class="flex gap-4">
+							<span class="text-quote" id="system-time" />
+						</div>
+					</div>
+				</div>
+			)
+		}
+
+		{!hideChrome && <Header />}
+		<CommandPalette />
+		<div class="flex-1">
+			<main id="main">
+				<slot />
+			</main>
+		</div>
+		{!hideChrome && <Footer />}
 	</body>
 </html>
+
+<script>
+	// System time display
+	function updateSystemTime() {
+		const timeElement = document.getElementById("system-time");
+		if (timeElement) {
+			const now = new Date();
+			const time = now.toLocaleTimeString("en-US", {
+				hour12: false,
+				hour: "2-digit",
+				minute: "2-digit",
+				second: "2-digit",
+			});
+			const date = now.toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit",
+			});
+			timeElement.textContent = `${date} ${time}`;
+		}
+	}
+
+	// Update time immediately and then every second
+	updateSystemTime();
+	setInterval(updateSystemTime, 1000);
+</script>

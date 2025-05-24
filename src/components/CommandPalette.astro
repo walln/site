@@ -1,0 +1,46 @@
+---
+import CommandPaletteReact from "./CommandPaletteReact";
+
+export interface Props {
+    commands?: Array<{
+        name: string;
+        description: string;
+        shortcut?: string;
+        action?: string;
+        onSelect?: () => void;
+    }>;
+}
+
+const { commands = [] } = Astro.props;
+
+const defaultCommands = [
+    {
+        name: "home",
+        description: "Return to home",
+        shortcut: "ctrl+h",
+        action: "/",
+    },
+    {
+        name: "projects",
+        description: "View all projects",
+        shortcut: "ctrl+p",
+        action: "/projects",
+    },
+    {
+        name: "search",
+        description: "Search content",
+        shortcut: "ctrl+k",
+        action: "#search",
+    },
+    {
+        name: "theme",
+        description: "Toggle theme",
+        shortcut: "ctrl+t",
+        action: "#theme",
+    },
+];
+
+const allCommands = [...defaultCommands, ...commands];
+---
+
+<CommandPaletteReact client:load commands={commands} />

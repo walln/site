@@ -3,32 +3,470 @@ import Socials from "@/components/Socials.astro";
 import ProjectPreview from "@/components/project/ProjectPreview.astro";
 import { getAllProjects, sortMDByDate } from "@/data/project";
 import PageLayout from "@/layouts/BaseLayout.astro";
+import TextScramble from "@/components/motion/TextScramble.astro";
+import ShellBootSequence from "@/components/ShellBootSequence.astro";
+import TmuxLayout from "@/components/TmuxLayout.astro";
 
 const MAX_PROJECTS = 10;
 const allProjects = await getAllProjects();
 const allProjectsByDate = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
+
+// System status data (you can make these dynamic later)
+const systemStatus = {
+	uptime: "42d 16h 23m",
+	lastDeploy: "2024-01-15",
+	activeProjects: allProjects.length,
+	status: "operational",
+};
 ---
 
 <PageLayout meta={{ title: "Home" }}>
-	<section>
-		<h1 class="title mb-6">About me</h1>
-		<p class="mb-4">Building @ Maple</p>
-		<p class="mb-6">
-			Prev: Independent Research, IBM, Southern Methodist University.
-		</p>
-		<p class="mb-4 font-bold text-accent"></p>
-		<Socials />
-	</section>
-	<section aria-label="Recent project list" class="mt-16">
-		<h2 class="title mb-4 text-xl">Recent Projects</h2>
-		<ul class="space-y-4">
-			{
-				allProjectsByDate.map((p) => (
-					<li class="flex flex-col gap-x-2 sm:flex-row">
-						<ProjectPreview project={p} />
-					</li>
-				))
-			}
-		</ul>
-	</section>
+	<!-- Tmux Container (visible from start) -->
+	<div id="tmux-container" class="transition-all duration-500">
+		<TmuxLayout class="mb-8">
+			<!-- Main Pane - Initially full width, contains boot sequence -->
+			<div id="main-pane" class="tmux-pane active flex-[1]">
+				<div class="tmux-pane-title">nwall@cluster-001:~</div>
+				<div
+					id="main-pane-content"
+					class="tmux-pane-content terminal-content"
+				>
+					<!-- Boot sequence runs here -->
+					<ShellBootSequence />
+				</div>
+			</div>
+
+			<!-- Right Side Panes - Initially hidden -->
+			<div
+				id="side-panes"
+				class="flex flex-col flex-1"
+				style="display: none;"
+			>
+				<!-- System Status Pane -->
+				<div
+					id="status-pane"
+					class="tmux-pane tmux-pane-horizontal flex-1"
+					style="opacity: 0;"
+				>
+					<div class="tmux-pane-title">
+						nwall@cluster-001:~/status
+					</div>
+					<div class="tmux-pane-content terminal-content">
+						<div class="text-accent-green mb-2">
+							<span id="systemctl-cmd" style="opacity: 0;"
+								>$ systemctl status</span
+							>
+						</div>
+						<div
+							id="systemctl-output"
+							class="space-y-2 text-xs pl-4"
+							style="opacity: 0;"
+						>
+							<div class="flex justify-between items-center">
+								<span class="text-quote">● nwall.service</span>
+								<span class="flex items-center gap-2">
+									<span
+										class="inline-block w-2 h-2 bg-accent-green rounded-full animate-pulse"
+									></span>
+									<span class="text-accent-green"
+										>active (running)</span
+									>
+								</span>
+							</div>
+							<div class="text-quote pl-4">
+								<div>
+									Active: active (running) since {
+										systemStatus.uptime
+									} ago
+								</div>
+								<div>Main PID: 1337 (node)</div>
+								<div>
+									Tasks: {systemStatus.activeProjects} (limit:
+									512)
+								</div>
+								<div>Memory: 68.0M</div>
+								<div>CPU: 42.0%</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Quick Links Pane -->
+				<div
+					id="links-pane"
+					class="tmux-pane tmux-pane-horizontal flex-1"
+					style="opacity: 0;"
+				>
+					<div class="tmux-pane-title">nwall@cluster-001:~/links</div>
+					<div class="tmux-pane-content terminal-content">
+						<div class="text-accent-green mb-2">
+							<span id="ls-cmd" style="opacity: 0;"
+								>$ ls -la ~/bookmarks/</span
+							>
+						</div>
+						<div
+							id="ls-output"
+							class="space-y-1 text-xs pl-4"
+							style="opacity: 0;"
+						>
+							<div class="text-quote">total 16</div>
+							<div class="text-quote">
+								drwxr-xr-x 4 wall staff 128 Jan 15 10:23 .
+							</div>
+							<div class="text-quote">
+								drwxr-xr-x 8 wall staff 256 Jan 15 10:23 ..
+							</div>
+							<a
+								href="/projects"
+								class="block hover:bg-accent hover:bg-opacity-10 transition-all"
+							>
+								<span class="text-quote">drwxr-xr-x</span>
+								<span class="ml-2">projects/</span>
+							</a>
+							<a
+								href="/tags"
+								class="block hover:bg-accent hover:bg-opacity-10 transition-all"
+							>
+								<span class="text-quote">drwxr-xr-x</span>
+								<span class="ml-2">tags/</span>
+							</a>
+							<div class="mt-2">
+								<Socials />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</TmuxLayout>
+
+		<!-- Recent Projects Grid -->
+		<section class="section-terminal">
+			<h2 class="section-terminal-title">
+				<TextScramble
+					text="$ tail -f /var/log/projects.log"
+					scrambleCharsClass="text-quote"
+					finalTextClass="text-accent-green"
+				/>
+			</h2>
+			<div class="terminal-content font-mono text-sm">
+				<div class="text-accent-green mb-2">
+					$ tree ~/projects/ -L 1 --dirsfirst
+				</div>
+				<div class="text-quote mb-1">~/projects/</div>
+				<div class="space-y-1">
+					{
+						allProjectsByDate.slice(0, 6).map((p, index) => {
+							const isLast =
+								index ===
+								allProjectsByDate.slice(0, 6).length - 1;
+							const treeChar = isLast ? "└──" : "├──";
+							const date = new Date(p.data.publishDate);
+							const dateStr = date.toLocaleDateString("en-US", {
+								year: "numeric",
+								month: "short",
+								day: "2-digit",
+							});
+
+							return (
+								<a
+									href={`/projects/${p.slug}`}
+									class="group hover:bg-accent hover:bg-opacity-10 transition-all px-2 -mx-2 flex"
+								>
+									<span class="text-quote flex-shrink-0">
+										{treeChar}
+									</span>
+									<div class="ml-1 flex-1">
+										<span class="text-accent-2 group-hover:text-accent transition-colors">
+											{p.data.title}/
+										</span>
+										<span class="text-quote text-xs ml-2">
+											[{dateStr}]
+										</span>
+										{p.data.tags &&
+											p.data.tags.length > 0 && (
+												<span class="text-quote text-xs ml-2">
+													{p.data.tags
+														.slice(0, 2)
+														.map((tag) => `#${tag}`)
+														.join(" ")}
+												</span>
+											)}
+									</div>
+								</a>
+							);
+						})
+					}
+					{
+						allProjects.length > 6 && (
+							<div class="text-quote pl-4">
+								└──{" "}
+								<span class="text-xs italic">
+									... and {allProjects.length - 6} more
+								</span>
+							</div>
+						)
+					}
+				</div>
+				<div class="mt-4 text-quote text-xs">
+					{allProjects.length} directories, 0 files
+				</div>
+			</div>
+			<div class="mt-6 text-center">
+				<a
+					href="/projects"
+					class="inline-block px-4 py-2 border border-accent text-accent hover:bg-accent hover:text-accent-2 transition-all text-sm font-mono"
+				>
+					$ cd ~/projects/ →
+				</a>
+			</div>
+		</section>
+	</div>
 </PageLayout>
+
+<script>
+	// Check if tmux has been set up in this session
+	function isTmuxSetupComplete() {
+		return sessionStorage.getItem("tmuxSetupComplete") === "true";
+	}
+
+	function setTmuxSetupComplete() {
+		sessionStorage.setItem("tmuxSetupComplete", "true");
+	}
+
+	// Type text with cursor effect
+	async function typeText(
+		element: HTMLElement,
+		text: string,
+		delay: number = 30,
+	) {
+		element.innerHTML = "";
+		for (let i = 0; i < text.length; i++) {
+			element.innerHTML =
+				text.substring(0, i + 1) +
+				'<span class="terminal-cursor animate-pulse">█</span>';
+			await new Promise((resolve) =>
+				setTimeout(resolve, delay + Math.random() * 20),
+			);
+		}
+		element.innerHTML = text;
+	}
+
+	// Show tmux final state immediately
+	function showTmuxFinalState() {
+		const mainPane = document.getElementById("main-pane");
+		const sidePanes = document.getElementById("side-panes");
+		const mainContent = document.getElementById("main-pane-content");
+
+		if (!mainPane || !sidePanes || !mainContent) return;
+
+		// Show side panes immediately
+		sidePanes.style.display = "flex";
+		mainPane.classList.remove("flex-[1]");
+		mainPane.classList.add("flex-[2]");
+
+		// Show all panes with full opacity
+		const statusPane = document.getElementById("status-pane");
+		if (statusPane) {
+			statusPane.style.opacity = "1";
+		}
+
+		const linksPane = document.getElementById("links-pane");
+		if (linksPane) {
+			linksPane.style.opacity = "1";
+		}
+
+		// Show all commands immediately
+		const systemctlCmd = document.getElementById("systemctl-cmd");
+		if (systemctlCmd) {
+			systemctlCmd.style.opacity = "1";
+			systemctlCmd.textContent = "$ systemctl status";
+		}
+
+		const systemctlOutput = document.getElementById("systemctl-output");
+		if (systemctlOutput) {
+			systemctlOutput.style.opacity = "1";
+		}
+
+		const lsCmd = document.getElementById("ls-cmd");
+		if (lsCmd) {
+			lsCmd.style.opacity = "1";
+			lsCmd.textContent = "$ ls -la ~/bookmarks/";
+		}
+
+		const lsOutput = document.getElementById("ls-output");
+		if (lsOutput) {
+			lsOutput.style.opacity = "1";
+		}
+
+		// Add tmux commands to main pane if they don't exist
+		const existingTmuxCmds =
+			mainContent.querySelectorAll(".text-accent-green");
+		const hasTmuxCommands = Array.from(existingTmuxCmds).some((el) =>
+			el.textContent?.includes("tmux split-window"),
+		);
+
+		if (!hasTmuxCommands) {
+			const tmuxCmd1 = document.createElement("div");
+			tmuxCmd1.className = "text-accent-green mt-4";
+			tmuxCmd1.textContent = "$ tmux split-window -h -p 35";
+			mainContent.appendChild(tmuxCmd1);
+
+			const tmuxCmd2 = document.createElement("div");
+			tmuxCmd2.className = "text-accent-green mt-2";
+			tmuxCmd2.textContent = "$ tmux split-window -v";
+			mainContent.appendChild(tmuxCmd2);
+		}
+
+		// Check if final prompt already exists
+		const existingFinalPrompt = Array.from(
+			mainContent.querySelectorAll(".text-accent-green"),
+		).find(
+			(el) =>
+				el.innerHTML.includes("terminal-cursor") &&
+				!el.textContent?.includes("tmux"),
+		);
+
+		if (!existingFinalPrompt) {
+			const finalPrompt = document.createElement("div");
+			finalPrompt.className = "text-accent-green mt-4";
+			finalPrompt.innerHTML =
+				'$ <span class="terminal-cursor animate-pulse">█</span>';
+			mainContent.appendChild(finalPrompt);
+		}
+
+		setTmuxSetupComplete();
+	}
+
+	// Listen for boot complete event
+	window.addEventListener("bootComplete", async () => {
+		// If tmux is already set up, show final state immediately
+		if (isTmuxSetupComplete()) {
+			showTmuxFinalState();
+			return;
+		}
+
+		const mainPane = document.getElementById("main-pane");
+		const sidePanes = document.getElementById("side-panes");
+		const mainContent = document.getElementById("main-pane-content");
+
+		if (!mainPane || !sidePanes || !mainContent) return;
+
+		// Wait a bit before starting tmux commands
+		await new Promise((resolve) => setTimeout(resolve, 800));
+
+		// Check if cursor already exists before adding
+		let cursor = mainContent.querySelector(
+			".terminal-cursor",
+		) as HTMLElement | null;
+		if (!cursor) {
+			// Add cursor to main pane
+			cursor = document.createElement("span");
+			cursor.className = "terminal-cursor animate-pulse";
+			cursor.textContent = "█";
+			mainContent.appendChild(cursor);
+		}
+
+		// Type tmux split command
+		const tmuxCmd1 = document.createElement("div");
+		tmuxCmd1.className = "text-accent-green mt-4";
+		mainContent.insertBefore(tmuxCmd1, cursor);
+		await typeText(tmuxCmd1, "$ tmux split-window -h -p 35");
+
+		// Wait and simulate split
+		await new Promise((resolve) => setTimeout(resolve, 500));
+
+		// Show side panes container and animate main pane width
+		sidePanes.style.display = "flex";
+		mainPane.classList.remove("flex-[1]");
+		mainPane.classList.add("flex-[2]");
+
+		// Fade in status pane
+		const statusPane = document.getElementById("status-pane");
+		if (statusPane) {
+			statusPane.style.transition = "opacity 0.3s ease-in";
+			statusPane.style.opacity = "1";
+		}
+
+		// Wait a bit
+		await new Promise((resolve) => setTimeout(resolve, 300));
+
+		// Type systemctl command in status pane
+		const systemctlCmd = document.getElementById("systemctl-cmd");
+		if (systemctlCmd) {
+			systemctlCmd.style.opacity = "1";
+			await typeText(systemctlCmd, "$ systemctl status");
+		}
+
+		// Show systemctl output
+		await new Promise((resolve) => setTimeout(resolve, 300));
+		const systemctlOutput = document.getElementById("systemctl-output");
+		if (systemctlOutput) {
+			systemctlOutput.style.transition = "opacity 0.5s ease-in";
+			systemctlOutput.style.opacity = "1";
+		}
+
+		// Type second tmux split command in main pane
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		const tmuxCmd2 = document.createElement("div");
+		tmuxCmd2.className = "text-accent-green mt-2";
+		mainContent.insertBefore(tmuxCmd2, cursor);
+		await typeText(tmuxCmd2, "$ tmux split-window -v");
+
+		// Wait and show links pane
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		const linksPane = document.getElementById("links-pane");
+		if (linksPane) {
+			linksPane.style.transition = "opacity 0.3s ease-in";
+			linksPane.style.opacity = "1";
+		}
+
+		// Type ls command in links pane
+		await new Promise((resolve) => setTimeout(resolve, 300));
+		const lsCmd = document.getElementById("ls-cmd");
+		if (lsCmd) {
+			lsCmd.style.opacity = "1";
+			await typeText(lsCmd, "$ ls -la ~/bookmarks/");
+		}
+
+		// Show ls output
+		await new Promise((resolve) => setTimeout(resolve, 300));
+		const lsOutput = document.getElementById("ls-output");
+		if (lsOutput) {
+			lsOutput.style.transition = "opacity 0.5s ease-in";
+			lsOutput.style.opacity = "1";
+		}
+
+		// Final command in main pane
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		const finalPrompt = document.createElement("div");
+		finalPrompt.className = "text-accent-green mt-4";
+		finalPrompt.innerHTML =
+			'$ <span class="terminal-cursor animate-pulse">█</span>';
+		mainContent.appendChild(finalPrompt);
+
+		// Remove the temporary cursor
+		if (cursor && cursor.parentNode === mainContent) {
+			cursor.remove();
+		}
+
+		// Mark tmux setup as complete
+		setTmuxSetupComplete();
+	});
+
+	// Handle view transitions - restore tmux state if needed
+	document.addEventListener("astro:after-swap", () => {
+		// Check if we're on the homepage
+		if (
+			window.location.pathname === "/" ||
+			window.location.pathname === ""
+		) {
+			// If tmux was previously set up, restore its state
+			if (isTmuxSetupComplete()) {
+				// Small delay to ensure DOM is ready
+				setTimeout(() => {
+					showTmuxFinalState();
+				}, 100);
+			}
+		}
+	});
+</script>

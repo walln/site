@@ -1,0 +1,48 @@
+---
+export interface Props {
+    title: string;
+    variant?: "default" | "success" | "warning" | "error";
+    showStatusLight?: boolean;
+    animate?: boolean;
+}
+
+const {
+    title,
+    variant = "default",
+    showStatusLight = false,
+    animate = false,
+} = Astro.props;
+
+const variantClasses = {
+    default: "border-quote",
+    success: "border-accent-green",
+    warning: "border-accent-yellow",
+    error: "border-accent-red",
+};
+
+const lightClasses = {
+    default: "bg-quote",
+    success: "status-light online",
+    warning: "status-light warning",
+    error: "status-light error",
+};
+---
+
+<div
+    class={`section-terminal ${variantClasses[variant]} ${animate ? "animate-pulse" : ""}`}
+>
+    <h3 class="section-terminal-title flex items-center gap-2">
+        {showStatusLight && <span class={lightClasses[variant]} />}
+        <span>{title}</span>
+    </h3>
+    <div class="terminal-widget-content">
+        <slot />
+    </div>
+</div>
+
+<style>
+    .terminal-widget-content {
+        @apply text-sm;
+    }
+</style>
+
