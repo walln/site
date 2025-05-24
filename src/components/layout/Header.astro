@@ -34,7 +34,7 @@ const url = new URL(Astro.request.url);
 								aria-current={
 									url.pathname === link.path ? "page" : false
 								}
-								class={`uppercase tracking-wider transition-colors ${
+								class={`uppercase tracking-wider transition-colors hover:underline ${
 									url.pathname === link.path
 										? "text-accent-green"
 										: "text-quote hover:text-white"
@@ -49,33 +49,32 @@ const url = new URL(Astro.request.url);
 				}
 			</nav>
 		</div>
-		<!-- <div class="flex items-center gap-2">
-			<Search />
-		</div> -->
-		<Pagefind />
-		<!-- Mobile menu toggle -->
-		<button
-			aria-expanded="false"
-			aria-label="Open main menu"
-			class="items-end justify-end sm:hidden"
-			id="toggle-navigation-menu"
-			type="button"
-		>
-			<svg
-				aria-hidden="true"
-				class="h-6 w-6 text-accent"
-				fill="none"
-				focusable="false"
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				viewBox="0 0 24 24"
-				xmlns="http://www.w3.org/2000/svg"
+		<div class="flex items-center gap-2">
+			<Pagefind />
+			<!-- Mobile menu toggle -->
+			<button
+				aria-expanded="false"
+				aria-label="Open main menu"
+				class="sm:hidden p-2 border border-quote text-quote hover:text-accent-green hover:border-accent-green transition-all"
+				id="toggle-navigation-menu"
+				type="button"
 			>
-				<path d="M4 6h16M4 12h16M4 18h16"></path>
-			</svg>
-		</button>
+				<svg
+					aria-hidden="true"
+					class="h-5 w-5"
+					fill="none"
+					focusable="false"
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</button>
+		</div>
 	</div>
 
 	<!-- Mobile navigation -->
