@@ -38,7 +38,7 @@ import Search from "astro-pagefind/components/Search";
                     }}
                 />
                 <div
-                    class="flex justify-between items-center mt-4 pt-4 border-t border-dashed border-quote text-xs font-mono"
+                    class="search-instructions flex justify-between items-center mt-4 pt-4 border-t border-dashed border-quote text-xs font-mono"
                 >
                     <div class="text-quote">
                         <span class="text-accent-green">$</span> Navigate with <kbd
@@ -167,7 +167,7 @@ import Search from "astro-pagefind/components/Search";
         color: hsl(var(--theme-text)) !important;
         font-family: "Geist Mono", monospace !important;
         font-size: 0.875rem !important;
-        padding: 0.75rem 0 0.75rem 5rem !important;
+        padding: 0.75rem 3.5rem 0.75rem 5rem !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         text-transform: uppercase;
@@ -419,6 +419,19 @@ import Search from "astro-pagefind/components/Search";
         51%,
         100% {
             opacity: 0;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #search .pagefind-ui__search-input {
+            padding-left: 1.5rem !important;
+            padding-right: 3rem !important;
+        }
+
+        .search-instructions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem; /* Adds space between stacked items */
         }
     }
 </style>

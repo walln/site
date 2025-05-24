@@ -7,7 +7,10 @@ import { menuLinks } from "@/site.config";
 const url = new URL(Astro.request.url);
 ---
 
-<header class="relative mb-12 mt-20 section-terminal" id="main-header">
+<header
+	class="relative mb-12 mt-20 section-terminal group z-30"
+	id="main-header"
+>
 	<div class="flex items-center justify-between">
 		<div class="flex items-center gap-4">
 			<a
@@ -50,36 +53,35 @@ const url = new URL(Astro.request.url);
 			<Search />
 		</div> -->
 		<Pagefind />
-	</div>
-
-	<!-- Mobile menu toggle -->
-	<button
-		aria-expanded="false"
-		aria-label="Open main menu"
-		class="group absolute right-4 top-4 sm:hidden"
-		id="toggle-navigation-menu"
-		type="button"
-	>
-		<svg
-			aria-hidden="true"
-			class="h-6 w-6 text-accent"
-			fill="none"
-			focusable="false"
-			stroke="currentColor"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			stroke-width="2"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
+		<!-- Mobile menu toggle -->
+		<button
+			aria-expanded="false"
+			aria-label="Open main menu"
+			class="items-end justify-end sm:hidden"
+			id="toggle-navigation-menu"
+			type="button"
 		>
-			<path d="M4 6h16M4 12h16M4 18h16"></path>
-		</svg>
-	</button>
+			<svg
+				aria-hidden="true"
+				class="h-6 w-6 text-accent"
+				fill="none"
+				focusable="false"
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path d="M4 6h16M4 12h16M4 18h16"></path>
+			</svg>
+		</button>
+	</div>
 
 	<!-- Mobile navigation -->
 	<nav
 		aria-label="Mobile menu"
-		class="absolute top-full left-0 right-0 mt-2 hidden bg-bg border border-quote p-4 group-[.menu-open]:block sm:hidden z-50"
+		class="absolute top-full left-0 right-0 mt-2 hidden bg-black border border-quote p-4 group-[.menu-open]:block sm:hidden z-50"
 		id="mobile-navigation-menu"
 	>
 		{
@@ -103,21 +105,70 @@ const url = new URL(Astro.request.url);
 </header>
 
 <script>
-	// Handle mobile menu toggle
-	const toggleButton = document.getElementById("toggle-navigation-menu");
-	const header = document.getElementById("main-header");
+	// Keep a reference to the document click handler so it can be removed.
+	let headerMenuDocumentClickHandler: ((event: MouseEvent) => void) | null =
+		null;
 
-	toggleButton?.addEventListener("click", () => {
-		const isOpen = header?.classList.contains("menu-open");
-		header?.classList.toggle("menu-open");
-		toggleButton.setAttribute("aria-expanded", String(!isOpen));
-	});
+	function setupHeaderMobileMenu() {
+		const toggleButton = document.getElementById(
+			"toggle-navigation-menu",
+		) as HTMLButtonElement | null;
+		const header = document.getElementById(
+			"main-header",
+		) as HTMLElement | null;
+		// We don't strictly need mobileNav for the toggle, but good to ensure it exists for context
+		const mobileNav = document.getElementById(
+			"mobile-navigation-menu",
+		) as HTMLElement | null;
 
-	// Close menu when clicking outside
-	document.addEventListener("click", (e) => {
-		if (!header?.contains(e.target as Node)) {
-			header?.classList.remove("menu-open");
-			toggleButton?.setAttribute("aria-expanded", "false");
+		if (!toggleButton || !header || !mobileNav) {
+			// console.warn("Header mobile menu: key elements not found. Menu may not work as expected.");
+			return;
 		}
-	});
+
+		// Use .onclick for the toggle button to ensure only one handler is active
+		toggleButton.onclick = () => {
+			const isOpen = header.classList.contains("menu-open");
+			header.classList.toggle("menu-open");
+			toggleButton.setAttribute("aria-expanded", String(!isOpen));
+		};
+
+		// Remove the previous document click handler if it exists
+		if (headerMenuDocumentClickHandler) {
+			document.removeEventListener(
+				"click",
+				headerMenuDocumentClickHandler,
+			);
+			headerMenuDocumentClickHandler = null; // Clear the stored handler reference
+		}
+
+		headerMenuDocumentClickHandler = (e: MouseEvent) => {
+			// If the click was on the toggle button itself, let its .onclick handler manage it.
+			// The .onclick has already fired by this point for a click on the button.
+			if (toggleButton.contains(e.target as Node)) {
+				return;
+			}
+
+			// Only proceed if the menu is actually open
+			if (header.classList.contains("menu-open")) {
+				// If the click is outside the main header element (which contains the mobile nav panel),
+				// then close the menu.
+				if (!header.contains(e.target as Node)) {
+					header.classList.remove("menu-open");
+					toggleButton.setAttribute("aria-expanded", "false");
+				}
+			}
+		};
+		document.addEventListener("click", headerMenuDocumentClickHandler);
+	}
+
+	// Initial setup: Ensure DOM is ready
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", setupHeaderMobileMenu);
+	} else {
+		setupHeaderMobileMenu(); // DOM is already loaded
+	}
+
+	// Re-setup after Astro view transitions for client-side navigation
+	document.addEventListener("astro:page-load", setupHeaderMobileMenu);
 </script>
