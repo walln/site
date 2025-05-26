@@ -46,6 +46,9 @@ words:
   - dataloading
   - fsdp
   - numpy
+  - pointwise
+  - injective
+  - relu
 # Outcomes Terms
   - functors
 # Programming language terms
