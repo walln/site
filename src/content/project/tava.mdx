@@ -4,6 +4,8 @@ publishDate: 2025-05-24 CST
 description: Ongoing research on compressing text embeddings without labeled data, using a novel two-stage distillation approach with generative adversarial adapters.
 tags: ["deep-learning", "machine-learning", "research", "python", "llms"]
 ---
+import Latex from "../../components/project/Latex.astro";
+import LatexInLine from "../../components/project/LatexInLine.astro";
 
 ##  About TAVA
 
@@ -97,6 +99,24 @@ TAVA leverages several critical insights:
 
 Embedding models represent textual data within lower-dimensional manifolds. Stage A aligns these manifolds structurally, preserving local and global geometry. Consequently, the Vec2Vec adapter in Stage B needs only to learn simpler transformations like scaling, rotation, and minor corrections, making a lightweight MLP sufficient.
 
+**Mathematical intuition.**
+
+Let <LatexInLine formula="f_T : \mathcal{X} \to \mathbb{R}^{d_T}" /> be the teacher encoder and <LatexInLine formula="f_S : \mathcal{X} \to \mathbb{R}^{d_S}" /> the student. During Stage A we minimise
+
+<Latex formula="\mathcal{L}(W) = \mathbb{E}_{x \sim \mathcal{D}} \bigl\| f_T(x) - W f_S(x) \bigr\|_2^{2} " />
+
+where <LatexInLine formula="W \in \mathbb{R}^{d_T \times d_S}" /> is an (often implicit) linear projection that aligns the two representation spaces (it is learned directly when using cosine/MSE losses). **We further assume the embeddings are mean-centred; otherwise one can subtract the dataset mean or learn an additional bias term.** The closed-form optimum is the whitened Procrustes solution
+
+<Latex formula="W^{\star} = \Sigma_{TS} \, \Sigma_{SS}^{-1}" />
+
+with cross-covariance <LatexInLine formula="\Sigma_{TS} = \mathbb{E}[f_T(x) f_S(x)^{\top}]" /> and student covariance <LatexInLine formula="\Sigma_{SS} = \mathbb{E}[f_S(x) f_S(x)^{\top}]" />. Thus, after distillation we have approximately
+
+<Latex formula="f_T(x) \; \approx \; W^{\star} \, f_S(x)" />
+
+**In other words, the student manifold is linked to the teacher manifold by an almost-isometric linear map. Angles are preserved and pair-wise distances differ only by a global scale factor.** Locally,
+
+<LatexInLine formula="J_{f_T}(x) \approx W^{\star} \, J_{f_S}(x)" />, *so their tangent spaces are aligned by* <LatexInLine formula="W^{\star}" /> and first-order geometry is preserved. Stage B therefore only needs to model the small, higher-order residuals that remain.
+
 ## Preliminary Experimental Results
 
 Early experiments demonstrate the promising potential of TAVA:
@@ -129,4 +149,4 @@ TAVA opens exciting possibilities for efficient model deployment across various 
 
 Please reach out! I'm keen to provide early access and explore collaboration opportunities.
 
-This research exemplifies the power of integrating knowledge distillation, domain adaptation, and generative modeling, emphasizing that the best innovations often emerge from the novel combination of existing methods.
+This research exemplifies the power of integrating knowledge distillation, domain adaptation, and generative modeling, emphasizing that the best innovations often emerge from the novel combination of existing methods. 
