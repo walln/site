@@ -1,157 +1,157 @@
 [cmdk-overlay] {
-  position: fixed;
-  inset: 0;
-  background-color: hsl(var(--color-bg) / 0.8);
-  backdrop-filter: blur(8px);
-  z-index: 200;
+	position: fixed;
+	inset: 0;
+	background-color: hsl(var(--color-bg) / 0.8);
+	backdrop-filter: blur(8px);
+	z-index: 200;
 }
 
 [cmdk-dialog] {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 560px;
-  padding: 0 1rem;
-  z-index: 201;
+	position: fixed;
+	top: 20%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	max-width: 560px;
+	padding: 0 1rem;
+	z-index: 201;
 }
 
 .command-wrapper {
-  background-color: hsl(var(--color-bg));
-  border: 1px solid hsl(var(--color-border));
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+	background-color: hsl(var(--color-bg));
+	border: 1px solid hsl(var(--color-border));
+	overflow: hidden;
+	box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .command-container {
-  padding: 0;
+	padding: 0;
 }
 
 .command-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid hsl(var(--color-border));
-  color: hsl(var(--color-text));
-  outline: none;
-  padding: 1rem 1.25rem;
-  font-family: inherit;
-  font-size: 1rem;
+	width: 100%;
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid hsl(var(--color-border));
+	color: hsl(var(--color-text));
+	outline: none;
+	padding: 1rem 1.25rem;
+	font-family: inherit;
+	font-size: 1rem;
 }
 
 .command-input::placeholder {
-  color: hsl(var(--color-text-secondary));
+	color: hsl(var(--color-text-secondary));
 }
 
 .command-input:focus {
-  border-bottom-color: hsl(var(--color-accent));
+	border-bottom-color: hsl(var(--color-accent));
 }
 
 .command-list {
-  max-height: 320px;
-  overflow-y: auto;
-  padding: 0.5rem;
+	max-height: 320px;
+	overflow-y: auto;
+	padding: 0.5rem;
 }
 
 .command-empty {
-  padding: 2rem;
-  text-align: center;
-  color: hsl(var(--color-text-secondary));
-  font-size: 0.875rem;
+	padding: 2rem;
+	text-align: center;
+	color: hsl(var(--color-text-secondary));
+	font-size: 0.875rem;
 }
 
 .command-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background-color 150ms ease;
-  background: transparent;
-  width: 100%;
-  text-align: left;
-  outline: none;
-  border: none;
+	padding: 0.75rem 1rem;
+	cursor: pointer;
+	transition: background-color 150ms ease;
+	background: transparent;
+	width: 100%;
+	text-align: left;
+	outline: none;
+	border: none;
 }
 
 .command-item[aria-selected="true"] {
-  background-color: hsl(var(--color-bg-secondary));
+	background-color: hsl(var(--color-bg-secondary));
 }
 
 .command-item:hover {
-  background-color: hsl(var(--color-bg-secondary));
+	background-color: hsl(var(--color-bg-secondary));
 }
 
 .command-item-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .command-name {
-  color: hsl(var(--color-text));
-  font-weight: 500;
-  margin-right: 0.75rem;
+	color: hsl(var(--color-text));
+	font-weight: 500;
+	margin-right: 0.75rem;
 }
 
 .command-description {
-  color: hsl(var(--color-text-secondary));
-  font-size: 0.875rem;
+	color: hsl(var(--color-text-secondary));
+	font-size: 0.875rem;
 }
 
 .command-prefix {
-  display: none;
+	display: none;
 }
 
 .command-shortcut {
-  font-size: 0.75rem;
-  border: 1px solid hsl(var(--color-border));
-  padding: 0.25rem 0.5rem;
-  color: hsl(var(--color-text-secondary));
-  font-family: inherit;
-  background: transparent;
+	font-size: 0.75rem;
+	border: 1px solid hsl(var(--color-border));
+	padding: 0.25rem 0.5rem;
+	color: hsl(var(--color-text-secondary));
+	font-family: inherit;
+	background: transparent;
 }
 
 .command-footer {
-  padding: 0.75rem 1.25rem;
-  border-top: 1px solid hsl(var(--color-border));
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  font-size: 0.75rem;
-  color: hsl(var(--color-text-secondary));
+	padding: 0.75rem 1.25rem;
+	border-top: 1px solid hsl(var(--color-border));
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+	font-size: 0.75rem;
+	color: hsl(var(--color-text-secondary));
 }
 
 .command-footer span {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
 }
 
 .command-footer kbd {
-  display: inline-block;
-  padding: 0.125rem 0.375rem;
-  font-size: 0.7rem;
-  border: 1px solid hsl(var(--color-border));
-  background: hsl(var(--color-bg-secondary));
-  font-family: inherit;
+	display: inline-block;
+	padding: 0.125rem 0.375rem;
+	font-size: 0.7rem;
+	border: 1px solid hsl(var(--color-border));
+	background: hsl(var(--color-bg-secondary));
+	font-family: inherit;
 }
 
 .command-title {
-  display: none;
+	display: none;
 }
 
 /* Scrollbar styling */
 .command-list::-webkit-scrollbar {
-  width: 6px;
+	width: 6px;
 }
 
 .command-list::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 .command-list::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-border));
+	background: hsl(var(--color-border));
 }
 
 .command-list::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--color-text-secondary));
+	background: hsl(var(--color-text-secondary));
 }

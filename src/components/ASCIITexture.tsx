@@ -63,7 +63,7 @@ interface HiddenWord {
 }
 
 export default function ASCIITexture({
-	opacity = 0.15,
+	opacity = 0.1,
 	className = "",
 }: ASCIITextureProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
