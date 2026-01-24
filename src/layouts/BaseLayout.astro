@@ -44,7 +44,7 @@ const {
 		<ClientRouter />
 	</head>
 	<body>
-		{showASCIITexture && <ASCIITexture opacity={asciiOpacity} client:load />}
+		{showASCIITexture && <ASCIITexture opacity={asciiOpacity} client:only="react" />}
 		<SkipLink />
 
 		{!hideChrome && <Header />}

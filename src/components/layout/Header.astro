@@ -1,10 +1,65 @@
 ---
 import Pagefind from "@/components/Pagefind.astro";
 import ThemeToggle from "@/components/ThemeToggle";
+import Socials from "@/components/Socials.astro";
 import { menuLinks } from "@/site.config";
 
 const url = new URL(Astro.request.url);
 ---
+
+<style>
+	/* Mobile menu animations */
+	.mobile-menu-container {
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.mobile-menu-container.open {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	/* Backdrop fade animation */
+	.mobile-menu-backdrop {
+		opacity: 0;
+		transition: opacity 300ms ease-out;
+	}
+
+	.mobile-menu-container.open .mobile-menu-backdrop {
+		opacity: 1;
+	}
+
+	/* Panel slide animation */
+	.mobile-menu-panel {
+		transform: translateX(100%);
+		transition: transform 300ms ease-out;
+	}
+
+	.mobile-menu-container.open .mobile-menu-panel {
+		transform: translateX(0);
+	}
+
+	/* Menu link hover underline effect */
+	.mobile-menu-link {
+		position: relative;
+	}
+
+	.mobile-menu-link::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 1px;
+		width: 0;
+		background-color: var(--color-accent);
+		transition: width 200ms ease-out;
+	}
+
+	.mobile-menu-link:hover::after,
+	.mobile-menu-link[aria-current="page"]::after {
+		width: 100%;
+	}
+</style>
 
 <header class="mb-16 mt-8" id="main-header">
 	<nav class="flex items-center justify-between" aria-label="Main navigation">
@@ -81,58 +136,63 @@ const url = new URL(Astro.request.url);
 			</button>
 		</div>
 	</nav>
+</header>
 
-	<!-- Mobile navigation drawer -->
+<!-- Mobile navigation drawer - OUTSIDE header to escape stacking context -->
+<div
+	id="mobile-navigation-menu"
+	class="mobile-menu-container fixed inset-0 z-[100]"
+	aria-label="Mobile menu"
+>
+	<!-- Backdrop - invisible, just for click-to-close -->
 	<div
-		id="mobile-navigation-menu"
-		class="fixed inset-0 z-50 hidden"
-		aria-label="Mobile menu"
+		class="mobile-menu-backdrop absolute inset-0"
+		id="mobile-menu-backdrop"
 	>
-		<!-- Backdrop -->
-		<div
-			class="absolute inset-0 bg-bg/80 backdrop-blur-sm"
-			id="mobile-menu-backdrop"
-		>
+	</div>
+
+	<!-- Menu panel - fully solid background -->
+	<nav
+		class="mobile-menu-panel absolute right-0 top-0 h-full w-72 bg-bg border-l border-border shadow-2xl flex flex-col"
+	>
+		<!-- Header with close button -->
+		<div class="flex items-center justify-between p-6 border-b border-border">
+			<span class="text-sm font-medium text-text-secondary">Menu</span>
+			<button
+				type="button"
+				id="close-navigation-menu"
+				class="p-2 -mr-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors rounded"
+				aria-label="Close menu"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="w-5 h-5"
+					aria-hidden="true"
+				>
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
 		</div>
 
-		<!-- Menu panel -->
-		<nav
-			class="absolute right-0 top-0 h-full w-64 bg-bg border-l border-border p-6 shadow-lg"
-		>
-			<div class="flex justify-end mb-8">
-				<button
-					type="button"
-					id="close-navigation-menu"
-					class="p-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors"
-					aria-label="Close menu"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="w-5 h-5"
-						aria-hidden="true"
-					>
-						<line x1="18" y1="6" x2="6" y2="18" />
-						<line x1="6" y1="6" x2="18" y2="18" />
-					</svg>
-				</button>
-			</div>
-
-			<div class="flex flex-col gap-4">
+		<!-- Navigation links -->
+		<div class="flex-1 p-6">
+			<div class="flex flex-col gap-2">
 				{
 					menuLinks.map((link) => (
 						<a
 							href={link.path}
-							class={`text-base py-2 transition-colors ${
+							class={`mobile-menu-link text-base py-3 px-2 transition-colors rounded ${
 								url.pathname === link.path ||
 								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "text-text font-medium"
-									: "text-text-secondary hover:text-text"
+									? "text-text font-medium bg-bg-secondary"
+									: "text-text-secondary hover:text-text hover:bg-bg-secondary/50"
 							}`}
 							aria-current={
 								url.pathname === link.path ||
@@ -147,50 +207,87 @@ const url = new URL(Astro.request.url);
 					))
 				}
 			</div>
-		</nav>
-	</div>
-</header>
+		</div>
+
+		<!-- Social links footer -->
+		<div class="p-6 border-t border-border">
+			<p class="text-xs text-text-secondary mb-3">Connect</p>
+			<Socials />
+		</div>
+	</nav>
+</div>
 
 <script>
-	function setupMobileMenu() {
-		const toggleButton = document.getElementById("toggle-navigation-menu");
-		const closeButton = document.getElementById("close-navigation-menu");
-		const mobileMenu = document.getElementById("mobile-navigation-menu");
-		const backdrop = document.getElementById("mobile-menu-backdrop");
+	// Use an IIFE to avoid global pollution and handle setup cleanly
+	(function() {
+		let currentCleanup: (() => void) | null = null;
 
-		if (!toggleButton || !closeButton || !mobileMenu || !backdrop) return;
-
-		const openMenu = () => {
-			mobileMenu.classList.remove("hidden");
-			toggleButton.setAttribute("aria-expanded", "true");
-			document.body.style.overflow = "hidden";
-		};
-
-		const closeMenu = () => {
-			mobileMenu.classList.add("hidden");
-			toggleButton.setAttribute("aria-expanded", "false");
-			document.body.style.overflow = "";
-		};
-
-		toggleButton.addEventListener("click", openMenu);
-		closeButton.addEventListener("click", closeMenu);
-		backdrop.addEventListener("click", closeMenu);
-
-		// Close on Escape key
-		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape" && !mobileMenu.classList.contains("hidden")) {
-				closeMenu();
+		function setupMobileMenu() {
+			// Clean up previous listeners if any
+			if (currentCleanup) {
+				currentCleanup();
 			}
-		});
-	}
 
-	// Initial setup
-	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", setupMobileMenu);
-	} else {
-		setupMobileMenu();
-	}
+			const toggleButton = document.getElementById("toggle-navigation-menu");
+			const closeButton = document.getElementById("close-navigation-menu");
+			const mobileMenu = document.getElementById("mobile-navigation-menu");
+			const backdrop = document.getElementById("mobile-menu-backdrop");
 
-	// Re-setup after Astro view transitions
-	document.addEventListener("astro:page-load", setupMobileMenu);
+			if (!toggleButton || !closeButton || !mobileMenu || !backdrop) return;
+
+			const openMenu = () => {
+				mobileMenu.classList.add("open");
+				toggleButton.setAttribute("aria-expanded", "true");
+				document.body.style.overflow = "hidden";
+				closeButton.focus();
+			};
+
+			const closeMenu = () => {
+				mobileMenu.classList.remove("open");
+				toggleButton.setAttribute("aria-expanded", "false");
+				document.body.style.overflow = "";
+				toggleButton.focus();
+			};
+
+			const handleEscape = (e: KeyboardEvent) => {
+				if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+					closeMenu();
+				}
+			};
+
+			const handleLinkClick = () => closeMenu();
+
+			// Add event listeners
+			toggleButton.addEventListener("click", openMenu);
+			closeButton.addEventListener("click", closeMenu);
+			backdrop.addEventListener("click", closeMenu);
+			document.addEventListener("keydown", handleEscape);
+
+			const menuLinks = mobileMenu.querySelectorAll("a[data-astro-prefetch]");
+			menuLinks.forEach((link) => {
+				link.addEventListener("click", handleLinkClick);
+			});
+
+			// Store cleanup function for next setup
+			currentCleanup = () => {
+				toggleButton.removeEventListener("click", openMenu);
+				closeButton.removeEventListener("click", closeMenu);
+				backdrop.removeEventListener("click", closeMenu);
+				document.removeEventListener("keydown", handleEscape);
+				menuLinks.forEach((link) => {
+					link.removeEventListener("click", handleLinkClick);
+				});
+			};
+		}
+
+		// Initial setup
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", setupMobileMenu);
+		} else {
+			setupMobileMenu();
+		}
+
+		// Re-setup after Astro view transitions
+		document.addEventListener("astro:page-load", setupMobileMenu);
+	})();
 </script>

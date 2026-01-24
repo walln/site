@@ -75,6 +75,12 @@ export default function ASCIITexture({
 	// Grid state: [charIndex, opacity, type]
 	const gridRef = useRef<Float32Array>(new Float32Array(0));
 	const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+	const [isMounted, setIsMounted] = useState(false);
+
+	// Ensure component only renders after client-side mount to avoid hydration issues
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 
 	useEffect(() => {
 		const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -87,6 +93,8 @@ export default function ASCIITexture({
 	}, []);
 
 	useEffect(() => {
+		if (!isMounted) return;
+
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 
@@ -199,15 +207,12 @@ export default function ASCIITexture({
 		const draw = () => {
 			frame++;
 
-			const computedStyle = getComputedStyle(document.documentElement);
-			const textColorRaw = computedStyle
-				.getPropertyValue("--color-text")
-				.trim();
-			const parts = textColorRaw.split(/\s+/).filter(Boolean);
-			const h = parts[0] ? Number.parseFloat(parts[0]) : 0;
-			const s = parts[1] ? Number.parseFloat(parts[1]) : 0;
-			const l = parts[2] ? Number.parseFloat(parts[2]) : 50;
-			const baseColor = `hsl(${h} ${s}% ${l}%)`;
+			const isDarkMode =
+				document.documentElement.getAttribute("data-theme") === "dark";
+
+			// Use a neutral gray - slightly lighter in dark mode for better contrast
+			const l = isDarkMode ? 52 : 50;
+			const baseColor = `hsl(0 0% ${l}%)`;
 
 			ctx.clearRect(0, 0, width, height);
 			ctx.font = `${fontSize}px "Geist Mono", monospace`;
@@ -492,15 +497,12 @@ export default function ASCIITexture({
 			ctx.clearRect(0, 0, width, height);
 			ctx.font = `${fontSize}px "Geist Mono", monospace`;
 			ctx.textAlign = "center";
-			const computedStyle = getComputedStyle(document.documentElement);
-			const textColorRaw = computedStyle
-				.getPropertyValue("--color-text")
-				.trim();
-			const parts = textColorRaw.split(/\s+/).filter(Boolean);
-			const h = parts[0] ? Number.parseFloat(parts[0]) : 0;
-			const s = parts[1] ? Number.parseFloat(parts[1]) : 0;
-			const l = parts[2] ? Number.parseFloat(parts[2]) : 50;
-			ctx.fillStyle = `hsl(${h} ${s}% ${l}%)`;
+			const isDarkMode =
+				document.documentElement.getAttribute("data-theme") === "dark";
+
+			// Use a neutral gray - slightly lighter in dark mode for better contrast
+			const l = isDarkMode ? 52 : 50;
+			ctx.fillStyle = `hsl(0 0% ${l}%)`;
 
 			for (let r = 0; r < rows; r++) {
 				for (let c = 0; c < cols; c++) {
@@ -522,13 +524,16 @@ export default function ASCIITexture({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [prefersReducedMotion, opacity]);
+	}, [prefersReducedMotion, opacity, isMounted]);
+
+	// Don't render canvas until mounted on client to prevent SSR/hydration mismatches
+	if (!isMounted) return null;
 
 	return (
 		<canvas
 			ref={canvasRef}
 			className={`fixed inset-0 pointer-events-none ${className}`}
-			style={{ zIndex: 0 }}
+			style={{ zIndex: 0, width: "100dvw", height: "100dvh" }}
 			tabIndex={-1}
 		/>
 	);
