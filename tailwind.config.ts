@@ -27,7 +27,7 @@ export default {
 				quote: "hsl(var(--color-text-secondary) / <alpha-value>)",
 			},
 			fontFamily: {
-				sans: ["Inter", "system-ui", "sans-serif", ...fontFamily.sans],
+				sans: ["Geist Mono", ...fontFamily.mono],
 				serif: [...fontFamily.serif],
 				mono: ["Geist Mono", ...fontFamily.mono],
 			},
