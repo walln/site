@@ -1,27 +1,107 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/* Dark mode variant - matches data-theme="dark" selector */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Theme configuration - migrated from tailwind.config.ts */
+@theme {
+	/* Font families */
+	--font-sans:
+		"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+	--font-mono:
+		"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+
+	/* Custom colors using CSS variables for light/dark mode */
+	--color-bg: hsl(var(--color-bg-hsl));
+	--color-bg-secondary: hsl(var(--color-bg-secondary-hsl));
+	--color-text: hsl(var(--color-text-hsl));
+	--color-text-secondary: hsl(var(--color-text-secondary-hsl));
+	--color-border: hsl(var(--color-border-hsl));
+	--color-accent: hsl(var(--color-accent-hsl));
+	--color-link: hsl(var(--color-accent-hsl));
+
+	/* Legacy colors */
+	--color-accent-2: hsl(var(--color-text-hsl));
+	--color-accent-green: hsl(var(--color-accent-hsl));
+	--color-accent-yellow: hsl(60 100% 50%);
+	--color-accent-red: hsl(0 100% 50%);
+	--color-quote: hsl(var(--color-text-secondary-hsl));
+
+	/* Transition properties */
+	--transition-property-height: height;
+	--transition-property-colors:
+		color, background-color, border-color, text-decoration-color, fill, stroke;
+
+	/* Default transition duration */
+	--transition-duration-default: 200ms;
+}
+
+/* Custom utilities - migrated from tailwind.config.ts plugin */
+@utility walln-link {
+	@apply underline underline-offset-4 transition-colors;
+	text-decoration-color: hsl(var(--color-border-hsl));
+
+	&:hover {
+		text-decoration-color: hsl(var(--color-accent-hsl));
+	}
+}
+
+@utility title {
+	@apply text-2xl font-semibold;
+	color: hsl(var(--color-text-hsl));
+}
+
+@utility code-block {
+	@apply p-4 font-mono text-sm;
+	border: 1px solid hsl(var(--color-border-hsl));
+	background-color: hsl(var(--color-bg-secondary-hsl));
+}
+
+@utility tag {
+	@apply inline-flex items-center px-2.5 py-0.5 text-xs font-medium transition-colors;
+	border: 1px solid hsl(var(--color-border-hsl));
+	color: hsl(var(--color-text-secondary-hsl));
+
+	&:hover {
+		border-color: hsl(var(--color-accent-hsl));
+		color: hsl(var(--color-text-hsl));
+	}
+}
+
+@utility card {
+	@apply p-6 transition-colors;
+	border: 1px solid hsl(var(--color-border-hsl));
+	background-color: hsl(var(--color-bg-hsl));
+
+	&:hover {
+		border-color: hsl(var(--color-accent-hsl) / 0.5);
+	}
+}
 
 @layer base {
 	/* Light mode (default) */
 	:root {
 		color-scheme: light dark;
-		--color-bg: 0 0% 100%;
-		--color-bg-secondary: 0 0% 98%;
-		--color-text: 0 0% 9%;
-		--color-text-secondary: 0 0% 45%;
-		--color-border: 0 0% 90%;
-		--color-accent: 220 90% 45%;
+		--color-bg-hsl: 0 0% 100%;
+		--color-bg-secondary-hsl: 0 0% 98%;
+		--color-text-hsl: 0 0% 9%;
+		--color-text-secondary-hsl: 0 0% 45%;
+		--color-border-hsl: 0 0% 90%;
+		--color-accent-hsl: 220 90% 45%;
 	}
 
 	/* Dark mode */
 	[data-theme="dark"] {
-		--color-bg: 0 0% 7%;
-		--color-bg-secondary: 0 0% 11%;
-		--color-text: 0 0% 95%;
-		--color-text-secondary: 0 0% 60%;
-		--color-border: 0 0% 20%;
-		--color-accent: 220 90% 56%;
+		--color-bg-hsl: 0 0% 7%;
+		--color-bg-secondary-hsl: 0 0% 11%;
+		--color-text-hsl: 0 0% 95%;
+		--color-text-secondary-hsl: 0 0% 60%;
+		--color-border-hsl: 0 0% 20%;
+		--color-accent-hsl: 220 90% 56%;
 	}
 
 	html {
@@ -29,10 +109,12 @@
 	}
 
 	body {
-		@apply mx-auto flex min-h-screen max-w-3xl flex-col bg-bg px-8 pt-16 text-base font-sans text-text antialiased;
-		background-color: hsl(var(--color-bg));
-		color: hsl(var(--color-text));
-		transition: background-color 200ms ease, color 200ms ease;
+		@apply mx-auto flex min-h-screen max-w-3xl flex-col px-8 pt-16 text-base font-sans antialiased;
+		background-color: hsl(var(--color-bg-hsl));
+		color: hsl(var(--color-text-hsl));
+		transition:
+			background-color 200ms ease,
+			color 200ms ease;
 	}
 
 	/* Ensure main content appears above any background effects */
@@ -60,32 +142,84 @@
 
 	/* Selection */
 	::selection {
-		background-color: hsl(var(--color-accent) / 0.2);
+		background-color: hsl(var(--color-accent-hsl) / 0.2);
 	}
 }
 
-@layer components {
-	/* Code blocks */
-	.code-block {
-		@apply border border-border bg-bg-secondary p-4 font-mono text-sm;
+/* Typography plugin customization */
+@layer base {
+	.prose {
+		--tw-prose-body: hsl(var(--color-text-hsl));
+		--tw-prose-headings: hsl(var(--color-text-hsl));
+		--tw-prose-links: hsl(var(--color-text-hsl));
+		--tw-prose-bold: hsl(var(--color-text-hsl));
+		--tw-prose-bullets: hsl(var(--color-text-hsl));
+		--tw-prose-quotes: hsl(var(--color-text-secondary-hsl));
+		--tw-prose-code: hsl(var(--color-text-hsl));
+		--tw-prose-hr: hsl(var(--color-border-hsl));
+		--tw-prose-th-borders: hsl(var(--color-border-hsl));
 	}
 
-	/* Tags */
-	.tag {
-		@apply inline-flex items-center border border-border px-2.5 py-0.5 text-xs font-medium text-text-secondary transition-colors;
+	.prose a {
+		@apply walln-link;
 	}
 
-	.tag:hover {
-		@apply border-accent text-text;
+	.prose strong {
+		font-weight: 700;
 	}
 
-	/* Cards */
-	.card {
-		@apply border border-border bg-bg p-6 transition-colors;
+	.prose code {
+		border: 1px solid hsl(var(--color-border-hsl));
+		padding: 0.125rem 0.25rem;
 	}
 
-	.card:hover {
-		@apply border-accent/50;
+	.prose blockquote {
+		border-left-width: 2px;
+		border-left-color: hsl(var(--color-border-hsl));
+	}
+
+	.prose hr {
+		border-top-style: solid;
+		border-color: hsl(var(--color-border-hsl));
+	}
+
+	.prose thead {
+		border-bottom-width: 0;
+	}
+
+	.prose thead th {
+		font-weight: 600;
+		border-bottom: 1px solid hsl(var(--color-border-hsl));
+	}
+
+	.prose tbody tr {
+		border-bottom-width: 0;
+	}
+
+	.prose tfoot {
+		border-top: 1px solid hsl(var(--color-border-hsl));
+	}
+
+	.prose sup {
+		@apply ms-0.5;
+	}
+
+	.prose sup a {
+		background: none;
+	}
+
+	.prose sup a:hover {
+		color: hsl(var(--color-accent-hsl));
+		text-decoration: none;
+		background: none;
+	}
+
+	.prose sup a::before {
+		content: "[";
+	}
+
+	.prose sup a::after {
+		content: "]";
 	}
 }
 
@@ -96,20 +230,22 @@
 }
 
 ::-webkit-scrollbar-track {
-	background: hsl(var(--color-bg-secondary));
+	background: hsl(var(--color-bg-secondary-hsl));
 }
 
 ::-webkit-scrollbar-thumb {
-	background: hsl(var(--color-border));
+	background: hsl(var(--color-border-hsl));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: hsl(var(--color-text-secondary));
+	background: hsl(var(--color-text-secondary-hsl));
 }
 
 /* Focus states for accessibility */
 :focus-visible {
-	@apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+	@apply outline-none ring-2 ring-offset-2;
+	--tw-ring-color: hsl(var(--color-accent-hsl));
+	--tw-ring-offset-color: hsl(var(--color-bg-hsl));
 }
 
 /* Reduced motion */

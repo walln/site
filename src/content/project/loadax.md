@@ -2,7 +2,8 @@
 title: Loadax - High-Performance Data Loading for JAX
 publishDate: 2024-10-03 CST
 description: A JAX-native dataloading library with prefetching, multi-worker support, and distributed loading for ML training pipelines.
-tags: ["machine-learning", "jax", "python", "performance", "distributed-computing"]
+tags:
+  ["machine-learning", "jax", "python", "performance", "distributed-computing"]
 ---
 
 ## About Loadax
@@ -63,7 +64,7 @@ import jax.numpy as jnp
 
 # Create mesh for distributed training
 config = make_fsdp_sharding_config(
-    axis_names=("data", "model"), 
+    axis_names=("data", "model"),
     batch_axis_name="data"
 )
 mesh = config.create_device_mesh()
@@ -77,7 +78,7 @@ with mesh:
         # Convert host-local batch to globally sharded array
         # No data movement needed - loadax ensures correct placement
         global_batch = host_to_global_device_array(local_batch)
-        
+
         # Use in your distributed training step
         loss = train_step(model, optimizer, global_batch)
 ```
@@ -113,4 +114,4 @@ You can install Loadax with pip:
 pip install loadax
 ```
 
-Check out the [documentation](https://walln.github.io/loadax/) for more examples and the full API reference. The source code is available on [GitHub](https://github.com/walln/loadax), and contributions are welcome! 
+Check out the [documentation](https://walln.github.io/loadax/) for more examples and the full API reference. The source code is available on [GitHub](https://github.com/walln/loadax), and contributions are welcome!

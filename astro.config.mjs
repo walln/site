@@ -1,7 +1,8 @@
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel";
+import tailwindcss from "@tailwindcss/vite";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import pagefind from "astro-pagefind";
@@ -11,17 +12,15 @@ import remarkUnwrapImages from "remark-unwrap-images";
 import { expressiveCodeOptions } from "./src/site.config";
 import { remarkReadingTime } from "./src/utils/remark-reading-time";
 
-import vercel from "@astrojs/vercel";
-
 // https://astro.build/config
 export default defineConfig({
 	site: "https://walln.dev",
+	vite: {
+		plugins: [tailwindcss()],
+	},
 	integrations: [
 		expressiveCode(expressiveCodeOptions),
 		icon(),
-		tailwind({
-			applyBaseStyles: false,
-		}),
 		react(),
 		sitemap(),
 		mdx(),

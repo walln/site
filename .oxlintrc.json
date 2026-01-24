@@ -1,0 +1,21 @@
+{
+	"$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+	"rules": {
+		"@typescript-eslint/triple-slash-reference": "off",
+		"@typescript-eslint/no-extraneous-class": "off",
+		"import/no-unassigned-import": "off",
+		"import/no-named-as-default-member": "off",
+		"react/react-in-jsx-scope": "off"
+	},
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn",
+		"pedantic": "off",
+		"perf": "warn",
+		"style": "off",
+		"restriction": "off",
+		"nursery": "off"
+	},
+	"plugins": ["typescript", "react", "import"],
+	"ignorePatterns": [".astro/**", "node_modules/**", "dist/**", ".vercel"]
+}

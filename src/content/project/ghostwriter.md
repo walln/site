@@ -7,15 +7,16 @@ updatedDate: 2024-05-08 CST
 ---
 
 ## What is Ghostwriter?
-When a famous artist has someone write songs for them, it is referred to as *ghostwriting*. This practice indicates that there is a pattern and style that is consistent enough to be replicated through the work of a single artist. A friend's joke about Drake's alleged ghostwriting inspired me to try to do the same with LLMs. This repo contains the code for a few different models that I have implemented to mimic the style of famous musicians and the code to scrape the lyrics to generate a dataset for training the models. More than anything, this is an exercise to implement some language models and experiments with emerging techniques in generative AI.
+
+When a famous artist has someone write songs for them, it is referred to as _ghostwriting_. This practice indicates that there is a pattern and style that is consistent enough to be replicated through the work of a single artist. A friend's joke about Drake's alleged ghostwriting inspired me to try to do the same with LLMs. This repo contains the code for a few different models that I have implemented to mimic the style of famous musicians and the code to scrape the lyrics to generate a dataset for training the models. More than anything, this is an exercise to implement some language models and experiments with emerging techniques in generative AI.
 
 [The source code is available on Github](https://github.com/walln/ghostwriter)
 
 ### Update May 2024
 
-The ongoing battle between [Kendrick Lamar](https://en.wikipedia.org/wiki/Kendrick_Lamar) and [Drake](https://en.wikipedia.org/wiki/Drake_(musician)) has rekindled my interest in this project so I have gotten around to fixing some things on my long to-do list for Ghostwriter.
+The ongoing battle between [Kendrick Lamar](https://en.wikipedia.org/wiki/Kendrick_Lamar) and [Drake](<https://en.wikipedia.org/wiki/Drake_(musician)>) has rekindled my interest in this project so I have gotten around to fixing some things on my long to-do list for Ghostwriter.
 
-Ghostwriter now leverages [QLoRA](https://arxiv.org/abs/2305.14314) to do [Supervised Fine Tuning](https://klu.ai/glossary/supervised-fine-tuning) of large language models on consumer hardware. The dataset generation, training, and inference scripts have all be revamped to be simpler and ***pretty*** because [rich](https://github.com/Textualize/rich) is incredible.
+Ghostwriter now leverages [QLoRA](https://arxiv.org/abs/2305.14314) to do [Supervised Fine Tuning](https://klu.ai/glossary/supervised-fine-tuning) of large language models on consumer hardware. The dataset generation, training, and inference scripts have all be revamped to be simpler and **_pretty_** because [rich](https://github.com/Textualize/rich) is incredible.
 
 Here is an example from a model trained on lyrics from [Kendrick Lamar](https://en.wikipedia.org/wiki/Kendrick_Lamar):
 

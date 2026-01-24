@@ -1,5 +1,5 @@
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
-version: '0.2'
+version: "0.2"
 ignorePaths:
   - node_modules
   - bun.lockb
@@ -7,9 +7,9 @@ ignorePaths:
   - .gitignore
   - dist
   - .astro
-  - '**/*.svg'
+  - "**/*.svg"
 words:
-# Repo specific words
+  # Repo specific words
   - walln
   - menagerie
   - loadax
@@ -21,17 +21,17 @@ words:
   # - linecap
   # - linejoin
 
-## Content
-# Site terms
+  ## Content
+  # Site terms
   - astro
   - vercel
   - turso
   - upstash
   - pagefind
-# Flurry terms
+  # Flurry terms
   - proxied
   - HMAC
-# ML Terms
+  # ML Terms
   - pretrained
   - pretraining
   - multimodal
@@ -49,9 +49,7 @@ words:
   - pointwise
   - injective
   - relu
-# Outcomes Terms
+  # Outcomes Terms
   - functors
-# Programming language terms
+  # Programming language terms
   - println
-
-

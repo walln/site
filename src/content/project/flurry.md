@@ -28,8 +28,8 @@ name: Flurry Server
 authentication: JWT
 signingMethod: HMAC
 routes:
-  - endpoint: '/users/user/{id}'
-    host: 'https://example.com'
+  - endpoint: "/users/user/{id}"
+    host: "https://example.com"
     authenticated: true
     methods:
       - GET
@@ -37,7 +37,7 @@ routes:
       - PUT
       - DELETE
   - endpoint: /users
-    host: 'https://example.com'
+    host: "https://example.com"
     authenticated: false
     methods:
       - GET
@@ -50,7 +50,7 @@ Compile your program and then run with the created configuration
 ```
 
 Now you have a proxy running that redirects to your other services. Providing logging, authentication, and simple configuration. You can deploy this gateway and just update the config when your services change, no need to rebuild or build these features into the downstream services. In our example we redirect all `/users/user/{id}` requests assuming the user is authenticated.
- 
+
 When you hit the proxy
 
 ```sh

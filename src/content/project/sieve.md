@@ -2,7 +2,7 @@
 title: Sieve - Approximate Nearest Neighbors index in Rust
 publishDate: 2024-05-01 CST
 description: An in-memory approximate nearest neighbors vector search index built with Rust.
-tags: ["machine-learning", "performance" ,"rust"]
+tags: ["machine-learning", "performance", "rust"]
 ---
 
 ## About Sieve
@@ -20,9 +20,9 @@ fn main() -> Result<(), Error> {
   let max_size = 2;
 
   let index = ApproximateNearestNeighborsIndex::build(
-    num_trees, 
-    max_size, 
-    &vectors, 
+    num_trees,
+    max_size,
+    &vectors,
     &ids
   );
 
@@ -34,7 +34,6 @@ fn main() -> Result<(), Error> {
 ```
 
 This code will create an index, with a few vectors and search for the closet one to the query vector using squared euclidean distance. In this case, the first vector `[1.0, 2.0]` already exists so it will be a perfect match.
-
 
 ## Sieve's future
 

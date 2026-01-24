@@ -4,10 +4,11 @@ publishDate: 2025-05-24 CST
 description: Ongoing research on compressing text embeddings without labeled data, using a novel two-stage distillation approach with generative adversarial adapters.
 tags: ["deep-learning", "machine-learning", "research", "python", "llms"]
 ---
+
 import Latex from "../../components/project/Latex.astro";
 import LatexInLine from "../../components/project/LatexInLine.astro";
 
-##  About TAVA
+## About TAVA
 
 Recently, I've been exploring several approaches to improve embedding performance for real-time retrieval systems. This exploration has included static embeddings, sophisticated distillation schemes, and embedding-optimized inference engines. This research direction has fortunately coincided with the recent release of ["Harnessing the Universal Geometry of Embeddings"](https://arxiv.org/abs/2505.12540) by Jha et al. (2025), which provides strong evidence supporting the **Strong Platonic Representation Hypothesis**—the idea that deep learning models are converging towards the same underlying statistical representation of reality.
 
@@ -19,9 +20,9 @@ Powerful embedding models like E5-large or Grit-LM, while highly accurate, are o
 
 Deploying embedding models in production faces several issues:
 
-* Shifting or unknown task distributions
-* Costly or impractical labeling processes
-* Data privacy constraints
+- Shifting or unknown task distributions
+- Costly or impractical labeling processes
+- Data privacy constraints
 
 TAVA circumvents these barriers by leveraging unlabeled embedding pairs for effective embedding compression.
 
@@ -115,15 +116,18 @@ with cross-covariance <LatexInLine formula="\Sigma_{TS} = \mathbb{E}[f_T(x) f_S(
 
 **In other words, the student manifold is linked to the teacher manifold by an almost-isometric linear map. Angles are preserved and pair-wise distances differ only by a global scale factor.** Locally,
 
-<LatexInLine formula="J_{f_T}(x) \approx W^{\star} \, J_{f_S}(x)" />, *so their tangent spaces are aligned by* <LatexInLine formula="W^{\star}" /> and first-order geometry is preserved. Stage B therefore only needs to model the small, higher-order residuals that remain.
+<LatexInLine formula="J_{f_T}(x) \approx W^{\star} \, J_{f_S}(x)" />, *so their
+tangent spaces are aligned by* <LatexInLine formula="W^{\star}" /> and
+first-order geometry is preserved. Stage B therefore only needs to model the
+small, higher-order residuals that remain.
 
 ## Preliminary Experimental Results
 
 Early experiments demonstrate the promising potential of TAVA:
 
-* **Parameter Reduction**: Achieves significant compression (up to 100x).
-* **Performance Preservation**: Maintains close proximity to teacher model embeddings.
-* **Latency**: Negligible overhead added by the adapter.
+- **Parameter Reduction**: Achieves significant compression (up to 100x).
+- **Performance Preservation**: Maintains close proximity to teacher model embeddings.
+- **Latency**: Negligible overhead added by the adapter.
 
 **Note:** Detailed quantitative benchmarks are currently underway and will be provided in a forthcoming technical report.
 
@@ -142,11 +146,11 @@ Our immediate priority is addressing dimensionality gaps by optimizing adapter a
 
 TAVA opens exciting possibilities for efficient model deployment across various domains. If you're interested in:
 
-* Testing TAVA on your datasets
-* Contributing to implementation
-* Exploring extensions to other models
-* Collaborating on theoretical aspects
+- Testing TAVA on your datasets
+- Contributing to implementation
+- Exploring extensions to other models
+- Collaborating on theoretical aspects
 
 Please reach out! I'm keen to provide early access and explore collaboration opportunities.
 
-This research exemplifies the power of integrating knowledge distillation, domain adaptation, and generative modeling, emphasizing that the best innovations often emerge from the novel combination of existing methods. 
+This research exemplifies the power of integrating knowledge distillation, domain adaptation, and generative modeling, emphasizing that the best innovations often emerge from the novel combination of existing methods.

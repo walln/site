@@ -8,16 +8,16 @@ updatedDate: 2024-05-30 CST
 
 ## Whats wrong with typescript control flow?
 
-The native support for Errors, and optional values in typescript/javascript is very limited and presents bad patterns. Not all errors are unexpected, an error can often represent a deviation from the *happy-path* rather than some panic. However, using errors to represent these states and having them thrown throughout your code means implicit control flow. Typescript also cannot infer the thrown types so an end user has no way of knowing the possible errors thrown by a function without digging through all of the source code. Languages that support algebraic sum types commonly encourage a pattern of a union Success/Error type that makes clear what are the success and fail states throughout the code.
+The native support for Errors, and optional values in typescript/javascript is very limited and presents bad patterns. Not all errors are unexpected, an error can often represent a deviation from the _happy-path_ rather than some panic. However, using errors to represent these states and having them thrown throughout your code means implicit control flow. Typescript also cannot infer the thrown types so an end user has no way of knowing the possible errors thrown by a function without digging through all of the source code. Languages that support algebraic sum types commonly encourage a pattern of a union Success/Error type that makes clear what are the success and fail states throughout the code.
 
 For example lets compare idiomatic Rust and Typescript side by side.
 
 ```ts
 function isPositive(x: int) {
-  if( x < 0 ) {
-    throw new Error("x is less than 0")
-  }
-  return x
+	if (x < 0) {
+		throw new Error("x is less than 0");
+	}
+	return x;
 }
 ```
 
@@ -77,23 +77,23 @@ These patterns are incredible for writing reliable and understandable code.
 
 ## Introducing Outcomes
 
-[Outcomes](https://github.com/walln/outcomes) is a typescript library to more explicitly handle common control flow operations. Outcomes implements the `Result` and `Option` types to make dealing with error and null states a breeze. To get started install the package from the [JSR Package Repository](https://jsr.io/@walln/outcomes). The Outcomes library implements common functor operations for `Result` and `Option` types as well as the shorthand constructors for the returnable union types. 
+[Outcomes](https://github.com/walln/outcomes) is a typescript library to more explicitly handle common control flow operations. Outcomes implements the `Result` and `Option` types to make dealing with error and null states a breeze. To get started install the package from the [JSR Package Repository](https://jsr.io/@walln/outcomes). The Outcomes library implements common functor operations for `Result` and `Option` types as well as the shorthand constructors for the returnable union types.
 
 ### Explicit Error Handling
 
 Lets look at example of error handling.
 
 ```ts
-import { type Result, Ok, Err } from '@walln/outcomes';
+import { type Result, Ok, Err } from "@walln/outcomes";
 
 function myFunction(value: boolean): Result<boolean, Error> {
-    return value ? Ok(value) : Err(new Error("Invalid Value"));
+	return value ? Ok(value) : Err(new Error("Invalid Value"));
 }
 
 const result = myFunction(true);
 result.match({
- Ok: (value) => console.log(value), // true
- Err: (error) => console.error(error),
+	Ok: (value) => console.log(value), // true
+	Err: (error) => console.error(error),
 });
 ```
 
@@ -104,21 +104,21 @@ Results are either `Ok` or an `Err` to represent the valid states. You can see t
 You can also use `Option` types to represent nullable values.
 
 ```ts
-import { type Option, Some, None } from '@walln/outcomes';
+import { type Option, Some, None } from "@walln/outcomes";
 
 function myFunction(value: boolean): Option<boolean> {
-    return value ? Some(value) : None;
+	return value ? Some(value) : None;
 }
 
-const result = myFunction(true)
-console.log(result.unwrap()) // true
+const result = myFunction(true);
+console.log(result.unwrap()); // true
 ```
 
 This might not seem as necessary because of first class optional chaining in typescript but having a clear `None` type enables more functionality than just spamming optional chaining and nullish coalescing operators.
 
 ```ts
 
-/// Before: 
+/// Before:
 
 type User = {
     name?: string;

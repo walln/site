@@ -76,7 +76,7 @@ export async function GET(context: APIContext) {
 	// @ts-expect-error Mismatch in types due to dep versions. (can fix later)
 	const svg = await satori(markup(title, projectDate), ogOptions);
 	const png = new Resvg(svg).render().asPng();
-	return new Response(png, {
+	return new Response(new Uint8Array(png), {
 		headers: {
 			"Content-Type": "image/png",
 			"Cache-Control": "public, max-age=31536000, immutable",

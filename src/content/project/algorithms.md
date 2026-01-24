@@ -17,7 +17,7 @@ While not the most feature-rich, this repo prevents me from rebuilding the same 
 
 - Binary Tree
 - Hash Table
-- Linked List 
+- Linked List
 - Queue
 - Stack
 - Trie

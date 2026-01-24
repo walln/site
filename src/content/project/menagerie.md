@@ -8,7 +8,7 @@ updatedDate: 2024-05-31 CST
 
 ## What is Menagerie?
 
-[Menagerie](https://github.com/walln/menagerie) is a collection of models and techniques I find interesting. It is similar to [scratch](/projects/scratch) but more focused on quick exploration rather than well designed and readable implementations.  The concepts in Menagerie are typically more niche in application and are not as focused on polish, these are experimental artifacts.
+[Menagerie](https://github.com/walln/menagerie) is a collection of models and techniques I find interesting. It is similar to [scratch](/projects/scratch) but more focused on quick exploration rather than well designed and readable implementations. The concepts in Menagerie are typically more niche in application and are not as focused on polish, these are experimental artifacts.
 
 ## Current Exhibits
 
@@ -28,11 +28,11 @@ This exhibit uses QLoRA Supervised Fine Tuning on gemma-2b (chat tuned on OpenHe
 
 ### Optimized ResNet training
 
-This is an extremely optimized ResNet training implementation using PyTorch. I am still working on this as I want to try to compete with the MLPerf record. 
+This is an extremely optimized ResNet training implementation using PyTorch. I am still working on this as I want to try to compete with the MLPerf record.
 
 ### Distributed pretraining for code completion
 
-In this exhibit I experiment with the new PyTorch Lightning `Fabric` api by pretraining a tiny LLM on the CodeParrot dataset. I am too GPU poor to fully train this model but from a *few* steps it shows stable training dynamics.
+In this exhibit I experiment with the new PyTorch Lightning `Fabric` api by pretraining a tiny LLM on the CodeParrot dataset. I am too GPU poor to fully train this model but from a _few_ steps it shows stable training dynamics.
 
 ## Going Forward - What am I working on?
 

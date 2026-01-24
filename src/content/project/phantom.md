@@ -2,9 +2,9 @@
 title: Phantom - A Rust based deep learning framework
 publishDate: 2024-05-02 CST
 description: A forward mode automatic differentiation and deep learning library written from scratch in rust capable of training neural networks.
-tags: ["machine-learning", "performance" ,"gpu-kernels", "rust"]
-
+tags: ["machine-learning", "performance", "gpu-kernels", "rust"]
 ---
+
 ## What is Phantom?
 
 [Phantom](https://github.com/walln/phantom) is a forward mode automatic differentiation and deep learning library I have been working on. It is written from scratch in Rust and implements common deep learning and tensor operations. This was inspired by all of the growth of machine learning in Rust with libraries like [candle](https://github.com/huggingface/candle) and [burn](https://tracel-ai/burn). Burn is a work in progress but backpropogation is functional with common tensor operations. I am working on a GPU backend at the moment.
@@ -12,7 +12,6 @@ tags: ["machine-learning", "performance" ,"gpu-kernels", "rust"]
 ### Examples
 
 Lets take a look at what Phantom looks like. Starting with a few simple examples of tensor arithmetic. Tensors can be created by allocating a slice of data to put into memory, and specifying the Device type. The Device only specifies where the tensor is stored, not the backend for the program as tensors cna be moved around to different devices as needed. Rust's type system makes tagging the tensor to a specific device really intuitive. If you look closely the tensor also does not specify a data type, it is inferred from the slice of input data. Tensors are generic across types and will support up and downcasting where possible.
-
 
 ```rust title=tensor_arithmetic.rs
 fn simple_arithmetic() -> Result<(), Error> {
@@ -26,8 +25,6 @@ fn simple_arithmetic() -> Result<(), Error> {
 }
 
 ```
-
-
 
 Now that we have our tensors and can do some simple math with them lets actually compute the gradients. To compute the gradients just call `backward` on the specified tensor. The gradients are calculated and returned as a `GradientMap` that supports standard HashMap operations.
 
@@ -46,7 +43,6 @@ fn simple_gradients() -> Result<(), Error> {
   Ok(())
 }
 ```
-
 
 ## Afterword
 
