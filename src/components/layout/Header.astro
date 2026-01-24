@@ -1,173 +1,196 @@
 ---
 import Pagefind from "@/components/Pagefind.astro";
+import ThemeToggle from "@/components/ThemeToggle";
 import { menuLinks } from "@/site.config";
-
-// import Search from "@/components/Search.astro";
 
 const url = new URL(Astro.request.url);
 ---
 
-<header
-	class="relative mb-12 mt-20 section-terminal group z-30"
-	id="main-header"
->
-	<div class="flex items-center justify-between">
-		<div class="flex items-center gap-4">
+<header class="mb-16 mt-8" id="main-header">
+	<nav class="flex items-center justify-between" aria-label="Main navigation">
+		<div class="flex items-center gap-8">
 			<a
-				aria-current={url.pathname === "/" ? "page" : false}
-				class="text-xl font-bold uppercase tracking-wider hover:text-accent transition-colors"
 				href="/"
+				class="text-lg font-mono font-semibold tracking-tight text-text hover:text-accent transition-colors"
+				aria-current={url.pathname === "/" ? "page" : false}
 			>
-				<span class="text-accent-green">$</span> NICK_WALL
+				Nick Wall
 			</a>
-			<span class="text-quote hidden sm:inline">|</span>
-			<nav
-				aria-label="Main menu"
-				class="hidden sm:flex items-center gap-2 text-xs"
-				id="navigation-menu"
-			>
+			<div class="hidden sm:flex items-center gap-6">
 				{
-					menuLinks.map((link, index) => (
-						<>
-							{index > 0 && <span class="text-quote">/</span>}
-							<a
-								aria-current={
-									url.pathname === link.path ? "page" : false
-								}
-								class={`uppercase tracking-wider transition-colors hover:underline ${
-									url.pathname === link.path
-										? "text-accent-green"
-										: "text-quote hover:text-white"
+					menuLinks.map((link) => (
+						<a
+							href={link.path}
+							class={`text-sm transition-colors relative group ${
+								url.pathname === link.path || 
+								(link.path !== "/" && url.pathname.startsWith(link.path))
+									? "text-text"
+									: "text-text-secondary hover:text-text"
+							}`}
+							aria-current={
+								url.pathname === link.path ||
+								(link.path !== "/" && url.pathname.startsWith(link.path))
+									? "page"
+									: false
+							}
+							data-astro-prefetch
+						>
+							{link.title}
+							<span
+								class={`absolute -bottom-1 left-0 h-px bg-accent transition-all ${
+									url.pathname === link.path ||
+									(link.path !== "/" && url.pathname.startsWith(link.path))
+										? "w-full"
+										: "w-0 group-hover:w-full"
 								}`}
-								data-astro-prefetch
-								href={link.path}
-							>
-								{link.title}
-							</a>
-						</>
+							/>
+						</a>
 					))
 				}
-			</nav>
+			</div>
 		</div>
+
 		<div class="flex items-center gap-2">
 			<Pagefind />
+			<ThemeToggle client:load />
+
 			<!-- Mobile menu toggle -->
 			<button
+				type="button"
+				id="toggle-navigation-menu"
+				class="sm:hidden p-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors"
 				aria-expanded="false"
 				aria-label="Open main menu"
-				class="sm:hidden p-2 border border-quote text-quote hover:text-accent-green hover:border-accent-green transition-all"
-				id="toggle-navigation-menu"
-				type="button"
+				aria-controls="mobile-navigation-menu"
 			>
 				<svg
-					aria-hidden="true"
-					class="h-5 w-5"
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
 					fill="none"
-					focusable="false"
 					stroke="currentColor"
+					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					stroke-width="2"
-					viewBox="0 0 24 24"
-					xmlns="http://www.w3.org/2000/svg"
+					class="w-5 h-5"
+					aria-hidden="true"
 				>
-					<path d="M4 6h16M4 12h16M4 18h16"></path>
+					<line x1="3" y1="6" x2="21" y2="6" />
+					<line x1="3" y1="12" x2="21" y2="12" />
+					<line x1="3" y1="18" x2="21" y2="18" />
 				</svg>
 			</button>
 		</div>
-	</div>
-
-	<!-- Mobile navigation -->
-	<nav
-		aria-label="Mobile menu"
-		class="absolute top-full left-0 right-0 mt-2 hidden bg-black border border-quote p-4 group-[.menu-open]:block sm:hidden z-50"
-		id="mobile-navigation-menu"
-	>
-		{
-			menuLinks.map((link) => (
-				<a
-					aria-current={url.pathname === link.path ? "page" : false}
-					class={`block py-2 uppercase text-xs tracking-wider border-b border-dotted border-quote last:border-0 ${
-						url.pathname === link.path
-							? "text-accent-green"
-							: "text-quote hover:text-white"
-					}`}
-					data-astro-prefetch
-					href={link.path}
-				>
-					<span class="mr-2">▶</span>
-					{link.title}
-				</a>
-			))
-		}
 	</nav>
+
+	<!-- Mobile navigation drawer -->
+	<div
+		id="mobile-navigation-menu"
+		class="fixed inset-0 z-50 hidden"
+		aria-label="Mobile menu"
+	>
+		<!-- Backdrop -->
+		<div
+			class="absolute inset-0 bg-bg/80 backdrop-blur-sm"
+			id="mobile-menu-backdrop"
+		>
+		</div>
+
+		<!-- Menu panel -->
+		<nav
+			class="absolute right-0 top-0 h-full w-64 bg-bg border-l border-border p-6 shadow-lg"
+		>
+			<div class="flex justify-end mb-8">
+				<button
+					type="button"
+					id="close-navigation-menu"
+					class="p-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors"
+					aria-label="Close menu"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="w-5 h-5"
+						aria-hidden="true"
+					>
+						<line x1="18" y1="6" x2="6" y2="18" />
+						<line x1="6" y1="6" x2="18" y2="18" />
+					</svg>
+				</button>
+			</div>
+
+			<div class="flex flex-col gap-4">
+				{
+					menuLinks.map((link) => (
+						<a
+							href={link.path}
+							class={`text-base py-2 transition-colors ${
+								url.pathname === link.path ||
+								(link.path !== "/" && url.pathname.startsWith(link.path))
+									? "text-text font-medium"
+									: "text-text-secondary hover:text-text"
+							}`}
+							aria-current={
+								url.pathname === link.path ||
+								(link.path !== "/" && url.pathname.startsWith(link.path))
+									? "page"
+									: false
+							}
+							data-astro-prefetch
+						>
+							{link.title}
+						</a>
+					))
+				}
+			</div>
+		</nav>
+	</div>
 </header>
 
 <script>
-	// Keep a reference to the document click handler so it can be removed.
-	let headerMenuDocumentClickHandler: ((event: MouseEvent) => void) | null =
-		null;
+	function setupMobileMenu() {
+		const toggleButton = document.getElementById("toggle-navigation-menu");
+		const closeButton = document.getElementById("close-navigation-menu");
+		const mobileMenu = document.getElementById("mobile-navigation-menu");
+		const backdrop = document.getElementById("mobile-menu-backdrop");
 
-	function setupHeaderMobileMenu() {
-		const toggleButton = document.getElementById(
-			"toggle-navigation-menu",
-		) as HTMLButtonElement | null;
-		const header = document.getElementById(
-			"main-header",
-		) as HTMLElement | null;
-		// We don't strictly need mobileNav for the toggle, but good to ensure it exists for context
-		const mobileNav = document.getElementById(
-			"mobile-navigation-menu",
-		) as HTMLElement | null;
+		if (!toggleButton || !closeButton || !mobileMenu || !backdrop) return;
 
-		if (!toggleButton || !header || !mobileNav) {
-			// console.warn("Header mobile menu: key elements not found. Menu may not work as expected.");
-			return;
-		}
-
-		// Use .onclick for the toggle button to ensure only one handler is active
-		toggleButton.onclick = () => {
-			const isOpen = header.classList.contains("menu-open");
-			header.classList.toggle("menu-open");
-			toggleButton.setAttribute("aria-expanded", String(!isOpen));
+		const openMenu = () => {
+			mobileMenu.classList.remove("hidden");
+			toggleButton.setAttribute("aria-expanded", "true");
+			document.body.style.overflow = "hidden";
 		};
 
-		// Remove the previous document click handler if it exists
-		if (headerMenuDocumentClickHandler) {
-			document.removeEventListener(
-				"click",
-				headerMenuDocumentClickHandler,
-			);
-			headerMenuDocumentClickHandler = null; // Clear the stored handler reference
-		}
-
-		headerMenuDocumentClickHandler = (e: MouseEvent) => {
-			// If the click was on the toggle button itself, let its .onclick handler manage it.
-			// The .onclick has already fired by this point for a click on the button.
-			if (toggleButton.contains(e.target as Node)) {
-				return;
-			}
-
-			// Only proceed if the menu is actually open
-			if (header.classList.contains("menu-open")) {
-				// If the click is outside the main header element (which contains the mobile nav panel),
-				// then close the menu.
-				if (!header.contains(e.target as Node)) {
-					header.classList.remove("menu-open");
-					toggleButton.setAttribute("aria-expanded", "false");
-				}
-			}
+		const closeMenu = () => {
+			mobileMenu.classList.add("hidden");
+			toggleButton.setAttribute("aria-expanded", "false");
+			document.body.style.overflow = "";
 		};
-		document.addEventListener("click", headerMenuDocumentClickHandler);
+
+		toggleButton.addEventListener("click", openMenu);
+		closeButton.addEventListener("click", closeMenu);
+		backdrop.addEventListener("click", closeMenu);
+
+		// Close on Escape key
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Escape" && !mobileMenu.classList.contains("hidden")) {
+				closeMenu();
+			}
+		});
 	}
 
-	// Initial setup: Ensure DOM is ready
+	// Initial setup
 	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", setupHeaderMobileMenu);
+		document.addEventListener("DOMContentLoaded", setupMobileMenu);
 	} else {
-		setupHeaderMobileMenu(); // DOM is already loaded
+		setupMobileMenu();
 	}
 
-	// Re-setup after Astro view transitions for client-side navigation
-	document.addEventListener("astro:page-load", setupHeaderMobileMenu);
+	// Re-setup after Astro view transitions
+	document.addEventListener("astro:page-load", setupMobileMenu);
 </script>

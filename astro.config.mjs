@@ -1,15 +1,15 @@
-import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
-import react from "@astrojs/react";
-import icon from "astro-icon";
-import sitemap from "@astrojs/sitemap";
-import remarkUnwrapImages from "remark-unwrap-images";
-import rehypeExternalLinks from "rehype-external-links";
-import { remarkReadingTime } from "./src/utils/remark-reading-time";
-import expressiveCode from "astro-expressive-code";
-import { expressiveCodeOptions } from "./src/site.config";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
+import tailwind from "@astrojs/tailwind";
+import expressiveCode from "astro-expressive-code";
+import icon from "astro-icon";
 import pagefind from "astro-pagefind";
+import { defineConfig } from "astro/config";
+import rehypeExternalLinks from "rehype-external-links";
+import remarkUnwrapImages from "remark-unwrap-images";
+import { expressiveCodeOptions } from "./src/site.config";
+import { remarkReadingTime } from "./src/utils/remark-reading-time";
 
 import vercel from "@astrojs/vercel";
 

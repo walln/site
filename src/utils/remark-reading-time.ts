@@ -1,5 +1,5 @@
-import getReadingTime from "reading-time";
 import { toString as contentToString } from "mdast-util-to-string";
+import getReadingTime from "reading-time";
 
 interface Data {
 	data: {

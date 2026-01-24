@@ -1,68 +1,17 @@
 ---
-import { menuLinks, siteConfig } from "@/site.config";
+import Socials from "@/components/Socials.astro";
+import { siteConfig } from "@/site.config";
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-16 section-terminal">
-	<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-		<!-- System Info -->
-		<div>
-			<h3 class="uppercase text-accent-2 mb-2 font-bold">System Info</h3>
-			<div class="space-y-1 text-quote">
-				<div>Version: 1.0.0</div>
-				<div>Build: Production</div>
-				<div>&copy; {year} {siteConfig.author}</div>
+<footer class="mt-auto pt-16 pb-8">
+	<div class="border-t border-border pt-8">
+		<div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-secondary">
+			<div>
+				&copy; {year} {siteConfig.author}
 			</div>
-		</div>
-
-		<!-- Quick Navigation -->
-		<div>
-			<h3 class="uppercase text-accent-2 mb-2 font-bold">Navigation</h3>
-			<nav class="space-y-1">
-				{
-					menuLinks.map((link) => (
-						<a
-							class="block text-quote hover:text-accent transition-colors"
-							href={link.path}
-						>
-							<span class="mr-1">▶</span>
-							{link.title}
-						</a>
-					))
-				}
-			</nav>
-		</div>
-
-		<!-- Status -->
-		<div>
-			<h3 class="uppercase text-accent-2 mb-2 font-bold">Status</h3>
-			<div class="space-y-1">
-				<div class="flex items-center gap-2">
-					<span class="status-light online"></span>
-					<span class="text-quote">All Systems Operational</span>
-				</div>
-				<div class="flex items-center gap-2">
-					<span class="status-light online"></span>
-					<span class="text-quote">Database Connected</span>
-				</div>
-				<div class="flex items-center gap-2">
-					<span class="status-light online"></span>
-					<span class="text-quote">API Online</span>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Bottom bar -->
-	<div
-		class="mt-6 pt-4 border-t border-dashed border-quote flex flex-wrap justify-between items-center text-xs"
-	>
-		<div class="text-quote">
-			<span class="text-accent-green">$</span> EOF
-		</div>
-		<div class="text-quote">
-			Press <kbd class="px-1 py-0.5 border border-quote">ESC</kbd> to exit
+			<Socials />
 		</div>
 	</div>
 </footer>

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Command } from "cmdk";
+import { useEffect, useState } from "react";
 import "./CommandPalette.css";
 
 export interface CommandItem {
@@ -86,10 +86,8 @@ export default function CommandPaletteReact({
 		>
 			<div className="command-wrapper">
 				<div className="command-container">
-					<h3 className="command-title">COMMAND PALETTE</h3>
-
 					<Command.Input
-						placeholder="Type a command..."
+						placeholder="Search commands..."
 						className="command-input"
 					/>
 
@@ -107,7 +105,6 @@ export default function CommandPaletteReact({
 							>
 								<div className="command-item-content">
 									<div>
-										<span className="command-prefix">$</span>
 										<span className="command-name">{cmd.name}</span>
 										<span className="command-description">
 											{cmd.description}
@@ -126,10 +123,10 @@ export default function CommandPaletteReact({
 							<kbd>↑↓</kbd> Navigate
 						</span>
 						<span>
-							<kbd>Enter</kbd> Select
+							<kbd>↵</kbd> Select
 						</span>
 						<span>
-							<kbd>ESC</kbd> Close
+							<kbd>Esc</kbd> Close
 						</span>
 					</div>
 				</div>

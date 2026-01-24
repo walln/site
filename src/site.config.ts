@@ -53,9 +53,9 @@ export const expressiveCodeOptions: AstroExpressiveCodeOptions = {
 		uiLineHeight: "inherit",
 		codeFontSize: "0.875rem",
 		codeLineHeight: "1.7142857rem",
-		borderRadius: "4px",
+		borderRadius: "0",
 		codePaddingInline: "1rem",
 		codeFontFamily:
-			'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
+			'"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
 	},
 };

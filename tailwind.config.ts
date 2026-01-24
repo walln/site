@@ -7,38 +7,51 @@ export default {
 		"./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
 		"!./src/pages/og-image/[slug].png.ts",
 	],
+	darkMode: ["selector", '[data-theme="dark"]'],
 	theme: {
 		extend: {
 			colors: {
-				bg: "hsl(var(--theme-bg) / <alpha-value>)",
-				text: "hsl(var(--theme-text) / <alpha-value>)",
-				accent: "hsl(var(--theme-accent) / <alpha-value>)",
-				"accent-2": "hsl(var(--theme-accent-2) / <alpha-value>)",
-				"accent-green": "hsl(var(--theme-accent-green) / <alpha-value>)",
-				"accent-yellow": "hsl(var(--theme-accent-yellow) / <alpha-value>)",
-				"accent-red": "hsl(var(--theme-accent-red) / <alpha-value>)",
-				link: "hsl(var(--theme-link) / <alpha-value>)",
-				quote: "hsl(var(--theme-quote) / <alpha-value>)",
+				// New design system colors
+				bg: "hsl(var(--color-bg) / <alpha-value>)",
+				"bg-secondary": "hsl(var(--color-bg-secondary) / <alpha-value>)",
+				text: "hsl(var(--color-text) / <alpha-value>)",
+				"text-secondary": "hsl(var(--color-text-secondary) / <alpha-value>)",
+				border: "hsl(var(--color-border) / <alpha-value>)",
+				accent: "hsl(var(--color-accent) / <alpha-value>)",
+				link: "hsl(var(--color-accent) / <alpha-value>)",
+				// Legacy colors (for migration period)
+				"accent-2": "hsl(var(--color-text) / <alpha-value>)",
+				"accent-green": "hsl(var(--color-accent) / <alpha-value>)",
+				"accent-yellow": "hsl(60 100% 50% / <alpha-value>)",
+				"accent-red": "hsl(0 100% 50% / <alpha-value>)",
+				quote: "hsl(var(--color-text-secondary) / <alpha-value>)",
 			},
 			fontFamily: {
-				sans: ["Geist Mono", "monospace", ...fontFamily.mono],
+				sans: ["Inter", "system-ui", "sans-serif", ...fontFamily.sans],
 				serif: [...fontFamily.serif],
 				mono: ["Geist Mono", ...fontFamily.mono],
 			},
-			tranisitionProperty: { height: "height" },
+			transitionProperty: {
+				height: "height",
+				colors:
+					"color, background-color, border-color, text-decoration-color, fill, stroke",
+			},
+			transitionDuration: {
+				DEFAULT: "200ms",
+			},
 			// @ts-ignore	Not exposed type -- not even needed once v4 is released
 			typography: (theme) => ({
 				walln: {
 					css: {
 						"--tw-prose-body": theme("colors.text / 1"),
-						"--tw-prose-headings": theme("colors.accent-2 / 1"),
+						"--tw-prose-headings": theme("colors.text / 1"),
 						"--tw-prose-links": theme("colors.text / 1"),
 						"--tw-prose-bold": theme("colors.text / 1"),
 						"--tw-prose-bullets": theme("colors.text / 1"),
-						"--tw-prose-quotes": theme("colors.quote / 1"),
+						"--tw-prose-quotes": theme("colors.text-secondary / 1"),
 						"--tw-prose-code": theme("colors.text / 1"),
-						"--tw-prose-hr": "0.5px dashed #666",
-						"--tw-prose-th-borders": "#666",
+						"--tw-prose-hr": theme("colors.border / 1"),
+						"--tw-prose-th-borders": theme("colors.border / 1"),
 					},
 				},
 				sm: {
@@ -58,27 +71,29 @@ export default {
 							fontWeight: "700",
 						},
 						code: {
-							border: "1px dotted #666",
-							borderRadius: "2px",
+							border: "1px solid hsl(var(--color-border))",
+							padding: "0.125rem 0.25rem",
 						},
 						blockquote: {
-							borderLeftWidth: "0",
+							borderLeftWidth: "2px",
+							borderLeftColor: "hsl(var(--color-border))",
 						},
 						hr: {
-							borderTopStyle: "dashed",
+							borderTopStyle: "solid",
+							borderColor: "hsl(var(--color-border))",
 						},
 						thead: {
 							borderBottomWidth: "none",
 						},
 						"thead th": {
-							fontWeight: "700",
-							borderBottom: "1px dashed #666",
+							fontWeight: "600",
+							borderBottom: "1px solid hsl(var(--color-border))",
 						},
 						"tbody tr": {
 							borderBottomWidth: "none",
 						},
 						tfoot: {
-							borderTop: "1px dashed #666",
+							borderTop: "1px solid hsl(var(--color-border))",
 						},
 						sup: {
 							"@apply ms-0.5": "",
@@ -106,13 +121,14 @@ export default {
 		plugin(({ addComponents }) => {
 			addComponents({
 				".walln-link": {
-					"@apply underline underline-offset-2": {},
+					"@apply underline underline-offset-4 decoration-border transition-colors":
+						{},
 					"&:hover": {
-						"@apply decoration-link decoration-2": {},
+						"@apply decoration-accent": {},
 					},
 				},
 				".title": {
-					"@apply text-2xl font-semibold text-accent-2": {},
+					"@apply text-2xl font-semibold text-text": {},
 				},
 			});
 		}),

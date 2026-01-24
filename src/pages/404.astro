@@ -3,11 +3,34 @@ import PageLayout from "@/layouts/BaseLayout.astro";
 
 const meta = {
 	description: "The page you are looking for does not exist",
-	title: "This page does not exist!",
+	title: "Page not found",
 };
 ---
 
 <PageLayout meta={meta}>
-  <h1 class="title mb-6">404 | Something went wrong</h1>
-  <p class="mb-8">The page you are looking for does not exist!</p>
+	<div class="flex flex-col items-center justify-center py-24 text-center">
+		<h1 class="text-6xl font-mono font-bold text-text-secondary mb-4">404</h1>
+		<p class="text-lg text-text-secondary mb-8">
+			The page you're looking for doesn't exist.
+		</p>
+		<a
+			href="/"
+			class="inline-flex items-center gap-2 px-4 py-2 border border-border text-text hover:border-accent transition-colors"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="w-4 h-4"
+				aria-hidden="true"
+			>
+				<path d="M19 12H5M12 19l-7-7 7-7" />
+			</svg>
+			Back to home
+		</a>
+	</div>
 </PageLayout>

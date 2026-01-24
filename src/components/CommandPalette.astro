@@ -2,13 +2,13 @@
 import CommandPaletteReact from "./CommandPaletteReact";
 
 export interface Props {
-    commands?: Array<{
-        name: string;
-        description: string;
-        shortcut?: string;
-        action?: string;
-        onSelect?: () => void;
-    }>;
+	commands?: Array<{
+		name: string;
+		description: string;
+		shortcut?: string;
+		action?: string;
+		onSelect?: () => void;
+	}>;
 }
 
 const { commands = [] } = Astro.props;

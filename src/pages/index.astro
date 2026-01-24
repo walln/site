@@ -1,42 +1,75 @@
 ---
-import PageLayout from "@/layouts/BaseLayout.astro";
+import FormattedDate from "@/components/FormatDate.astro";
 import { getAllProjects, sortMDByDate } from "@/data/project";
-import TmuxTerminal from "@/components/terminal/TmuxTerminal";
-import RecentProjects from "@/components/terminal/RecentProjects";
+import PageLayout from "@/layouts/BaseLayout.astro";
 
-const MAX_PROJECTS = 10;
+const MAX_PROJECTS = 5;
 const allProjects = await getAllProjects();
-const allProjectsByDate = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
-
-// System status data (you can make these dynamic later)
-const systemStatus = {
-	uptime: "42d 16h 23m",
-	lastDeploy: "2024-01-15",
-	activeProjects: allProjects.length,
-	status: "operational",
-};
-
-// Transform projects to simpler structure for React components
-const projectsForReact = allProjectsByDate.map((p) => ({
-	slug: p.slug,
-	data: {
-		title: p.data.title,
-		publishDate: p.data.publishDate,
-		tags: p.data.tags,
-	},
-}));
+const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 ---
 
-<PageLayout meta={{ title: "Home" }}>
-	<!-- Terminal Container -->
-	<div class="mb-8">
-		<TmuxTerminal
-			systemStatus={systemStatus}
-			projects={projectsForReact}
-			client:load
-		/>
-	</div>
+<PageLayout meta={{ title: "Home" }} showASCIITexture asciiOpacity={0.25}>
+	<section class="mb-16">
+		<h1 class="text-4xl sm:text-5xl font-mono font-bold tracking-tight mb-4">
+			Nick Wall
+		</h1>
+		<p class="text-lg text-text-secondary mb-6">
+			Engineering & Research Lead
+		</p>
+		<p class="text-text-secondary max-w-xl leading-relaxed">
+			Building AI systems that work in the real world. Currently focused on 
+			applied machine learning research, scalable infrastructure, and 
+			turning research into production systems.
+		</p>
+	</section>
 
-	<!-- Recent Projects Grid -->
-	<RecentProjects projects={projectsForReact} client:load />
+	<section>
+		<div class="flex items-baseline justify-between mb-8">
+			<h2 class="text-xl font-mono font-semibold">Recent Work</h2>
+			<a
+				href="/projects"
+				class="text-sm text-text-secondary hover:text-text transition-colors"
+			>
+				View all &rarr;
+			</a>
+		</div>
+
+		<ul class="space-y-6">
+			{
+				recentProjects.map((project) => {
+					const projectDate =
+						project.data.updatedDate ?? project.data.publishDate;
+					return (
+						<li class="group">
+							<a
+								href={`/projects/${project.slug}/`}
+								class="block py-3 -mx-3 px-3 transition-colors hover:bg-bg-secondary"
+								data-astro-prefetch
+							>
+								<div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
+									<FormattedDate
+										class="text-sm text-text-secondary shrink-0"
+										date={projectDate}
+									/>
+									<div class="flex-1 min-w-0">
+										<h3 class="font-medium text-text group-hover:text-accent transition-colors">
+											{project.data.draft && (
+												<span class="text-text-secondary">(Draft) </span>
+											)}
+											{project.data.title}
+										</h3>
+										{project.data.description && (
+											<p class="text-sm text-text-secondary mt-1 line-clamp-1">
+												{project.data.description}
+											</p>
+										)}
+									</div>
+								</div>
+							</a>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</section>
 </PageLayout>

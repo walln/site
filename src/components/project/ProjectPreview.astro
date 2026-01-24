@@ -1,6 +1,6 @@
 ---
-import type { HTMLTag, Polymorphic } from "astro/types";
 import type { CollectionEntry } from "astro:content";
+import type { HTMLTag, Polymorphic } from "astro/types";
 
 import FormattedDate from "../FormatDate.astro";
 
@@ -13,19 +13,28 @@ const { as: Tag = "div", project, withDesc = false } = Astro.props;
 const projectDate = project.data.updatedDate ?? project.data.publishDate;
 ---
 
-<FormattedDate class="min-w-[120px] text-quote" date={projectDate} />
-<Tag>
-	{project.data.draft && <span class="text-accent-red">(Draft) </span>}
-	<a
-		class="walln-link"
-		data-astro-prefetch
-		href={`/projects/${project.slug}/`}
-	>
-		{project.data.title}
-	</a>
-</Tag>
-{
-	withDesc && (
-		<q class="line-clamp-3 block italic">{project.data.description}</q>
-	)
-}
+<a
+	href={`/projects/${project.slug}/`}
+	class="group block py-4 -mx-3 px-3 transition-colors hover:bg-bg-secondary"
+	data-astro-prefetch
+>
+	<div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
+		<FormattedDate
+			class="text-sm text-text-secondary shrink-0 min-w-[100px]"
+			date={projectDate}
+		/>
+		<div class="flex-1 min-w-0">
+			<Tag class="font-medium text-text group-hover:text-accent transition-colors">
+				{project.data.draft && (
+					<span class="text-text-secondary">(Draft) </span>
+				)}
+				{project.data.title}
+			</Tag>
+			{withDesc && project.data.description && (
+				<p class="text-sm text-text-secondary mt-1 line-clamp-2">
+					{project.data.description}
+				</p>
+			)}
+		</div>
+	</div>
+</a>
