@@ -8,7 +8,7 @@ import icon from "astro-icon";
 import pagefind from "astro-pagefind";
 import { defineConfig } from "astro/config";
 import rehypeExternalLinks from "rehype-external-links";
-import remarkUnwrapImages from "remark-unwrap-images";
+import rehypeUnwrapImages from "rehype-unwrap-images";
 import { expressiveCodeOptions } from "./src/site.config";
 import { remarkReadingTime } from "./src/utils/remark-reading-time";
 
@@ -31,8 +31,9 @@ export default defineConfig({
 	},
 	prefetch: true,
 	markdown: {
-		remarkPlugins: [remarkUnwrapImages, remarkReadingTime],
+		remarkPlugins: [remarkReadingTime],
 		rehypePlugins: [
+			rehypeUnwrapImages,
 			[
 				rehypeExternalLinks,
 				{
