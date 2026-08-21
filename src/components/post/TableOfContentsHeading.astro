@@ -10,12 +10,12 @@ const {
 } = Astro.props;
 ---
 
-<li class:list={[{ "project-toc-child": depth > 2 }]}>
+<li class:list={[{ "post-toc-child": depth > 2 }]}>
 	<a
 		href={`#${slug}`}
 		class:list={[
-			"project-toc-link",
-			{ "project-toc-link-top": depth <= 2 },
+			"post-toc-link",
+			{ "post-toc-link-top": depth <= 2 },
 		]}
 		aria-label={`Scroll to section: ${text}`}
 	>

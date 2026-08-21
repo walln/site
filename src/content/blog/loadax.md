@@ -2,8 +2,6 @@
 title: Loadax - High-Performance Data Loading for JAX
 publishDate: 2024-10-03 CST
 description: A JAX-native dataloading library with prefetching, multi-worker support, and distributed loading for ML training pipelines.
-tags:
-  ["machine-learning", "jax", "python", "performance", "distributed-computing"]
 ---
 
 ## About Loadax

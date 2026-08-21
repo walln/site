@@ -22,10 +22,10 @@ const defaultCommands: CommandItem[] = [
 		action: "/",
 	},
 	{
-		name: "projects",
-		description: "View all projects",
+		name: "blog",
+		description: "View all blog posts",
 		shortcut: "ctrl+p",
-		action: "/projects",
+		action: "/blog",
 	},
 	{
 		name: "search",

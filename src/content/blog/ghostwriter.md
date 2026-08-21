@@ -2,7 +2,6 @@
 title: Ghostwriter
 publishDate: 2023-01-25 CST
 description: Learning to mimic famous musicians with generative language models.
-tags: ["deep-learning", "llms", "python"]
 updatedDate: 2024-05-08 CST
 ---
 

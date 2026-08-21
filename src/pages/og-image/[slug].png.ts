@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { getAllProjects } from "@/data/project";
+import { getAllPosts } from "@/data/blog";
 import { siteConfig } from "@/site.config";
 import { getFormattedDate } from "@/utils/date";
 import { Resvg } from "@resvg/resvg-js";
@@ -68,13 +68,13 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 export async function GET(context: APIContext) {
 	const { title, pubDate } = context.props as Props;
 
-	const projectDate = getFormattedDate(pubDate, {
+	const postDate = getFormattedDate(pubDate, {
 		weekday: "long",
 		month: "long",
 	});
 
 	// @ts-expect-error Mismatch in types due to dep versions. (can fix later)
-	const svg = await satori(markup(title, projectDate), ogOptions);
+	const svg = await satori(markup(title, postDate), ogOptions);
 	const png = new Resvg(svg).render().asPng();
 	return new Response(new Uint8Array(png), {
 		headers: {
@@ -85,18 +85,18 @@ export async function GET(context: APIContext) {
 }
 
 export async function getStaticPaths() {
-	const projects = await getAllProjects();
-	const projectData: {
+	const posts = await getAllPosts();
+	const postData: {
 		params: { slug: string };
 		props: { title: string; pubDate: Date };
 	}[] = [
-		...projects
+		...posts
 			.filter(({ data }) => !data.ogImage)
-			.map((project) => ({
-				params: { slug: project.id },
+			.map((post) => ({
+				params: { slug: post.id },
 				props: {
-					title: project.data.title,
-					pubDate: project.data.updatedDate ?? project.data.publishDate,
+					title: post.data.title,
+					pubDate: post.data.updatedDate ?? post.data.publishDate,
 				},
 			})),
 		{
@@ -108,5 +108,5 @@ export async function getStaticPaths() {
 		},
 	];
 
-	return projectData;
+	return postData;
 }

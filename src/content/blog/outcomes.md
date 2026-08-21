@@ -2,7 +2,6 @@
 title: Outcomes
 description: A typescript library adding monadic control flows.
 publishDate: 2024-05-02 CST
-tags: ["package", "typescript", "rust"]
 updatedDate: 2024-05-30 CST
 ---
 

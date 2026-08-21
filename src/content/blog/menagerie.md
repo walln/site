@@ -2,13 +2,12 @@
 title: Menagerie
 description: A menagerie of deep learning models and techniques.
 publishDate: 2024-05-02 CST
-tags: ["machine-learning", "llms", "performance", "python"]
 updatedDate: 2024-05-31 CST
 ---
 
 ## What is Menagerie?
 
-[Menagerie](https://github.com/walln/menagerie) is a collection of models and techniques I find interesting. It is similar to [scratch](/projects/scratch) but more focused on quick exploration rather than well designed and readable implementations. The concepts in Menagerie are typically more niche in application and are not as focused on polish, these are experimental artifacts.
+[Menagerie](https://github.com/walln/menagerie) is a collection of models and techniques I find interesting. It is similar to [scratch](/blog/scratch) but more focused on quick exploration rather than well designed and readable implementations. The concepts in Menagerie are typically more niche in application and are not as focused on polish, these are experimental artifacts.
 
 ## Current Exhibits
 
@@ -24,7 +23,7 @@ The tooling being built by the Lens projects like [SAELens](https://github.com/j
 
 ### QLoRA SFT Text-2-SQL
 
-This exhibit uses QLoRA Supervised Fine Tuning on gemma-2b (chat tuned on OpenHermes) for contextual SQL-qa. This is an ongoing experiment as I am working on dynamic statistics retrieval in [hooper](/projects/hooper). I also would like to build a better evaluation suite as text-2-sql has interesting evaluation dynamics as it can be statically verified for syntactic correctness and evaluated for logical correctness fairly easily.
+This exhibit uses QLoRA Supervised Fine Tuning on gemma-2b (chat tuned on OpenHermes) for contextual SQL-qa. This is an ongoing experiment as I am working on dynamic statistics retrieval in [hooper](/blog/hooper). I also would like to build a better evaluation suite as text-2-sql has interesting evaluation dynamics as it can be statically verified for syntactic correctness and evaluated for logical correctness fairly easily.
 
 ### Optimized ResNet training
 

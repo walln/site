@@ -1,11 +1,11 @@
 ---
 import FormattedDate from "@/components/FormatDate.astro";
-import { getAllProjects, sortMDByDate } from "@/data/project";
+import { getAllPosts, sortPostsByDate } from "@/data/blog";
 import PageLayout from "@/layouts/BaseLayout.astro";
 
-const MAX_PROJECTS = 5;
-const allProjects = await getAllProjects();
-const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
+const MAX_POSTS = 5;
+const allPosts = await getAllPosts();
+const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 ---
 
 <PageLayout meta={{ title: "Home" }} showASCIITexture asciiOpacity={0.25}>
@@ -27,7 +27,7 @@ const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 		<div class="flex items-baseline justify-between mb-8">
 			<h2 class="text-xl font-sans font-medium">Recent Work</h2>
 			<a
-				href="/projects"
+				href="/blog"
 				class="text-sm text-text-secondary hover:text-text transition-colors"
 			>
 				View all &rarr;
@@ -36,31 +36,31 @@ const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 
 		<ul class="space-y-6">
 			{
-				recentProjects.map((project) => {
-					const projectDate =
-						project.data.updatedDate ?? project.data.publishDate;
+				recentPosts.map((post) => {
+					const postDate =
+						post.data.updatedDate ?? post.data.publishDate;
 					return (
 						<li class="group">
 							<a
-								href={`/projects/${project.id}/`}
+								href={`/blog/${post.id}/`}
 								class="block py-3 -mx-3 px-3 transition-colors hover:bg-bg-secondary"
 								data-astro-prefetch
 							>
 								<div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
 									<FormattedDate
 										class="text-sm text-text-secondary shrink-0"
-										date={projectDate}
+										date={postDate}
 									/>
 									<div class="flex-1 min-w-0">
 										<h3 class="font-medium text-text group-hover:text-accent transition-colors">
-											{project.data.draft && (
+											{post.data.draft && (
 												<span class="text-text-secondary">(Draft) </span>
 											)}
-											{project.data.title}
+											{post.data.title}
 										</h3>
-										{project.data.description && (
+										{post.data.description && (
 											<p class="text-sm text-text-secondary mt-1 line-clamp-1">
-												{project.data.description}
+												{post.data.description}
 											</p>
 										)}
 									</div>

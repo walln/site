@@ -2,17 +2,10 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
-function removeDupsAndLowerCase(array: string[]) {
-	if (!array.length) return array;
-	const lowercaseItems = array.map((str) => str.toLowerCase());
-	const distinctItems = new Set(lowercaseItems);
-	return Array.from(distinctItems);
-}
-
-const projectsCollection = defineCollection({
+const blogCollection = defineCollection({
 	loader: glob({
 		pattern: ["**/*.md", "**/*.mdx"],
-		base: "./src/content/project",
+		base: "./src/content/blog",
 	}),
 	schema: ({ image }) =>
 		z.object({
@@ -31,7 +24,6 @@ const projectsCollection = defineCollection({
 				.string()
 				.or(z.date())
 				.transform((val) => new Date(val)),
-			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
 			title: z.string().max(60),
 			updatedDate: z
 				.string()
@@ -41,4 +33,4 @@ const projectsCollection = defineCollection({
 		}),
 });
 
-export const collections = { project: projectsCollection };
+export const collections = { blog: blogCollection };

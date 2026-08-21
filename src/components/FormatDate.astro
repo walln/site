@@ -10,9 +10,9 @@ type Props = HTMLAttributes<"time"> & {
 
 const { date, dateTimeOptions, ...attrs } = Astro.props;
 
-const projectDate = getFormattedDate(date, dateTimeOptions);
+const formattedDate = getFormattedDate(date, dateTimeOptions);
 ---
 
 <time datetime={date.toISOString()} {...attrs}>
-	{projectDate}
+	{formattedDate}
 </time>

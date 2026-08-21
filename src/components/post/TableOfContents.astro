@@ -14,17 +14,17 @@ const { headings } = Astro.props;
 const toc = generateTableOfContents(headings);
 ---
 
-<aside class="project-toc" aria-label="Table of contents">
-	<h2 class="project-toc-label">Contents</h2>
-	<ol class="project-toc-list">
+<aside class="post-toc" aria-label="Table of contents">
+	<h2 class="post-toc-label">Contents</h2>
+	<ol class="post-toc-list">
 		{toc.map((heading) => <Heading heading={heading} />)}
 	</ol>
 </aside>
 
 <script>
 	function setupToc() {
-		const toc = document.querySelector(".project-toc");
-		const article = document.querySelector(".project-article");
+		const toc = document.querySelector(".post-toc");
+		const article = document.querySelector(".post-article");
 		if (!toc || !article) return;
 
 		const links = [...toc.querySelectorAll<HTMLAnchorElement>("a[href^='#']")];

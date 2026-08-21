@@ -1,35 +1,35 @@
 ---
 import { render, type CollectionEntry } from "astro:content";
 
-import Hero from "@/components/project/Hero.astro";
-import TOC from "@/components/project/TableOfContents.astro";
+import Hero from "@/components/post/Hero.astro";
+import TOC from "@/components/post/TableOfContents.astro";
 
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
-	project: CollectionEntry<"project">;
+	post: CollectionEntry<"blog">;
 }
 
-const { project } = Astro.props;
+const { post } = Astro.props;
 const {
 	data: { description, ogImage, publishDate, title, updatedDate },
 	id,
-} = project;
+} = post;
 const socialImage = ogImage ?? `/og-image/${id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
-const { headings } = await render(project);
+const { headings } = await render(post);
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }} wide>
-	<div class:list={["project-shell", { "has-toc": headings.length > 0 }]}>
+	<div class:list={["post-shell", { "has-toc": headings.length > 0 }]}>
 		{!!headings.length && <TOC headings={headings} />}
-		<article class="project-article break-words" data-pagefind-body>
-			<div id="project-hero"><Hero content={project} /></div>
-			<div class="project-prose prose max-w-none">
+		<article class="post-article break-words" data-pagefind-body>
+			<div id="post-hero"><Hero content={post} /></div>
+			<div class="post-prose prose max-w-none">
 				<slot />
 			</div>
-			<nav class="project-paginator" aria-label="Article">
-				<button type="button" class="project-back-to-top" id="to-top-inline">
+			<nav class="post-paginator" aria-label="Article">
+				<button type="button" class="post-back-to-top" id="to-top-inline">
 					back to top
 				</button>
 			</nav>
@@ -52,7 +52,7 @@ const { headings } = await render(project);
 		"to-top-inline",
 	) as HTMLButtonElement;
 	const targetHeader = document.getElementById(
-		"project-hero",
+		"post-hero",
 	) as HTMLDivElement;
 	const footer = document.querySelector("footer");
 

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-/** The set of header graphics a project page can request via frontmatter. */
-export type ProjectGraphic = "voice-lanes";
+/** The set of header graphics a post page can request via frontmatter. */
+export type PostGraphic = "voice-lanes";
 
 interface HeaderGraphicProps {
-	kind: ProjectGraphic;
+	kind: PostGraphic;
 }
 
-/** Renders the header graphic named in a project's frontmatter. */
+/** Renders the header graphic named in a post's frontmatter. */
 export default function HeaderGraphic({ kind }: HeaderGraphicProps) {
 	switch (kind) {
 		case "voice-lanes":
@@ -94,7 +94,7 @@ function SpliceLoopGraphic() {
 	const dropFade = spliced ? Math.max(0, 1 - (t - RESULT_AT) / 0.6) : 0;
 
 	return (
-		<div className="project-graphic-stage" aria-hidden="true">
+		<div className="post-graphic-stage" aria-hidden="true">
 			<svg viewBox="0 0 800 240" className="h-full w-full" role="presentation">
 				<defs>
 					<pattern
