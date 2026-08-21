@@ -10,7 +10,6 @@
         "@astrojs/react": "^6.0.4",
         "@astrojs/sitemap": "^3.7.3",
         "@astrojs/vercel": "^11.0.7",
-        "@fontsource/chakra-petch": "^5.3.0",
         "@fontsource/eb-garamond": "^5.3.0",
         "@fontsource/geist-mono": "^5.2.7",
         "@fontsource/geist-sans": "^5.2.5",
@@ -437,8 +436,6 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.6", "", { "dependencies": { "@floating-ui/dom": "^1.7.4" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-4JX6rEatQEvlmgU80wZyq9RT96HZJa88q8hp0pBd+LrczeDI4o6uA2M+uvxngVHo4Ihr8uibXxH6+70zhAFrVw=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
-
-    "@fontsource/chakra-petch": ["@fontsource/chakra-petch@5.3.0", "", {}, "sha512-QZvbM/q2R6n1pg2x+TJPftZmBNS+ADU37L4Z4L/6UJIz+JZ/SRaEf8usPFRiP7Ht28sIideMu/Bm1SnGlSrwNw=="],
 
     "@fontsource/eb-garamond": ["@fontsource/eb-garamond@5.3.0", "", {}, "sha512-VplwHpB8FLuzl+4G5LDci1b3Z4SghiuXH8XEgaxjnOb5aue5mEt1njmDKeO6iyLeGa73LffU7PC7hzncLRx0ZA=="],
 

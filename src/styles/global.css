@@ -12,7 +12,7 @@
 	--font-mono:
 		"SF Mono", "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
 		"Liberation Mono", "Courier New", monospace;
-	--font-label: "Chakra Petch", "Geist Sans", ui-sans-serif, sans-serif;
+	--font-label: "Geist Sans", ui-sans-serif, sans-serif;
 	--font-prose: var(--font-serif);
 
 	--color-bg: hsl(0 0% 100%);
@@ -276,10 +276,10 @@
 }
 
 .post-title {
-	font-family: var(--font-sans);
+	font-family: var(--font-serif);
 	font-size: clamp(2.25rem, 4.6vw, 3.25rem);
-	font-weight: 400;
-	letter-spacing: -0.035em;
+	font-weight: 500;
+	letter-spacing: -0.015em;
 	line-height: 1.08;
 	margin: 0;
 	text-wrap: balance;
