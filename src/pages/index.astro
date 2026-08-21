@@ -8,18 +8,25 @@ const allPosts = await getAllPosts();
 const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 ---
 
-<PageLayout meta={{ title: "Home" }} showASCIITexture asciiOpacity={0.25}>
+<PageLayout
+	meta={{
+		title: "Nick Wall",
+		description:
+			"Leading research & engineering @ Maple. Machine learning, mostly — how people and computers interact, what intelligence actually is, and making it abundant and accessible.",
+	}}
+	showASCIITexture asciiOpacity={0.25}
+>
 	<section class="mb-16">
 		<h1 class="text-4xl sm:text-5xl font-sans font-medium tracking-tight mb-4">
 			Nick Wall
 		</h1>
 		<p class="text-lg text-text-secondary mb-6">
-			Engineering & Research Lead
+			Currently: leading research & engineering @ Maple
 		</p>
 		<p class="text-text-secondary max-w-xl leading-relaxed">
-			Building AI systems that work in the real world. Currently focused on 
-			applied machine learning research, scalable infrastructure, and 
-			turning research into production systems.
+			ML, mostly. How people and computers interact. What
+			intelligence actually is. And making sure that when intelligence is 
+			abundant, everyone can reach it.
 		</p>
 	</section>
 

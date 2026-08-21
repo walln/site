@@ -18,8 +18,9 @@ export const menuLinks: Array<{ title: string; path: string }> = [
 
 export const siteConfig: SiteConfig = {
 	author: "Nick Wall",
-	title: "Nick's Site",
-	description: "My personal site",
+	title: "Nick Wall",
+	description:
+		"Personal site of Nick Wall — leading research & engineering @ Maple.",
 	lang: "en-GB",
 	ogLocale: "en_GB",
 	date: {
