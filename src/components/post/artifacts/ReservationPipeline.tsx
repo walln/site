@@ -123,6 +123,7 @@ export default function ReservationPipeline({
 										end: done,
 										label: "You're set",
 										kind: "speech",
+										labelAlign: "end",
 									},
 								],
 							},

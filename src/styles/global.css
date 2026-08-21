@@ -923,7 +923,8 @@
 	left: calc(var(--lane-label-width) + var(--lane-gap));
 	z-index: 3;
 	cursor: ew-resize;
-	touch-action: none;
+	/* Horizontal drags scrub; vertical swipes must still scroll the page. */
+	touch-action: pan-y;
 }
 
 .lane-controls {
@@ -1010,7 +1011,7 @@
 
 .forecast-matrix {
 	display: grid;
-	grid-template-columns: 5.75rem minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
 	gap: 0.4rem;
 }
 
@@ -1030,12 +1031,15 @@
 	padding: 0 0.15rem 0.2rem;
 }
 
+/* Y-axis labels run vertically, like an axis title, so the four cells get
+   the full width and the 2x2 reads as a matrix at every size. */
 .forecast-row-label {
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
-	text-align: right;
-	padding-right: 0.35rem;
+	justify-content: center;
+	writing-mode: vertical-rl;
+	transform: rotate(180deg);
+	padding: 0 0.15rem;
 }
 
 .forecast-cell {
@@ -1269,6 +1273,23 @@
 	box-shadow: 0 0 0 1px color-mix(in srgb, var(--viz-cost) 55%, transparent);
 }
 
+@media (pointer: coarse) {
+	.splice-control input[type="range"] {
+		height: 1.75rem;
+	}
+
+	.splice-control input[type="range"]::-webkit-slider-thumb {
+		width: 19px;
+		height: 19px;
+		margin-top: -8px;
+	}
+
+	.splice-control input[type="range"]::-moz-range-thumb {
+		width: 19px;
+		height: 19px;
+	}
+}
+
 .token-legend {
 	display: flex;
 	flex-wrap: wrap;
@@ -1293,13 +1314,75 @@
 }
 
 @media (max-width: 39.99rem) {
-	.forecast-matrix {
-		grid-template-columns: 4.25rem minmax(0, 1fr) minmax(0, 1fr);
+	.artifact-panel {
+		padding: 1rem 0.85rem 0.95rem;
+	}
+
+	/* The header animation swaps to a cropped, larger-scale scene on phones. */
+	.post-graphic:has(.post-graphic-stage) {
+		aspect-ratio: 480 / 240;
+	}
+
+	/*
+	 * Timelines: the side label column would leave the time axis ~210px wide,
+	 * so lane labels stack above their tracks and the full width goes to time.
+	 */
+	.lane-row {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.2rem;
+		min-height: 0;
+	}
+
+	.lane-label {
+		display: flex;
+		align-items: baseline;
+		gap: 0.4rem;
+		text-align: left;
+	}
+
+	.lane-total {
+		margin-top: 0;
+	}
+
+	.lane-group-title {
+		margin-left: 0;
+	}
+
+	.lane-overlay,
+	.lane-scrub,
+	.lane-markers {
+		left: 0;
+	}
+
+	.lane-axis {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.lane-axis-label {
+		display: none;
+	}
+
+	.lane-span-label {
+		font-size: 0.68rem;
+	}
+
+	/*
+	 * The per-generation microlabels don't fit between the speech labels on a
+	 * narrow track. The gray bars still show each generation; the caption
+	 * carries the count.
+	 */
+	.lane-span-label-gen {
+		display: none;
 	}
 
 	.forecast-cell {
 		min-height: 0;
 		padding: 0.65rem 0.6rem;
+	}
+
+	.token-cell {
+		font-size: 0.72rem;
+		padding: 0.34rem 0.42rem;
 	}
 
 	.splice-track {
@@ -1443,18 +1526,16 @@
 	}
 }
 
+/* Inline fallback for notes when there's no margin to sit in: the same quiet
+   left rule as .post-callout, nothing card-like. */
 @media (max-width: 71.99rem) {
 	.sidenote {
 		display: none;
 		float: none;
 		width: auto;
-		margin: 0.7rem 0 0.9rem;
-		padding: 0.75rem 0.9rem;
-		border: 1px solid var(--color-border);
-		border-left: 2px solid var(--color-accent);
-		border-radius: 0.5rem;
-		background: var(--color-bg-secondary);
-		box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+		margin: 0.85rem 0 1.1rem;
+		padding: 0.15rem 0 0.15rem 1rem;
+		border-left: 2px solid var(--color-border);
 		animation: sidenote-in 180ms ease both;
 	}
 
@@ -1463,10 +1544,7 @@
 	}
 
 	.marginnote {
-		padding: 0.7rem 0.8rem;
-		border: 1px solid var(--color-border);
-		border-left: 2px solid var(--color-accent);
-		border-radius: 0.5rem;
-		background: var(--color-bg-secondary);
+		padding: 0.15rem 0 0.15rem 1rem;
+		border-left: 2px solid var(--color-border);
 	}
 }
