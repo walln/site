@@ -47,40 +47,65 @@ const { headings } = await render(post);
 </BaseLayout>
 
 <script>
-	const scrollBtn = document.getElementById("to-top-btn") as HTMLButtonElement;
-	const inlineBtn = document.getElementById(
-		"to-top-inline",
-	) as HTMLButtonElement;
-	const targetHeader = document.getElementById(
-		"post-hero",
-	) as HTMLDivElement;
-	const footer = document.querySelector("footer");
+	// Clicks are delegated on `document` so they keep working after the
+	// ClientRouter swaps the DOM (module scripts only execute once per session).
+	document.addEventListener("click", (event) => {
+		const target = event.target as Element | null;
+		if (!target?.closest("#to-top-btn, #to-top-inline")) return;
+
+		const prefersReducedMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+		window.scrollTo({
+			top: 0,
+			behavior: prefersReducedMotion ? "auto" : "smooth",
+		});
+	});
 
 	let heroVisible = true;
 	let footerVisible = false;
 
 	const sync = () => {
-		scrollBtn.dataset.show = (!heroVisible && !footerVisible).toString();
+		const scrollBtn = document.getElementById("to-top-btn");
+		if (scrollBtn) {
+			scrollBtn.dataset.show = (
+				!heroVisible && !footerVisible
+			).toString();
+		}
 	};
 
-	const toTop = () => {
-		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
+	let heroObserver: IntersectionObserver | undefined;
+	let footerObserver: IntersectionObserver | undefined;
+
+	const setupObservers = () => {
+		heroObserver?.disconnect();
+		footerObserver?.disconnect();
+
+		const targetHeader = document.getElementById("post-hero");
+		const footer = document.querySelector("footer");
+
+		heroVisible = true;
+		footerVisible = false;
+
+		if (targetHeader) {
+			heroObserver = new IntersectionObserver((entries) => {
+				heroVisible = Boolean(entries[0]?.isIntersecting);
+				sync();
+			});
+			heroObserver.observe(targetHeader);
+		}
+
+		if (footer) {
+			footerObserver = new IntersectionObserver((entries) => {
+				footerVisible = Boolean(entries[0]?.isIntersecting);
+				sync();
+			});
+			footerObserver.observe(footer);
+		}
 	};
 
-	scrollBtn.addEventListener("click", toTop);
-	inlineBtn.addEventListener("click", toTop);
-
-	const heroObserver = new IntersectionObserver((entries) => {
-		heroVisible = Boolean(entries[0]?.isIntersecting);
-		sync();
-	});
-	heroObserver.observe(targetHeader);
-
-	if (footer) {
-		const footerObserver = new IntersectionObserver((entries) => {
-			footerVisible = Boolean(entries[0]?.isIntersecting);
-			sync();
-		});
-		footerObserver.observe(footer);
-	}
+	// `astro:page-load` fires on initial load and after every client-side
+	// navigation, so observers always track the current DOM.
+	document.addEventListener("astro:page-load", setupObservers);
+	setupObservers();
 </script>
