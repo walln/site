@@ -1,0 +1,31 @@
+---
+import PostPreview from "@/components/post/PostPreview.astro";
+import { getAllPosts, sortPostsByDate } from "@/data/blog";
+import PageLayout from "@/layouts/BaseLayout.astro";
+
+const posts = sortPostsByDate(await getAllPosts());
+
+const meta = {
+	description: "Read my writing on machine learning, engineering, and research",
+	title: "Blog",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="text-3xl font-sans font-medium tracking-tight">Blog</h1>
+<p class="mt-1.5 mb-8 text-sm text-text-secondary">
+	A collection of my recent thoughts and works
+</p>
+
+	<section aria-label="Blog list">
+		<ul class="space-y-1">
+			{
+				posts.map((p) => (
+					<li>
+						<PostPreview as="h2" post={p} withDesc />
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</PageLayout>
