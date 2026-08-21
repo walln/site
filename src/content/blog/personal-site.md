@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Personal Site
 publishDate: 2023-01-24 CST
 description: This website is fully open-sourced and constructed using some of the latest and greatest web technology.

@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Algorithms
 publishDate: 2023-01-22 CST
 description: Common data structures and algorithms I often end up reimplementing in python.

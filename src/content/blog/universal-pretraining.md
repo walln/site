@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Universal Pretraining - Exploring the Value of Modality
 publishDate: 2023-01-25 CST
 description: Research I worked on during my graduate studies at SMU investigating the influence of modality on transformer pretraining. This work was abandoned.

@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Menagerie
 description: A menagerie of deep learning models and techniques.
 publishDate: 2024-05-02 CST

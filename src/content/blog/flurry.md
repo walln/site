@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Flurry
 publishDate: 2023-01-23 CST
 description: A simple, performance, and highly-configurable proxy server written with Golang.

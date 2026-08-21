@@ -17,6 +17,7 @@ const blogCollection = defineCollection({
 				.optional(),
 			abstract: z.string().optional(),
 			description: z.string().min(50).max(160),
+			archived: z.boolean().default(false),
 			draft: z.boolean().default(false),
 			graphic: z.enum(["voice-lanes"]).optional(),
 			ogImage: z.string().optional(),
