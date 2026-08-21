@@ -1,4 +1,5 @@
 ---
+archived: true
 title: Phantom - A Rust based deep learning framework
 publishDate: 2024-05-02 CST
 description: A forward mode automatic differentiation and deep learning library written from scratch in rust capable of training neural networks.
