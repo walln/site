@@ -23,7 +23,7 @@ const { headings } = await render(post);
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }} wide>
 	<div class:list={["post-shell", { "has-toc": headings.length > 0 }]}>
 		{!!headings.length && <TOC headings={headings} />}
-		<article class="post-article break-words" data-pagefind-body>
+		<article class="post-article break-words">
 			<div id="post-hero"><Hero content={post} /></div>
 			<div class="post-prose prose max-w-none">
 				<slot />

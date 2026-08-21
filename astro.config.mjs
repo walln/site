@@ -6,7 +6,6 @@ import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
-import pagefind from "astro-pagefind";
 import { defineConfig } from "astro/config";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeUnwrapImages from "rehype-unwrap-images";
@@ -29,7 +28,6 @@ export default defineConfig({
 		react(),
 		sitemap(),
 		mdx(),
-		pagefind(),
 	],
 	redirects: {
 		"/resume": "/resume.pdf",

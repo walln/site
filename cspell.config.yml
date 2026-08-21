@@ -27,7 +27,6 @@ words:
   - vercel
   - turso
   - upstash
-  - pagefind
   # Flurry terms
   - proxied
   - HMAC

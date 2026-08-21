@@ -35,7 +35,6 @@
 		"astro": "^7.2.4",
 		"astro-expressive-code": "^0.44.1",
 		"astro-icon": "^1.2.0",
-		"astro-pagefind": "^2.0.1",
 		"cmdk": "^1.1.1",
 		"cspell": "^9.6.0",
 		"katex": "^0.16.27",
