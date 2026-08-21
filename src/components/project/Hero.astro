@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 
 import FormattedDate from "@/components/FormatDate.astro";
+import HeaderGraphic from "@/components/project/HeaderGraphic";
 
 interface Props {
 	content: CollectionEntry<"project">;
@@ -17,42 +18,42 @@ const { remarkPluginFrontmatter } = await render();
 
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	month: "long",
+	day: "numeric",
 	year: "numeric",
 };
 ---
 
 {
-	data.coverImage && (
-		<div class="aspect-h-9 aspect-w-16 mb-8 overflow-hidden">
-			<Image
-				alt={data.coverImage.alt}
-				class="object-cover"
-				fetchpriority="high"
-				loading="eager"
-				src={data.coverImage.src}
-			/>
-		</div>
+	data.draft && (
+		<span class="mb-3 inline-block font-label text-xs tracking-wide text-text-secondary uppercase">
+			Draft
+		</span>
 	)
 }
-{data.draft && <span class="text-sm text-text-secondary mb-2 inline-block">(Draft)</span>}
-<h1 class="text-3xl sm:text-4xl font-mono font-bold tracking-tight mb-4">
+<FormattedDate
+	class="project-date"
+	date={data.publishDate}
+	dateTimeOptions={dateTimeOptions}
+/>
+<h1 class="project-title">
 	{data.title}
 </h1>
-<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
-	<span>
-		<FormattedDate date={data.publishDate} dateTimeOptions={dateTimeOptions} />
-	</span>
-	<span class="text-border">•</span>
+{
+	data.abstract && (
+		<p class="project-subtitle">{data.abstract}</p>
+	)
+}
+<div class="project-meta">
 	<span>{remarkPluginFrontmatter.minutesRead}</span>
 	{
 		data.updatedDate && (
 			<>
-				<span class="text-border">•</span>
-				<span class="text-text-secondary">
+				<span class="project-meta-dot" aria-hidden="true">·</span>
+				<span>
 					Updated{" "}
 					<FormattedDate
 						date={data.updatedDate}
-						dateTimeOptions={dateTimeOptions}
+						dateTimeOptions={{ month: "long", year: "numeric" }}
 					/>
 				</span>
 			</>
@@ -60,18 +61,22 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	}
 </div>
 {
-	!!data.tags?.length && (
-		<div class="mt-4 flex flex-wrap gap-2">
-			{data.tags.map((tag) => (
-				<a
-					href={`/tags/${tag}/`}
-					class="tag"
-					aria-label={`View more projects with the tag ${tag}`}
-					data-pagefind-filter="tag"
-				>
-					{tag}
-				</a>
-			))}
+	data.graphic && (
+		<div class="project-graphic">
+			<HeaderGraphic client:load kind={data.graphic} />
+		</div>
+	)
+}
+{
+	data.coverImage && (
+		<div class="project-graphic overflow-hidden">
+			<Image
+				alt={data.coverImage.alt}
+				class="object-cover w-full"
+				fetchpriority="high"
+				loading="eager"
+				src={data.coverImage.src}
+			/>
 		</div>
 	)
 }

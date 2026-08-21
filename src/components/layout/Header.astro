@@ -1,6 +1,5 @@
 ---
 import Pagefind from "@/components/Pagefind.astro";
-import ThemeToggle from "@/components/ThemeToggle";
 import Socials from "@/components/Socials.astro";
 import { menuLinks } from "@/site.config";
 
@@ -61,12 +60,12 @@ const url = new URL(Astro.request.url);
 	}
 </style>
 
-<header class="mb-16 mt-8" id="main-header">
+<header id="main-header">
 	<nav class="flex items-center justify-between" aria-label="Main navigation">
 		<div class="flex items-center gap-8">
 			<a
 				href="/"
-				class="text-lg font-mono font-semibold tracking-tight text-text hover:text-accent transition-colors"
+				class="text-lg font-sans font-medium tracking-tight text-text hover:text-accent transition-colors"
 				aria-current={url.pathname === "/" ? "page" : false}
 			>
 				Nick Wall
@@ -107,7 +106,6 @@ const url = new URL(Astro.request.url);
 
 		<div class="flex items-center gap-2">
 			<Pagefind />
-			<ThemeToggle client:load />
 
 			<!-- Mobile menu toggle -->
 			<button

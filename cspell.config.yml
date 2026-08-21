@@ -40,7 +40,15 @@ words:
   - backchannel
   - TTFT
   - Qwen
+  - VoiceBench
+  - prefetch
+  - sidenote
+  - sidenotes
+  - marginnote
+  - playhead
+  - kicker
   - timestamping
+  - tauvoice
   - backpropogation
   - conv
   - downcasting

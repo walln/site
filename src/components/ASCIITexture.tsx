@@ -207,12 +207,7 @@ export default function ASCIITexture({
 		const draw = () => {
 			frame++;
 
-			const isDarkMode =
-				document.documentElement.getAttribute("data-theme") === "dark";
-
-			// Use a neutral gray - slightly lighter in dark mode for better contrast
-			const l = isDarkMode ? 52 : 50;
-			const baseColor = `hsl(0 0% ${l}%)`;
+			const baseColor = "hsl(0 0% 50%)";
 
 			ctx.clearRect(0, 0, width, height);
 			ctx.font = `${fontSize}px "Geist Mono", monospace`;
@@ -497,12 +492,7 @@ export default function ASCIITexture({
 			ctx.clearRect(0, 0, width, height);
 			ctx.font = `${fontSize}px "Geist Mono", monospace`;
 			ctx.textAlign = "center";
-			const isDarkMode =
-				document.documentElement.getAttribute("data-theme") === "dark";
-
-			// Use a neutral gray - slightly lighter in dark mode for better contrast
-			const l = isDarkMode ? 52 : 50;
-			ctx.fillStyle = `hsl(0 0% ${l}%)`;
+			ctx.fillStyle = "hsl(0 0% 50%)";
 
 			for (let r = 0; r < rows; r++) {
 				for (let c = 0; c < cols; c++) {

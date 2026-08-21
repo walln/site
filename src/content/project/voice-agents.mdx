@@ -1,0 +1,144 @@
+---
+title: Intelligence is not instant
+publishDate: 2026-08-20 CST
+description: Bigger models and more thinking time both kill a phone call. Voice agents have to get the work off the spoken path and keep the conversation moving.
+abstract: Voice isn't a standard scaling laws problem. The work has to come off the spoken path, and the conversation has to keep moving while it happens.
+graphic: voice-lanes
+tags: ["llms", "machine-learning", "performance", "research"]
+---
+
+import Callout from "../../components/project/Callout.astro";
+import MarginNote from "../../components/project/MarginNote.astro";
+import ForecastMatrix from "../../components/project/artifacts/ForecastMatrix";
+import PolicyCompare from "../../components/project/artifacts/PolicyCompare";
+import ReservationPipeline from "../../components/project/artifacts/ReservationPipeline";
+import TokenSplice from "../../components/project/artifacts/TokenSplice";
+
+Agents are taking over everything, and talking to them still sucks. I recently had a call with a voice agent (not one of mine) and I wanted to pull my hair out. I figure it's finally time I talk about how we can do better.
+
+Voice is really hard to get right. The constraints are so different, and you have far less to work with. In voice, latency is everything: the instant the natural flow of conversation gets killed, you feel an unbearable friction. It sucks to wait, and it sucks to feel like you're talking to a robot. However, we also want agents to do actual work, and work takes time.
+
+## The two scaling axes don't fit on a call
+
+Let's walk through the fundamental challenges, because they dictate our options for doing better. Recent model development has been predicated on two scaling axes:
+
+1. Larger models
+2. More inference-time compute
+
+Both of these are fundamentally incompatible with voice. Larger models are slower models. Reasoning tokens, the extra tokens a model generates to think before it answers, are synchronous: they block responding to the user. So while the industry is focused on chasing intelligence through scaling, we have to get smart to get intelligence that appears instant.
+
+You might think the obvious approach is to just train smaller models to be more effective agents. This does work, and I highly recommend training specialist models. You can really push smaller models: more intelligence than their size suggests, a style you actually own, and better economics. But this alone won't save you.
+
+Let's look at an example.
+
+## A reservation change is five inferences and three tools
+
+A caller says: "Can you move my 7pm to 8?" A person at the host stand does this while still talking. An agent that isn't just a chatbot has to do work, and the work is serial. A tool result doesn't get spoken at the end of the turn that called it. It lands in context, and the next turn can't say a word until the model has read it.
+
+<ReservationPipeline client:visible figure={1} />
+
+Even with a small, fast specialist, you pay for every generation, it's just the nature of serial work. In LLM inference we usually talk about two metrics: **TTFT** (time-to-first-token), how long it takes before the first token of this generation arrives, and **TPS** (tokens per second), how fast tokens get generated after that. TTFT includes prefill, the cost of reading the context you already have. After a tool returns, that prefill is how the next turn starts: the model has to read the result before it can decode the next tool call or the first spoken token. Decode time is the length of what you generate divided by TPS, whether that generation is a tool call or a sentence the caller hears. Then there's the tool itself: the database lookup, the API call, the calendar check — things engineers are used to optimizing.<MarginNote>I wouldn't normally bring up prefill versus decode, but it's relevant here. In voice contexts we can safely assume that user messages are extremely short so prefill is dominated by huge tool results. Decode optimizations that help more traditional agentic workloads — long generations, speculative decoding — often don't come free for short spoken turns.</MarginNote>
+
+Those penalties stack on every generation, and they multiply by how many generations the task needs. Three tools plus two spoken replies is five TTFTs, five decodes, and three tool executions. The caller hears nothing until the end of turn 3, then nothing again through the update. A human overlapping "let me see... yep, I can do 8" is one breath. The agent is a pipeline that can be agonizing for our users if we don't take the proper care to do things right.
+
+The deck is stacked against you the second you have to do real work and not just chat. You can make tools smarter and higher-utility so the model needs fewer turns, and you absolutely should, but it's an uphill battle. Every new capability you add (modify the party size, honor a seating request, apply a note) is another tool hop you might need in series. The way out is a multi-agent system: keep a fast model on the spoken path so the call stays interactive, and let other agents do the work that takes time.
+
+Walden at Cognition wrote a few posts in the last year that I found interesting. [Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents) and [what's actually working](https://cognition.com/blog/multi-agents-working) cover the challenges and wins in multi-agent systems from a coding and knowledge-work perspective.[^cognition] At Maple, where I've led the development of our agents, we've had similar philosophies, but voice diverges in a lot of ways, so I thought it would be interesting to call out some of the similarities and differences.
+
+The first major similarity is our consensus on splitting up responsibilities rather than swarming agents. One agent should own the thing the user actually experiences, and other agents should contribute work around it, because two writers conflict. The difference is the clock. Their user will wait on a diff. Ours will not. That makes it a different challenge so that's why the three patterns I'll get into are all about getting work off the spoken path, and being aware of the fact that time is passing while we work.<MarginNote>I get such a kick out of working with agents that have no real concept of time. When Claude tells me "You've identified the real load-bearing tranche, and honestly this will take 6-10 weeks to implement." I chuckle to myself as I send my agent back to knock it all out over the next hour. I feel like we should start timestamping all messages in our transcripts to give models a bit of a reality check and reference for their own speed.</MarginNote>
+
+## Blocking delegation makes the conversation wait
+
+The first pattern is the obvious one: treat the sub-agent like a blocking tool. The primary, the one actually on the call, hands work off and waits. While it waits you have to keep the line alive, so you generate a backchannel, a short bit of speech that covers the gap ("just a second, I'm pulling that up"), and you hope the sub-agent comes back before you run out of things to say or the pause gets uncomfortable.
+
+This can work for short lookups. It falls apart the moment the work is longer than a natural pause. Now you have to invent more speech that doesn't commit you to a wrong answer, and you have to handle barge-in, the user talking over the agent, on that speech. If they interrupt the filler, do you cancel the sub-agent? If they ask a new question, do you keep the old result? Making the handoff sound like a conversation rather than a tool call is a prompting and timing problem all its own.
+
+<Callout>
+	Making this filler natural for conversation is actually quite difficult. If
+	you don't precompute information and give it to the agent, you're effectively
+	prohibited from committing to anything without the sub-agent responding. You
+	don't know what the schedule looks like without checking — so you need to be
+	cautious overplaying your hand. You can't handle situations with confidence —
+	"Yeah I'm pretty sure we have a table open but let me make sure..." this can
+	work in some cases but what about policies or procedures? What about when it's
+	annoying or even harmful to temporarily give the wrong information? As an
+	exercise try to role play as a receptionist with someone. Whenever they ask
+	you for something try to respond naturally but you can never respond instantly
+	with an actually helpful response. Instead pause for a few moments before
+	getting back to them. See how quickly you run out of filler and the
+	conversation becomes awkward. If you have interesting thoughts on these
+	conversational dynamics, I'd love to chat about how we've worked on this
+	problem at Maple!
+</Callout>
+
+The blocking version is the most reliable of the three for correctness, because the primary sees the full result before it says anything. It's also the most prone to conversational breakdown and miserable waiting.
+
+## A backchannel is a forecast that the work will be late
+
+This is the part that's inherently hard, even before you get to fancy solutions. A human who already has the fact just answers. There's no gap. The same question to an agent is often a retrieval or a tool call, so the gap is there unless you already put the fact on the spoken path.
+
+One way off that gap is to precompute: memory, account state, likely facts, whatever the next turn will need, so the primary can speak without waiting. That only works if you predicted the right things, and the caller can always ask something you didn't fetch. That foresight is its own system, and it's a lot of work.
+
+The other way is to decide, at the turn, whether this particular piece of work will come back inside a natural pause. If you think it won't, you hold the floor with a backchannel. If you think it will, you wait and speak the answer. Both mistakes are audible. Fill when the result is already there and you get "let me check on that" into a fact you could have just said. Skip the fill when the tool is slow and you get dead air.
+
+<ForecastMatrix figure={2} />
+
+Most products skip the forecast and play a stock "um", "mm-hmm", or "let me check on that" on every lookup. I've talked to a lot of these systems as a caller, and they're painful. The filler is the same clip whether the answer is two hundred milliseconds away or four seconds away. The good case — stay silent, result already there — is the one they never reach, because they fill unconditionally. Generic hacks for fake instant intelligence don't work. If you want the call to feel like a conversation, the backchannel has to be a real prediction about latency, not a hold message.
+
+## Turn-boundary async still waits for a turn
+
+The second pattern is the same split, but the sub-agent runs in the background. The primary launches it, keeps talking, and the result gets messaged back into the primary's context. In a text agent this is fine, because the next message can wait. In a voice agent the obvious place to splice that message in is the next turn boundary: wait until the current utterance is done being spoken, then inject.
+
+You get overlapping compute, which is the whole point. You also get the overhead of passing messages back and forth, and a worse version of the filler problem: the primary is still talking, and everything it says until the turn ends was generated without the result. If it already committed to "I don't see a reservation under that name" while the sub-agent was about to find one, the next turn has to walk that back out loud.
+
+The turn boundary is convenient because existing voice stacks are half-duplex and existing agent harnesses are turn-shaped. However just because it's convenient doesn't make it right. The user is listening the whole time, so the useful moment is whenever the result arrives, not whenever the current sentence happens to end.
+
+## Truncate what hasn't been spoken
+
+The third pattern is an async sub-agent that doesn't wait on the turn. This only works because spoken audio plays at a constant speed, and we can generate tokens way faster than we can speak them. That gap is padding. At any moment mid-utterance, the primary's response is in three states: tokens already played, tokens committed to the TTS pipeline and about to be, and a tail that's been generated but not yet committed to audio. When the sub-agent returns, you truncate that tail and continue generation with the result in context, so the rest of the utterance can change.
+
+<PolicyCompare client:visible figure={3} />
+
+<TokenSplice client:visible figure={4} />
+
+If you can pull this off, you get async work and a single spoken stream that doesn't stall. The primary can start a sentence before it knows the answer and finish the sentence knowing the answer, which is how people actually talk when they're looking something up. That only works if the prefix was a real continuation rather than a stock hold, because a splice can't unsay "let me check on that."
+
+This is the one that's actually hard. You need an inference stack that can stop a generation, keep the KV cache for the spoken prefix, and resume with new tokens in the middle of an utterance. You need padding that matches the audio pipeline, or you get a glitch at the splice. You need the primary to have been generating something that can be steered rather than retracted: if it already said the wrong fact, truncation can't unsay it. And you need a model that doesn't fall apart when its own continuation is replaced, which basically all models will, because they were trained on complete turns.
+
+## The models were trained for turns
+
+You can approximate the splice in a harness: cancel the in-flight generation, keep the cache for the spoken prefix, prompt the model with that prefix plus the sub-agent result, keep talking. It's brittle. The model was trained to produce a complete assistant turn, so mid-utterance context injection looks like a different task. You see hedges, restarts, and answers that ignore the new information because the model is still completing the sentence it started.
+
+The good news is that generating SFT traces for this is surprisingly simple. **SFT** (supervised fine-tuning) is imitation: you show the model (context, desired continuation) pairs and train it to produce the continuation. For a splice, the pair is: spoken prefix plus a tool or sub-agent result that arrived mid-utterance, and a continuation that uses the result without unsaying the prefix. You can build those traces from ordinary complete turns. Take a finished utterance, pick a splice point that would have been reached in wall-clock time given that we generate faster than we speak, insert the result as if it landed then, and write (or have a teacher model write) the rest of the sentence as if the speaker just learned the answer. Do that across a lot of tasks and splice points and you have a dataset of interrupted continuations.
+
+RL on top of that is the obvious next step. You already know what "good" looks like: the prefix stays intact, the new information shows up in the remainder, the model doesn't restart or hedge, and it doesn't stall. Those are checkable rewards. You don't need a new training paradigm. You need traces that look like the thing you want at inference time, which most voice fine-tunes still don't have, because they look like complete turns.
+
+This is how you get a primary that can be steered. The harness still has to do the truncation and resumption. The model has to treat the splice as a normal continuation instead of a distribution shift. Both take real work, but nothing here is waiting on a breakthrough.
+
+## Full duplex helps the conversation, not the work
+
+Full duplex is the other thing people point at when they want the call to feel human. A full-duplex model listens and speaks at the same time, so you can talk over each other, turn-taking gets more natural, and a lot of the interruption and conversational brittleness of orchestrating half-duplex agents goes away. If it's done well, the model can use the audio itself: tone, pacing, a correction mid-sentence. Transcription errors become less of a critical failure mode, because you're not forcing every bit of meaning through a transcript.
+
+That's the pitch, and it's not always true. Native audio is supposed to enhance intelligence by cutting out the lossy transcription layer between audio and text — reasoning natively over speech should in theory prevent entire classes of failure modes. In practice, the models that reason this way are less intelligent: there's plenty of research about the [intelligence drop](https://qwen.ai/blog?id=qwen3-omni-flash-20251201) on casual spoken input relative to text.[^qwen] [VoiceBench](https://arxiv.org/abs/2410.17196) found that a naive ASR-plus-LLM pipeline still beat open end-to-end voice models on spoken instructions by a wide margin: the speech-to-speech model hears the audio and still understands less than a cascade that transcribes first.[^voicebench] You can see the same shape on [τ-voice](https://arxiv.org/abs/2603.13686), which puts full-duplex agents on real customer-service tasks.[^tauvoice] Even under clean audio, voice agents retain only a fraction of the text model's task completion; under noise, accents, and interruptions it drops further. Today's speech-to-speech models are still worse than pipeline models on a lot of audio understanding and agentic work, which is a pretty strong signal that something is off in how they're being trained.
+
+In an ideal world, yes: a native full-duplex model would absorb a lot of the turn-taking, barge-in, and backchannel problems this post has been about. But even that model doesn't natively solve the actual problem, which is taking actions in real time while speech is already leaving the speaker. S2S models from frontier labs like GPT-Live and Grok Voice Think Fast get closer (and I have to say remarkably so) by doing a two-tiered, multi-model approach: a fast model stays on the audio path so the call doesn't die, and another model or system does the work in the background. That's the same split as the third pattern, trained into the product instead of bolted on in a harness. It's also proof that you don't get instant intelligence by wishing the spoken model were bigger.
+
+## Interactivity is a third scaling axis
+
+There's a third axis the first section left out: scale the interactivity itself. That's the framing Thinking Machines put on their [interaction models](https://thinkingmachines.ai/blog/interaction-models/) preview,[^tml] and it's a very impressive demo. Instead of bolting interaction onto a turn-based model with a harness, they trained a model that interleaves input and output — continuous audio, video, and text — in 200ms micro-turns, so silence, overlap, and interruption stay in the model's context and there's no turn boundary to wait for. An asynchronous background model handles the sustained reasoning and tool use, and results get woven back into the conversation as they land. It even has a direct sense of elapsed time, which is one of the cooler aspects in my opinion. From a voice perspective, it's really no different than a full-duplex model + a background agent, but I think the video stuff is neat too.
+
+Directionally I think they've got it right, and it's pretty much the architecture this post has been building toward: a fast model holding the spoken path while the real work runs behind it. I like seeing labs focusing on scaling human-AI interaction, as that seems to be a bigger bottleneck for my productivity and experiences with agents today rather than pure intelligence. However, I'll say I'm surprised to see TML's direction being based on scaling the interaction model so large. They even mention that inference is the bottleneck for scaling their larger variants — too slow to serve in this setting — which is exactly the constraint this post opened on: larger models are slower models. With my limited background in video, I presume that their goals beyond just voice interaction are driving that direction.
+
+Work takes time, and a caller can't wait. That's just the fundamental constraint. You can hide the wait in a filler, in the next turn, or in the unplayed tail of the sentence you're already saying. Only the last one can get the result into the conversation the moment it lands, and it only works if you train the model for interrupted continuations instead of complete turns. Full duplex will make the talking feel better, but it's not free lunch.
+
+I'll write more soon about full-duplex voice, and a model I've been working on for the last few months. The constraint won't have changed, but I think I have more light to shed on the work required to scale human-AI interactivity.
+
+[^cognition]: Walden Yan, [Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents) and [what's actually working](https://cognition.com/blog/multi-agents-working), Cognition.
+
+[^qwen]: Qwen team, [Qwen3-Omni-Flash](https://qwen.ai/blog?id=qwen3-omni-flash-20251201), on the intelligence drop from casual spoken input.
+
+[^voicebench]: Chen et al., [VoiceBench](https://arxiv.org/abs/2410.17196), 2024.
+
+[^tauvoice]: [τ-voice](https://arxiv.org/abs/2603.13686), full-duplex agents on customer-service tasks.
+
+[^tml]: Thinking Machines Lab, [Interaction Models: A Scalable Approach to Human-AI Collaboration](https://thinkingmachines.ai/blog/interaction-models/), May 2026.

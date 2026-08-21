@@ -20,58 +20,67 @@ const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings } = await project.render();
 ---
 
-<BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
-	<div class="gap-x-12 lg:flex lg:items-start">
+<BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }} wide>
+	<div class:list={["project-shell", { "has-toc": headings.length > 0 }]}>
 		{!!headings.length && <TOC headings={headings} />}
-		<article class="flex-grow break-words min-w-0" data-pagefind-body>
+		<article class="project-article break-words" data-pagefind-body>
 			<div id="project-hero"><Hero content={project} /></div>
-			<div
-				class="prose prose-walln mt-12 max-w-none prose-headings:font-mono prose-headings:font-semibold prose-headings:text-text"
-			>
+			<div class="project-prose prose max-w-none">
 				<slot />
 			</div>
+			<nav class="project-paginator" aria-label="Article">
+				<button type="button" class="project-back-to-top" id="to-top-inline">
+					back to top
+				</button>
+			</nav>
 		</article>
 	</div>
 	<button
-		aria-label="Back to Top"
-		class="z-90 fixed bottom-8 end-4 flex h-10 w-10 translate-y-28 items-center justify-center border border-border bg-bg text-text-secondary opacity-0 transition-all duration-300 hover:border-accent hover:text-text data-[show=true]:translate-y-0 data-[show=true]:opacity-100 sm:end-8 sm:h-12 sm:w-12"
+		type="button"
+		aria-label="Back to top"
+		class="to-top-float"
 		data-show="false"
 		id="to-top-btn"
-	><svg
-			aria-hidden="true"
-			class="h-5 w-5"
-			fill="none"
-			focusable="false"
-			stroke="currentColor"
-			stroke-width="2"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M4.5 15.75l7.5-7.5 7.5 7.5"
-				stroke-linecap="round"
-				stroke-linejoin="round"></path>
-		</svg>
+	>
+		back to top
 	</button>
 </BaseLayout>
 
 <script>
 	const scrollBtn = document.getElementById("to-top-btn") as HTMLButtonElement;
+	const inlineBtn = document.getElementById(
+		"to-top-inline",
+	) as HTMLButtonElement;
 	const targetHeader = document.getElementById(
 		"project-hero",
 	) as HTMLDivElement;
+	const footer = document.querySelector("footer");
 
-	function callback(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			// only show the scroll to top button when the heading is out of view
-			scrollBtn.dataset.show = (!entry.isIntersecting).toString();
-		});
-	}
+	let heroVisible = true;
+	let footerVisible = false;
 
-	scrollBtn.addEventListener("click", () => {
+	const sync = () => {
+		scrollBtn.dataset.show = (!heroVisible && !footerVisible).toString();
+	};
+
+	const toTop = () => {
 		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
-	});
+	};
 
-	const observer = new IntersectionObserver(callback);
-	observer.observe(targetHeader);
+	scrollBtn.addEventListener("click", toTop);
+	inlineBtn.addEventListener("click", toTop);
+
+	const heroObserver = new IntersectionObserver((entries) => {
+		heroVisible = Boolean(entries[0]?.isIntersecting);
+		sync();
+	});
+	heroObserver.observe(targetHeader);
+
+	if (footer) {
+		const footerObserver = new IntersectionObserver((entries) => {
+			footerVisible = Boolean(entries[0]?.isIntersecting);
+			sync();
+		});
+		footerObserver.observe(footer);
+	}
 </script>

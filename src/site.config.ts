@@ -33,18 +33,7 @@ export const siteConfig: SiteConfig = {
 };
 
 export const expressiveCodeOptions: AstroExpressiveCodeOptions = {
-	themes: ["vesper", "github-light"],
-	themeCssSelector(theme, { styleVariants }) {
-		if (styleVariants.length >= 2) {
-			const baseTheme = styleVariants[0]?.theme;
-			const altTheme = styleVariants.find(
-				(v) => v.theme.type !== baseTheme?.type,
-			)?.theme;
-			if (theme === baseTheme || theme === altTheme)
-				return `[data-theme='${theme.type}']`;
-		}
-		return `[data-theme="${theme.name}"]`;
-	},
+	themes: ["github-light"],
 	useThemedScrollbars: false,
 	styleOverrides: {
 		frames: {
@@ -56,6 +45,6 @@ export const expressiveCodeOptions: AstroExpressiveCodeOptions = {
 		borderRadius: "0",
 		codePaddingInline: "1rem",
 		codeFontFamily:
-			'"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
+			'"SF Mono", "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
 	},
 };

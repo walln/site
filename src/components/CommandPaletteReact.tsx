@@ -33,12 +33,6 @@ const defaultCommands: CommandItem[] = [
 		shortcut: "ctrl+k",
 		action: "#search",
 	},
-	{
-		name: "theme",
-		description: "Toggle theme",
-		shortcut: "ctrl+t",
-		action: "#theme",
-	},
 ];
 
 export default function CommandPaletteReact({
@@ -69,9 +63,6 @@ export default function CommandPaletteReact({
 			} else if (cmd.action === "#search") {
 				const searchBtn = document.querySelector('[aria-label="Search"]');
 				(searchBtn as HTMLElement)?.click();
-			} else if (cmd.action === "#theme") {
-				const themeBtn = document.querySelector("theme-toggle button");
-				(themeBtn as HTMLElement)?.click();
 			}
 		}
 		setOpen(false);

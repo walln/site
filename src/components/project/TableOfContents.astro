@@ -14,11 +14,65 @@ const { headings } = Astro.props;
 const toc = generateTableOfContents(headings);
 ---
 
-<aside class="sticky top-24 order-2 -me-32 hidden basis-64 lg:block">
-	<h2 class="text-sm font-medium text-text-secondary uppercase tracking-wider mb-4">
-		On this page
-	</h2>
-	<ul class="text-sm space-y-1">
+<aside class="project-toc" aria-label="Table of contents">
+	<h2 class="project-toc-label">Contents</h2>
+	<ol class="project-toc-list">
 		{toc.map((heading) => <Heading heading={heading} />)}
-	</ul>
+	</ol>
 </aside>
+
+<script>
+	function setupToc() {
+		const toc = document.querySelector(".project-toc");
+		const article = document.querySelector(".project-article");
+		if (!toc || !article) return;
+
+		const links = [...toc.querySelectorAll<HTMLAnchorElement>("a[href^='#']")];
+		const headings = links
+			.map((link) => {
+				const id = decodeURIComponent(link.hash.slice(1));
+				const heading = document.getElementById(id);
+				return heading ? { link, heading } : undefined;
+			})
+			.filter((item): item is { link: HTMLAnchorElement; heading: HTMLElement } =>
+				Boolean(item),
+			);
+
+		if (!headings.length) return;
+
+		const setActive = (active: HTMLAnchorElement | undefined) => {
+			for (const { link } of headings) {
+				const isActive = link === active;
+				link.classList.toggle("is-active", isActive);
+				link.closest("li")?.classList.toggle("is-active", isActive);
+			}
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort(
+						(a, b) =>
+							a.boundingClientRect.top - b.boundingClientRect.top,
+					);
+				const first = visible[0]?.target;
+				const match = headings.find(({ heading }) => heading === first);
+				if (match) setActive(match.link);
+			},
+			{
+				rootMargin: "-20% 0px -65% 0px",
+				threshold: [0, 1],
+			},
+		);
+
+		for (const { heading } of headings) observer.observe(heading);
+
+		const initial = headings.find(
+			({ heading }) => heading.getBoundingClientRect().top >= 80,
+		);
+		setActive((initial ?? headings[0])?.link);
+	}
+
+	document.addEventListener("astro:page-load", setupToc);
+</script>

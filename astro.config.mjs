@@ -11,6 +11,7 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeUnwrapImages from "rehype-unwrap-images";
 import { expressiveCodeOptions } from "./src/site.config";
 import { remarkReadingTime } from "./src/utils/remark-reading-time";
+import { rehypeSidenotes } from "./src/utils/rehype-sidenotes";
 
 // https://astro.build/config
 export default defineConfig({
@@ -34,6 +35,7 @@ export default defineConfig({
 		remarkPlugins: [remarkReadingTime],
 		rehypePlugins: [
 			rehypeUnwrapImages,
+			rehypeSidenotes,
 			[
 				rehypeExternalLinks,
 				{

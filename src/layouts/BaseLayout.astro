@@ -5,23 +5,31 @@ import ASCIITexture from "@/components/ASCIITexture";
 import CommandPalette from "@/components/CommandPalette.astro";
 import Head from "@/components/Head.astro";
 import SkipLink from "@/components/SkipLink.astro";
-import ThemeScript from "@/components/ThemeScript.astro";
 import Footer from "@/components/layout/Footer.astro";
 import Header from "@/components/layout/Header.astro";
 import { siteConfig } from "@/site.config";
 
 import { ClientRouter } from "astro:transitions";
 
+import "@fontsource/eb-garamond/400.css";
+import "@fontsource/eb-garamond/400-italic.css";
+import "@fontsource/eb-garamond/600.css";
+import "@fontsource/eb-garamond/700.css";
+import "@fontsource/eb-garamond/800.css";
+import "@fontsource/geist-sans/400.css";
+import "@fontsource/geist-sans/500.css";
+import "@fontsource/geist-sans/600.css";
+import "@fontsource/chakra-petch/400.css";
+import "@fontsource/chakra-petch/500.css";
+import "@fontsource/chakra-petch/600.css";
 import "@fontsource/geist-mono/400.css";
-import "@fontsource/geist-mono/500.css";
-import "@fontsource/geist-mono/600.css";
-import "@fontsource/geist-mono/700.css";
 
 interface Props {
 	meta: SiteMeta;
 	showASCIITexture?: boolean;
 	asciiOpacity?: number;
 	hideChrome?: boolean;
+	wide?: boolean;
 }
 
 const {
@@ -29,6 +37,7 @@ const {
 	showASCIITexture = false,
 	asciiOpacity = 0.04,
 	hideChrome = false,
+	wide = false,
 } = Astro.props;
 ---
 
@@ -40,10 +49,9 @@ const {
 			ogImage={ogImage}
 			title={title}
 		/>
-		<ThemeScript />
 		<ClientRouter />
 	</head>
-	<body>
+	<body class:list={[{ "layout-wide": wide }]}>
 		{showASCIITexture && <ASCIITexture opacity={asciiOpacity} client:only="react" />}
 		<SkipLink />
 

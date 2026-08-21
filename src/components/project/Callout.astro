@@ -1,0 +1,14 @@
+---
+interface Props {
+	label?: string;
+}
+
+const { label = "Note" } = Astro.props;
+---
+
+<aside class="project-callout">
+	<p class="project-callout-label">{label}</p>
+	<div class="project-callout-body">
+		<slot />
+	</div>
+</aside>

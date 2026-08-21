@@ -10,7 +10,7 @@ const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 
 <PageLayout meta={{ title: "Home" }} showASCIITexture asciiOpacity={0.25}>
 	<section class="mb-16">
-		<h1 class="text-4xl sm:text-5xl font-mono font-bold tracking-tight mb-4">
+		<h1 class="text-4xl sm:text-5xl font-sans font-medium tracking-tight mb-4">
 			Nick Wall
 		</h1>
 		<p class="text-lg text-text-secondary mb-6">
@@ -25,7 +25,7 @@ const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 
 	<section>
 		<div class="flex items-baseline justify-between mb-8">
-			<h2 class="text-xl font-mono font-semibold">Recent Work</h2>
+			<h2 class="text-xl font-sans font-medium">Recent Work</h2>
 			<a
 				href="/projects"
 				class="text-sm text-text-secondary hover:text-text transition-colors"

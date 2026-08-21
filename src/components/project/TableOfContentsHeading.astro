@@ -10,23 +10,24 @@ const {
 } = Astro.props;
 ---
 
-<li class={depth > 2 ? "ml-4" : ""}>
+<li class:list={[{ "project-toc-child": depth > 2 }]}>
 	<a
 		href={`#${slug}`}
-		class={`block py-1 text-text-secondary hover:text-text transition-colors line-clamp-2 ${
-			depth <= 2 ? "font-medium" : "text-sm"
-		}`}
+		class:list={[
+			"project-toc-link",
+			{ "project-toc-link-top": depth <= 2 },
+		]}
 		aria-label={`Scroll to section: ${text}`}
 	>
 		{text}
 	</a>
 	{
 		!!children.length && (
-			<ul class="space-y-0.5">
+			<ol>
 				{children.map((subheading) => (
 					<Astro.self heading={subheading} />
 				))}
-			</ul>
+			</ol>
 		)
 	}
 </li>
