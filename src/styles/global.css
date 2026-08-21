@@ -201,28 +201,6 @@
 	.prose tfoot {
 		border-top: 1px solid var(--color-border);
 	}
-
-	.prose sup {
-		@apply ms-0.5;
-	}
-
-	.prose sup a {
-		background: none;
-	}
-
-	.prose sup a:hover {
-		color: var(--color-accent);
-		text-decoration: none;
-		background: none;
-	}
-
-	.prose sup a::before {
-		content: "[";
-	}
-
-	.prose sup a::after {
-		content: "]";
-	}
 }
 
 /* Custom scrollbar */
@@ -519,19 +497,39 @@
 }
 
 .sidenote-ref {
+	position: relative;
+	top: -0.35em;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 0.1em;
+	padding: 0.05em 0.4em;
 	font-family: var(--font-label);
-	font-size: 0.7em;
+	font-size: 0.68em;
+	font-weight: 500;
+	line-height: 1.3;
 	color: var(--color-text-secondary);
+	border-radius: 999px;
 	cursor: pointer;
 	user-select: none;
+	transition:
+		color 150ms ease,
+		background-color 150ms ease,
+		transform 150ms ease;
 }
 
-.sidenote-ref::before {
-	content: "[";
+.sidenote-ref:hover {
+	color: var(--color-accent);
 }
 
-.sidenote-ref::after {
-	content: "]";
+.sidenote-check:checked + .sidenote-ref {
+	color: var(--color-accent);
+	background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
+}
+
+.sidenote-check:focus-visible + .sidenote-ref {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 1px;
 }
 
 .sidenote-check {
@@ -555,14 +553,7 @@
 	font-family: var(--font-label);
 	font-size: 0.7em;
 	margin-right: 0.2rem;
-}
-
-.sidenote-index::before {
-	content: "[";
-}
-
-.sidenote-index::after {
-	content: "]";
+	transition: color 150ms ease;
 }
 
 .marginnote-label {
@@ -1355,11 +1346,51 @@
 		margin-right: calc(-1 * (var(--sidenote-width) + var(--sidenote-gap)));
 		padding: 0;
 		border: 0;
+		border-radius: 0;
 		background: transparent;
+		box-shadow: none;
+		animation: none;
 		position: relative;
 	}
 
-	.sidenote-ref {
+	/* Hovering a citation marker quietly emphasizes its note */
+	.sidenote {
+		transition: color 150ms ease;
+	}
+
+	.sidenote::before {
+		content: "";
+		position: absolute;
+		left: -1.1rem;
+		top: 0.2em;
+		bottom: 0.2em;
+		width: 1px;
+		background: var(--color-accent);
+		opacity: 0;
+		transform: scaleY(0.55);
+		transform-origin: top;
+		transition:
+			opacity 180ms ease,
+			transform 240ms ease;
+	}
+
+	.sidenote-wrap:hover .sidenote,
+	.sidenote-wrap:focus-within .sidenote {
+		color: var(--color-text);
+	}
+
+	.sidenote-wrap:hover .sidenote::before,
+	.sidenote-wrap:focus-within .sidenote::before {
+		opacity: 1;
+		transform: none;
+	}
+
+	.sidenote-wrap:hover .sidenote-index,
+	.sidenote-wrap:focus-within .sidenote-index {
+		color: var(--color-accent);
+	}
+
+	label.sidenote-ref {
 		cursor: default;
 	}
 
@@ -1401,24 +1432,41 @@
 	}
 }
 
+@keyframes sidenote-in {
+	from {
+		opacity: 0;
+		transform: translateY(-3px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 @media (max-width: 71.99rem) {
 	.sidenote {
 		display: none;
 		float: none;
 		width: auto;
-		margin: 0.65rem 0 0.85rem;
-		padding: 0.65rem 0.75rem;
+		margin: 0.7rem 0 0.9rem;
+		padding: 0.75rem 0.9rem;
 		border: 1px solid var(--color-border);
+		border-left: 2px solid var(--color-accent);
+		border-radius: 0.5rem;
 		background: var(--color-bg-secondary);
+		box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+		animation: sidenote-in 180ms ease both;
 	}
 
-	.sidenote-check:checked + .sidenote {
+	.sidenote-check:checked ~ .sidenote {
 		display: block;
 	}
 
 	.marginnote {
 		padding: 0.7rem 0.8rem;
 		border: 1px solid var(--color-border);
+		border-left: 2px solid var(--color-accent);
+		border-radius: 0.5rem;
 		background: var(--color-bg-secondary);
 	}
 }

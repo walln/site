@@ -109,35 +109,69 @@ function collectFootnotes(tree: HastNode): Map<string, HastNode[]> {
 	return notes;
 }
 
+function firstExternalHref(nodes: HastNode[]): string | undefined {
+	for (const node of nodes) {
+		if (
+			isElement(node, "a") &&
+			typeof node.properties?.href === "string" &&
+			node.properties.href.startsWith("http")
+		) {
+			return node.properties.href;
+		}
+		const nested = node.children ? firstExternalHref(node.children) : undefined;
+		if (nested) return nested;
+	}
+	return undefined;
+}
+
 function sidenoteNodes(
 	index: string,
 	checkboxId: string,
 	content: HastNode[],
 ): HastNode {
+	const href = firstExternalHref(content);
+	const hrefProperties: HastProperties | undefined = href
+		? { href, target: "_blank", rel: "noopener noreferrer" }
+		: undefined;
+
 	return {
 		type: "element",
 		tagName: "span",
 		properties: { className: ["sidenote-wrap"] },
 		children: [
-			{
-				type: "element",
-				tagName: "label",
-				properties: {
-					className: ["sidenote-ref"],
-					for: checkboxId,
-				},
-				children: [{ type: "text", value: index }],
-			},
-			{
-				type: "element",
-				tagName: "input",
-				properties: {
-					type: "checkbox",
-					id: checkboxId,
-					className: ["sidenote-check"],
-				},
-				children: [],
-			},
+			href
+				? {
+						type: "element",
+						tagName: "a",
+						properties: {
+							className: ["sidenote-ref"],
+							...hrefProperties,
+						},
+						children: [{ type: "text", value: index }],
+					}
+				: {
+						type: "element",
+						tagName: "input",
+						properties: {
+							type: "checkbox",
+							id: checkboxId,
+							className: ["sidenote-check"],
+						},
+						children: [],
+					},
+			...(href
+				? []
+				: [
+						{
+							type: "element",
+							tagName: "label",
+							properties: {
+								className: ["sidenote-ref"],
+								for: checkboxId,
+							},
+							children: [{ type: "text", value: index }],
+						} satisfies HastNode,
+					]),
 			{
 				type: "element",
 				tagName: "small",
