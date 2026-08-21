@@ -1,5 +1,5 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { render, type CollectionEntry } from "astro:content";
 
 import Hero from "@/components/project/Hero.astro";
 import TOC from "@/components/project/TableOfContents.astro";
@@ -13,11 +13,11 @@ interface Props {
 const { project } = Astro.props;
 const {
 	data: { description, ogImage, publishDate, title, updatedDate },
-	slug,
+	id,
 } = project;
-const socialImage = ogImage ?? `/og-image/${slug}.png`;
+const socialImage = ogImage ?? `/og-image/${id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
-const { headings } = await project.render();
+const { headings } = await render(project);
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }} wide>

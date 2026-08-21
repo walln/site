@@ -93,7 +93,7 @@ export async function getStaticPaths() {
 		...projects
 			.filter(({ data }) => !data.ogImage)
 			.map((project) => ({
-				params: { slug: project.slug },
+				params: { slug: project.id },
 				props: {
 					title: project.data.title,
 					pubDate: project.data.updatedDate ?? project.data.publishDate,

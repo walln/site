@@ -42,7 +42,7 @@ const recentProjects = sortMDByDate(allProjects).slice(0, MAX_PROJECTS);
 					return (
 						<li class="group">
 							<a
-								href={`/projects/${project.slug}/`}
+								href={`/projects/${project.id}/`}
 								class="block py-3 -mx-3 px-3 transition-colors hover:bg-bg-secondary"
 								data-astro-prefetch
 							>

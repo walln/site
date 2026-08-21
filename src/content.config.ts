@@ -1,4 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
+import { glob } from "astro/loaders";
 
 function removeDupsAndLowerCase(array: string[]) {
 	if (!array.length) return array;
@@ -8,6 +10,10 @@ function removeDupsAndLowerCase(array: string[]) {
 }
 
 const projectsCollection = defineCollection({
+	loader: glob({
+		pattern: ["**/*.md", "**/*.mdx"],
+		base: "./src/content/project",
+	}),
 	schema: ({ image }) =>
 		z.object({
 			coverImage: z
@@ -33,7 +39,6 @@ const projectsCollection = defineCollection({
 				.optional()
 				.transform((str) => (str ? new Date(str) : undefined)),
 		}),
-	type: "content",
 });
 
 export const collections = { project: projectsCollection };

@@ -1,5 +1,5 @@
 ---
-import Search from "astro-pagefind/components/Search";
+import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
 ---
 
 <!-- Search trigger button -->
@@ -37,15 +37,10 @@ import Search from "astro-pagefind/components/Search";
 			class="h-fit w-full max-w-xl bg-bg border border-border shadow-2xl overflow-hidden"
 		>
 			<div class="p-4">
-				<Search
-					id="search"
-					className="pagefind-ui"
-					uiOptions={{
-						showImages: false,
-						excerptLength: 15,
-						resetStyles: false,
-					}}
-				/>
+				<PagefindConfig excerpt-length={15} />
+				<pagefind-input placeholder="Search…" />
+				<pagefind-summary />
+				<pagefind-results />
 				<div
 					class="search-instructions flex justify-center gap-6 mt-4 pt-4 border-t border-border text-xs text-text-secondary"
 				>
@@ -73,18 +68,20 @@ import Search from "astro-pagefind/components/Search";
 	}
 
 	function openPagefind() {
-		const searchDiv = document.getElementById("search");
-		const search = searchDiv.querySelector("input");
+		const searchInput = document.querySelector("pagefind-input input");
 		setTimeout(() => {
-			search.focus();
+			searchInput?.focus();
 		}, 0);
 		backdrop?.classList.remove("hidden");
 		backdrop?.classList.add("block");
 	}
 
 	function closePagefind() {
-		const search = document.getElementById("search");
-		search.value = "";
+		const searchInput = document.querySelector("pagefind-input input");
+		if (searchInput) {
+			searchInput.value = "";
+			searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+		}
 		backdrop?.classList.remove("block");
 		backdrop?.classList.add("hidden");
 	}
@@ -113,7 +110,11 @@ import Search from "astro-pagefind/components/Search";
 
 	// close pagefind when searched result(link) clicked
 	document.addEventListener("click", (event) => {
-		if (event.target.classList.contains("pagefind-ui__result-link")) {
+		const target = event.target;
+		if (
+			target instanceof HTMLElement &&
+			target.classList.contains("pf-result-link")
+		) {
 			closePagefind();
 		}
 	});
@@ -142,176 +143,64 @@ import Search from "astro-pagefind/components/Search";
 		display: flex !important;
 	}
 
+	/* Theme the Pagefind Component UI to match the site */
 	:root {
-		--pagefind-ui-scale: 0.9;
-		--pagefind-ui-border-width: 1px;
-		--pagefind-ui-border-radius: 0;
-		--pagefind-ui-font: inherit;
-		--pagefind-ui-primary: var(--color-accent);
-		--pagefind-ui-text: var(--color-text);
-		--pagefind-ui-background: transparent;
-		--pagefind-ui-border: var(--color-border);
-		--pagefind-ui-tag: var(--color-bg-secondary);
+		--pf-font: inherit;
+		--pf-text: var(--color-text);
+		--pf-text-secondary: var(--color-text-secondary);
+		--pf-text-muted: var(--color-text-secondary);
+		--pf-background: transparent;
+		--pf-border: var(--color-border);
+		--pf-border-focus: var(--color-accent);
+		--pf-hover: var(--color-bg-secondary);
+		--pf-mark: var(--color-accent);
+		--pf-border-radius: 0;
 	}
 
-	/* Search input */
-	#search .pagefind-ui__form {
-		position: relative;
+	pagefind-input {
+		display: block;
 		margin-bottom: 1rem;
 	}
 
-	#search .pagefind-ui__form::before {
-		display: none !important;
-	}
-
-	#search .pagefind-ui__search-input {
-		width: 100% !important;
-		border: 1px solid var(--color-border) !important;
-		background: var(--color-bg-secondary) !important;
-		color: var(--color-text) !important;
-		font-family: inherit !important;
-		font-size: 1rem !important;
-		padding: 0.75rem 3rem 0.75rem 1rem !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		outline: none !important;
-		transition: border-color 150ms ease;
-	}
-
-	#search .pagefind-ui__search-input:focus {
-		border-color: var(--color-accent) !important;
-	}
-
-	#search .pagefind-ui__search-input::placeholder {
-		color: var(--color-text-secondary) !important;
-	}
-
-	/* Clear button styling */
-	#search .pagefind-ui__search-clear {
-		background: transparent !important;
-		border: none !important;
-		color: var(--color-text-secondary) !important;
-		right: 0.5rem !important;
-		padding: 0.5rem !important;
-		transition: color 150ms ease;
-	}
-
-	#search .pagefind-ui__search-clear:hover {
-		color: var(--color-text) !important;
-	}
-
-	/* Results container */
-	#search .pagefind-ui__results-area {
+	pagefind-summary {
 		display: block;
-		width: 100%;
+		padding: 2rem 1rem;
+		text-align: center;
+		color: var(--color-text-secondary);
+		font-size: 0.875rem;
 	}
 
-	#search .pagefind-ui__results {
+	pagefind-results {
+		display: block;
 		max-height: 45vh;
 		min-height: 100px;
 		overflow-y: auto;
 		padding: 0.25rem;
 	}
 
-	/* Individual result styling */
-	#search .pagefind-ui__result {
-		border: none !important;
-		padding: 0.75rem !important;
-		margin: 0 !important;
-		border-radius: 0 !important;
-		transition: background-color 150ms ease;
-		background: transparent !important;
+	/* Custom scrollbar for results */
+	pagefind-results::-webkit-scrollbar {
+		width: 6px;
 	}
 
-	#search .pagefind-ui__result:hover {
-		background-color: var(--color-bg-secondary) !important;
+	pagefind-results::-webkit-scrollbar-track {
+		background: transparent;
 	}
 
-	/* Result title styling */
-	#search .pagefind-ui__result-title,
-	#search .pagefind-ui__result-link {
-		color: var(--color-text) !important;
-		font-family: inherit !important;
-		font-size: 0.9375rem !important;
-		font-weight: 500 !important;
-		text-decoration: none !important;
-		transition: color 150ms ease;
+	pagefind-results::-webkit-scrollbar-thumb {
+		background: var(--color-border);
 	}
 
-	#search .pagefind-ui__result:hover .pagefind-ui__result-link {
-		color: var(--color-accent) !important;
-	}
-
-	/* Result excerpt styling */
-	#search .pagefind-ui__result-excerpt {
-		color: var(--color-text-secondary) !important;
-		font-size: 0.875rem !important;
-		font-family: inherit !important;
-		margin-top: 0.25rem;
-		line-height: 1.5;
-		font-weight: 400 !important;
+	pagefind-results::-webkit-scrollbar-thumb:hover {
+		background: var(--color-text-secondary);
 	}
 
 	/* Highlight styling */
-	#search mark {
+	pagefind-results mark {
 		color: var(--color-accent) !important;
 		background-color: color-mix(in srgb, var(--color-accent) 10%, transparent) !important;
 		font-weight: 500;
 		padding: 0 0.125rem;
-	}
-
-	/* Tag styling */
-	#search .pagefind-ui__result [data-pagefind-filter="tag"] {
-		display: inline-block !important;
-		padding: 0.125rem 0.5rem;
-		margin: 0.125rem 0.25rem 0.125rem 0;
-		font-size: 0.75rem !important;
-		font-family: inherit;
-		background-color: var(--color-bg-secondary);
-		border: 1px solid var(--color-border);
-		color: var(--color-text-secondary) !important;
-		text-decoration: none !important;
-		transition: all 150ms ease;
-	}
-
-	#search .pagefind-ui__result [data-pagefind-filter="tag"]:hover {
-		border-color: var(--color-accent);
-		color: var(--color-text) !important;
-	}
-
-	/* Messages styling */
-	#search .pagefind-ui__message {
-		color: var(--color-text-secondary) !important;
-		font-family: inherit !important;
-		font-size: 0.875rem !important;
-		text-align: center;
-		padding: 2rem 1rem;
-	}
-
-	/* Custom scrollbar for results */
-	#search .pagefind-ui__results::-webkit-scrollbar {
-		width: 6px;
-	}
-
-	#search .pagefind-ui__results::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	#search .pagefind-ui__results::-webkit-scrollbar-thumb {
-		background: var(--color-border);
-	}
-
-	#search .pagefind-ui__results::-webkit-scrollbar-thumb:hover {
-		background: var(--color-text-secondary);
-	}
-
-	/* Hide unwanted elements */
-	#search .pagefind-ui__result-thumb {
-		display: block !important;
-	}
-
-	#search .pagefind-ui__drawer {
-		display: block !important;
 	}
 
 	@media (max-width: 640px) {
