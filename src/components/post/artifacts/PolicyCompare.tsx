@@ -86,12 +86,14 @@ export default function PolicyCompare({ figure }: PolicyCompareProps) {
 										start: REQUEST_END,
 										end: RESULT,
 										label: "still talking",
+										shortLabel: "talking",
 										kind: "fill",
 									},
 									{
 										start: RESULT,
 										end: 62,
 										label: "result unused",
+										shortLabel: "unused",
 										kind: "wait",
 									},
 									{
@@ -120,6 +122,7 @@ export default function PolicyCompare({ figure }: PolicyCompareProps) {
 										start: REQUEST_END,
 										end: RESULT,
 										label: "heard prefix",
+										shortLabel: "prefix",
 										kind: "speech",
 									},
 									{

@@ -735,6 +735,42 @@
 	gap: 0.55rem;
 }
 
+/*
+ * Camera-follow (see TimelineChart): while data-camera is set, every .lane-cam
+ * expands to --cam-w and pans by --cam-x so the playhead stays in frame, each
+ * inside a .lane-viewport that clips at the frame edge. Without data-camera
+ * these are inert wrappers and the chart renders fitted, as before.
+ */
+.lane-viewport {
+	position: relative;
+	min-width: 0;
+}
+
+.lane-cam-fill {
+	position: relative;
+	height: 100%;
+}
+
+.lane-chart[data-camera] .lane-cam {
+	width: var(--cam-w, 100%);
+	transform: translateX(var(--cam-x, 0px));
+	will-change: transform;
+}
+
+/* Clip horizontally only: the playhead dot and axis text overhang vertically. */
+.lane-chart[data-camera] .lane-viewport,
+.lane-chart[data-camera] .lane-overlay,
+.lane-chart[data-camera] .lane-markers {
+	overflow-x: clip;
+}
+
+/* Hidden twins of the span labels, measured to decide label placement. */
+.lane-measure {
+	position: absolute;
+	visibility: hidden;
+	pointer-events: none;
+}
+
 .lane-row {
 	display: grid;
 	grid-template-columns: var(--lane-label-width) minmax(0, 1fr);
@@ -815,25 +851,58 @@
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	padding-left: 0.45rem;
+	padding: 0 0.4rem;
 	font-family: var(--font-sans);
 	font-size: 0.72rem;
 	line-height: 1;
 	color: var(--lane-ink);
-	/* Never truncate: labels on sparse lanes may spill into empty track. */
+	/* Never truncated or clipped: placement guarantees the label fits. */
 	white-space: nowrap;
 	pointer-events: none;
 	z-index: 2;
 }
 
-.lane-span-label[data-align="end"] {
-	padding-left: 0;
-	padding-right: 0.45rem;
+/*
+ * Labels that can't fit inside their bar sit in the empty track beside it
+ * on their own soft plate, tinted like the bar they annotate, so text
+ * always has a background of its own.
+ */
+.lane-span-label[data-placement="after"],
+.lane-span-label[data-placement="before"] {
+	padding-top: 0.16rem;
+	padding-bottom: 0.16rem;
+	border-radius: 4px;
+	background: var(--lane-chip, hsl(0 0% 100% / 0.8));
+}
+
+.lane-span-label[data-placement="after"] {
+	margin-left: 0.2rem;
+}
+
+.lane-span-label[data-placement="before"] {
+	margin-right: 0.2rem;
+}
+
+/* Inside a hatched bar, the label clears its own solid window in the
+   pattern so hatch lines never run through the text. */
+.lane-span-label-work[data-placement="inside"],
+.lane-span-label-fill[data-placement="inside"],
+.lane-span-label-wait[data-placement="inside"] {
+	padding-top: 0.16rem;
+	padding-bottom: 0.16rem;
+	border-radius: 4px;
+	background: var(--lane-chip);
+}
+
+.lane-span-label-speech,
+.lane-span-label-fill {
+	--lane-chip: var(--viz-audio-soft);
 }
 
 .lane-span-label-gen,
 .lane-span-label-work {
 	--lane-ink: var(--viz-machine-ink);
+	--lane-chip: var(--viz-machine-soft);
 }
 
 .lane-span-label-fill {
@@ -842,6 +911,7 @@
 
 .lane-span-label-wait {
 	--lane-ink: var(--viz-cost-ink);
+	--lane-chip: var(--viz-cost-soft);
 }
 
 .lane-span-speech {
@@ -1377,11 +1447,17 @@
 
 	/*
 	 * The per-generation microlabels don't fit between the speech labels on a
-	 * narrow track. The gray bars still show each generation; the caption
-	 * carries the count.
+	 * fitted narrow track, so they only show while the camera is expanded.
+	 * At rest the gray bars still show each generation; the caption carries
+	 * the count.
 	 */
 	.lane-span-label-gen {
-		display: none;
+		opacity: 0;
+		transition: opacity 250ms ease;
+	}
+
+	.lane-chart[data-camera="on"] .lane-span-label-gen {
+		opacity: 1;
 	}
 
 	.forecast-cell {
