@@ -1,7 +1,10 @@
 ---
+import nySketch from "@/assets/ny-sketch.png";
 import FormattedDate from "@/components/FormatDate.astro";
 import { getAllPosts, sortPostsByDate } from "@/data/blog";
 import PageLayout from "@/layouts/BaseLayout.astro";
+
+import { Image } from "astro:assets";
 
 const MAX_POSTS = 5;
 const allPosts = await getAllPosts();
@@ -14,28 +17,83 @@ const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 		description:
 			"Leading research & engineering @ Maple. Machine learning, mostly — how people and computers interact, what intelligence actually is, and making it abundant and accessible.",
 	}}
-	showASCIITexture asciiOpacity={0.25}
 >
 	<section class="mb-16">
-		<h1 class="text-4xl sm:text-5xl font-sans font-medium tracking-tight mb-4">
+		<h1
+			class="lowercase text-4xl sm:text-5xl font-sans font-medium tracking-tight mb-8"
+		>
 			Nick Wall
 		</h1>
-		<p class="text-lg text-text-secondary mb-6">
-			Currently: leading research & engineering @ Maple
-		</p>
-		<p class="text-text-secondary max-w-xl leading-relaxed">
-			ML, mostly. How people and computers interact. What
-			intelligence actually is. And making sure that when intelligence is 
-			abundant, everyone can reach it.
-		</p>
+		<div class="max-w-xl space-y-5 leading-relaxed text-text">
+			<p>
+				Currently leading research &amp; engineering @ <span
+					class="peek"
+					><a class="walln-link" href="https://maple.inc">Maple</a
+					><span class="peek-note" aria-hidden="true"
+						><span class="peek-note-body"
+							><span class="peek-note-label">current</span>
+							voice AI for restaurants — answers the phone and gets
+							things done so the kitchen doesn't have to.</span
+						></span
+					></span
+				>. I built our agent platform, trained our speech models, and
+				tinker on moonshot ideas.
+			</p>
+		</div>
+
+		<Image
+			src={nySketch}
+			alt="A thin-line pen sketch of the Brooklyn Bridge with the lower Manhattan skyline behind it"
+			class="my-10 w-full max-w-2xl h-auto"
+			loading="eager"
+			fetchpriority="high"
+		/>
+
+		<div class="max-w-xl space-y-5 leading-relaxed text-text">
+			<p>
+				Before Maple I was @ <span class="peek"
+					><a class="walln-link" href="https://www.ibm.com">IBM</a
+					><span class="peek-note" aria-hidden="true"
+						><span class="peek-note-body"
+							><span class="peek-note-label">before</span>hacking
+							on agents &amp; voice, before it was cool.</span
+						></span
+					></span
+				>. Undergrad + grad school @
+				<span class="peek"
+					><a class="walln-link" href="https://www.smu.edu">SMU</a
+					><span class="peek-note" aria-hidden="true"
+						><span class="peek-note-body"
+							><span class="peek-note-label">school</span
+							>undergrad + grad &middot; dallas, tx.</span
+						></span
+					></span
+				>. Now I live in NYC — doing startups and making computers do
+				cool things.
+			</p>
+			<p class="contact-line">
+				Most of my focus is on how people &amp; computers interact — and
+				making sure that when intelligence is abundant, everyone can
+				reach it. Find me on
+				<a class="walln-link" href="https://x.com/nickwal">X</a>.<span
+					class="contact-more"
+				>
+					(or <a class="walln-link" href="https://github.com/walln"
+						>GitHub</a
+					>, or <a class="walln-link" href="mailto:walln@hey.com"
+						>email me</a
+					>)</span
+				>
+			</p>
+		</div>
 	</section>
 
 	<section>
 		<div class="flex items-baseline justify-between mb-8">
-			<h2 class="text-xl font-sans font-medium">Recent Work</h2>
+			<h2 class="lowercase text-xl font-sans font-medium">Recent Work</h2>
 			<a
 				href="/blog"
-				class="text-sm text-text-secondary hover:text-text transition-colors"
+				class="lowercase text-sm text-text-secondary hover:text-text transition-colors"
 			>
 				View all &rarr;
 			</a>
@@ -61,7 +119,9 @@ const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 									<div class="flex-1 min-w-0">
 										<h3 class="font-medium text-text group-hover:text-accent transition-colors">
 											{post.data.draft && (
-												<span class="text-text-secondary">(Draft) </span>
+												<span class="text-text-secondary">
+													(Draft){" "}
+												</span>
 											)}
 											{post.data.title}
 										</h3>
@@ -80,3 +140,82 @@ const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 		</ul>
 	</section>
 </PageLayout>
+
+<style>
+	/* Alternative contact options: present but quiet until the sentence is
+	   hovered or tabbed into. Opacity-only so nothing reflows. */
+	.contact-more {
+		opacity: 0;
+		transition: opacity 250ms ease;
+	}
+
+	.contact-line:hover .contact-more,
+	.contact-line:focus-within .contact-more {
+		opacity: 1;
+	}
+
+	/* Margin notes: hovering an entity link fades a Tufte-style note into the
+	   right margin at the same line height — the same scholarly apparatus the
+	   blog posts use for sidenotes. Wide viewports only; the margin is the
+	   whole idea. Notes are zero-height floats so an invisible note never
+	   pushes a neighboring one out of alignment. */
+	.peek-note {
+		display: none;
+	}
+
+	@media (min-width: 72rem) and (hover: hover) {
+		.peek-note {
+			display: block;
+			float: right;
+			clear: right;
+			width: 14rem;
+			height: 0;
+			overflow: visible;
+			margin-right: calc(-14rem - 2.75rem);
+		}
+
+		.peek-note-body {
+			position: relative;
+			display: block;
+			font-family: var(--font-serif);
+			font-size: 0.82rem;
+			line-height: 1.55;
+			color: var(--color-text-secondary);
+			opacity: 0;
+			transform: translateX(4px);
+			pointer-events: none;
+			transition:
+				opacity 240ms ease 120ms,
+				transform 280ms ease 120ms;
+		}
+
+		.peek:hover .peek-note-body,
+		.peek:focus-within .peek-note-body {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.peek-note-label {
+		display: block;
+		font-family: var(--font-label);
+		font-size: 0.65rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		margin-bottom: 0.3rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.peek-note-body {
+			transition: opacity 240ms ease 120ms;
+			transform: none;
+		}
+	}
+
+	/* No hover on touch: contact options are simply visible. */
+	@media (hover: none) {
+		.contact-more {
+			opacity: 1;
+		}
+	}
+</style>

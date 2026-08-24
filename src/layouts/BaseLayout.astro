@@ -1,7 +1,6 @@
 ---
 import type { SiteMeta } from "@/types";
 
-import ASCIITexture from "@/components/ASCIITexture";
 import CommandPalette from "@/components/CommandPalette.astro";
 import Head from "@/components/Head.astro";
 import SkipLink from "@/components/SkipLink.astro";
@@ -23,16 +22,12 @@ import "@fontsource/geist-mono/400.css";
 
 interface Props {
 	meta: SiteMeta;
-	showASCIITexture?: boolean;
-	asciiOpacity?: number;
 	hideChrome?: boolean;
 	wide?: boolean;
 }
 
 const {
 	meta: { articleDate, description = siteConfig.description, ogImage, title },
-	showASCIITexture = false,
-	asciiOpacity = 0.04,
 	hideChrome = false,
 	wide = false,
 } = Astro.props;
@@ -49,7 +44,6 @@ const {
 		<ClientRouter />
 	</head>
 	<body class:list={[{ "layout-wide": wide }]}>
-		{showASCIITexture && <ASCIITexture opacity={asciiOpacity} client:only="react" />}
 		<SkipLink />
 
 		{!hideChrome && <Header />}

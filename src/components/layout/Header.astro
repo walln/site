@@ -64,7 +64,7 @@ const url = new URL(Astro.request.url);
 		<div class="flex items-center gap-8">
 			<a
 				href="/"
-				class="text-lg font-sans font-medium tracking-tight text-text hover:text-accent transition-colors"
+				class="lowercase text-lg font-sans font-medium tracking-tight text-text hover:text-accent transition-colors"
 				aria-current={url.pathname === "/" ? "page" : false}
 			>
 				Nick Wall
@@ -74,7 +74,7 @@ const url = new URL(Astro.request.url);
 					menuLinks.map((link) => (
 						<a
 							href={link.path}
-							class={`text-sm transition-colors relative group ${
+							class={`lowercase text-sm transition-colors relative group ${
 								url.pathname === link.path || 
 								(link.path !== "/" && url.pathname.startsWith(link.path))
 									? "text-text"
@@ -183,7 +183,7 @@ const url = new URL(Astro.request.url);
 					menuLinks.map((link) => (
 						<a
 							href={link.path}
-							class={`mobile-menu-link text-base py-3 px-2 transition-colors rounded ${
+							class={`mobile-menu-link lowercase text-base py-3 px-2 transition-colors rounded ${
 								url.pathname === link.path ||
 								(link.path !== "/" && url.pathname.startsWith(link.path))
 									? "text-text font-medium bg-bg-secondary"
