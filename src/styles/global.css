@@ -79,6 +79,15 @@
 
 	html {
 		@apply scroll-smooth;
+		/*
+			The ::-webkit-scrollbar rules below opt out of overlay scrollbars, so
+			the scrollbar consumes 8px of layout width only on pages tall enough
+			to scroll — which shifts the centered column sideways between pages.
+			Keep the track always present so that width is constant. Note that
+			scrollbar-gutter does not work here: Chrome ignores it once
+			::-webkit-scrollbar is customized.
+		*/
+		overflow-y: scroll;
 	}
 
 	body {
