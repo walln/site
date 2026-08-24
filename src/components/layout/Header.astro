@@ -3,63 +3,122 @@ import Socials from "@/components/Socials.astro";
 import { menuLinks } from "@/site.config";
 
 const url = new URL(Astro.request.url);
+
+const isActive = (path: string) =>
+	url.pathname === path || (path !== "/" && url.pathname.startsWith(path));
 ---
 
 <style>
-	/* Mobile menu animations */
-	.mobile-menu-container {
+	/*
+	 * The overlay (z-50) sits above page content (z-10) but below the header
+	 * (z-60), so the wordmark stays visible and the hamburger morphs into the
+	 * close button in place.
+	 */
+	.mobile-menu {
 		visibility: hidden;
-		pointer-events: none;
-	}
-
-	.mobile-menu-container.open {
-		visibility: visible;
-		pointer-events: auto;
-	}
-
-	/* Backdrop fade animation */
-	.mobile-menu-backdrop {
 		opacity: 0;
-		transition: opacity 300ms ease-out;
+		background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		transition:
+			opacity 200ms ease,
+			visibility 0s 200ms;
 	}
 
-	.mobile-menu-container.open .mobile-menu-backdrop {
+	.mobile-menu.open {
+		visibility: visible;
 		opacity: 1;
+		transition:
+			opacity 250ms ease,
+			visibility 0s;
 	}
 
-	/* Panel slide animation */
-	.mobile-menu-panel {
-		transform: translateX(100%);
-		transition: transform 300ms ease-out;
+	@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+		.mobile-menu {
+			background: var(--color-bg);
+		}
 	}
 
-	.mobile-menu-container.open .mobile-menu-panel {
-		transform: translateX(0);
+	/* Staggered rise-in for menu items; fast un-staggered fade on close */
+	.mobile-menu-item {
+		opacity: 0;
+		transform: translateY(0.85rem);
+		transition:
+			opacity 150ms ease,
+			transform 150ms ease;
 	}
 
-	/* Menu link hover underline effect */
+	.mobile-menu.open .mobile-menu-item {
+		opacity: 1;
+		transform: none;
+		transition:
+			opacity 400ms ease,
+			transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+		transition-delay: calc(50ms + var(--stagger) * 50ms);
+	}
+
+	/* Accent hairline under the current page, mirroring the desktop nav */
 	.mobile-menu-link {
 		position: relative;
+		display: inline-block;
 	}
 
 	.mobile-menu-link::after {
 		content: "";
 		position: absolute;
-		bottom: 0;
+		bottom: -0.1em;
 		left: 0;
 		height: 1px;
 		width: 0;
 		background-color: var(--color-accent);
-		transition: width 200ms ease-out;
+		transition: width 300ms ease;
 	}
 
 	.mobile-menu-link:hover::after,
 	.mobile-menu-link[aria-current="page"]::after {
 		width: 100%;
 	}
+
+	/* Hamburger that morphs into a close cross */
+	.menu-toggle-icon {
+		display: block;
+		position: relative;
+		width: 1.125rem;
+		height: 1rem;
+	}
+
+	.menu-toggle-line {
+		position: absolute;
+		left: 0;
+		top: calc(50% - 0.75px);
+		width: 100%;
+		height: 1.5px;
+		background-color: currentColor;
+		transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.menu-toggle-line:first-child {
+		transform: translateY(-3.5px);
+	}
+
+	.menu-toggle-line:last-child {
+		transform: translateY(3.5px);
+	}
+
+	.menu-toggle[aria-expanded="true"] {
+		color: var(--color-text);
+	}
+
+	.menu-toggle[aria-expanded="true"] .menu-toggle-line:first-child {
+		transform: rotate(45deg);
+	}
+
+	.menu-toggle[aria-expanded="true"] .menu-toggle-line:last-child {
+		transform: rotate(-45deg);
+	}
 </style>
 
-<header id="main-header">
+<header id="main-header" class="z-[60]">
 	<nav class="flex items-center justify-between" aria-label="Main navigation">
 		<div class="flex items-center gap-8">
 			<a
@@ -75,26 +134,17 @@ const url = new URL(Astro.request.url);
 						<a
 							href={link.path}
 							class={`lowercase text-sm transition-colors relative group ${
-								url.pathname === link.path || 
-								(link.path !== "/" && url.pathname.startsWith(link.path))
+								isActive(link.path)
 									? "text-text"
 									: "text-text-secondary hover:text-text"
 							}`}
-							aria-current={
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "page"
-									: false
-							}
+							aria-current={isActive(link.path) ? "page" : false}
 							data-astro-prefetch
 						>
 							{link.title}
 							<span
 								class={`absolute -bottom-1 left-0 h-px bg-accent transition-all ${
-									url.pathname === link.path ||
-									(link.path !== "/" && url.pathname.startsWith(link.path))
-										? "w-full"
-										: "w-0 group-hover:w-full"
+									isActive(link.path) ? "w-full" : "w-0 group-hover:w-full"
 								}`}
 							/>
 						</a>
@@ -108,174 +158,146 @@ const url = new URL(Astro.request.url);
 			<button
 				type="button"
 				id="toggle-navigation-menu"
-				class="sm:hidden p-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors"
+				class="menu-toggle sm:hidden p-2 -mr-2 text-text-secondary hover:text-text transition-colors"
 				aria-expanded="false"
-				aria-label="Open main menu"
+				aria-label="Open menu"
 				aria-controls="mobile-navigation-menu"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="w-5 h-5"
-					aria-hidden="true"
-				>
-					<line x1="3" y1="6" x2="21" y2="6" />
-					<line x1="3" y1="12" x2="21" y2="12" />
-					<line x1="3" y1="18" x2="21" y2="18" />
-				</svg>
+				<span class="menu-toggle-icon" aria-hidden="true">
+					<span class="menu-toggle-line"></span>
+					<span class="menu-toggle-line"></span>
+				</span>
 			</button>
 		</div>
 	</nav>
 </header>
 
-<!-- Mobile navigation drawer - OUTSIDE header to escape stacking context -->
-<div
-	id="mobile-navigation-menu"
-	class="mobile-menu-container fixed inset-0 z-[100]"
-	aria-label="Mobile menu"
->
-	<!-- Backdrop - invisible, just for click-to-close -->
-	<div
-		class="mobile-menu-backdrop absolute inset-0"
-		id="mobile-menu-backdrop"
-	>
-	</div>
-
-	<!-- Menu panel - fully solid background -->
-	<nav
-		class="mobile-menu-panel absolute right-0 top-0 h-full w-72 bg-bg border-l border-border shadow-2xl flex flex-col"
-	>
-		<!-- Header with close button -->
-		<div class="flex items-center justify-between p-6 border-b border-border">
-			<span class="text-sm font-medium text-text-secondary">Menu</span>
-			<button
-				type="button"
-				id="close-navigation-menu"
-				class="p-2 -mr-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors rounded"
-				aria-label="Close menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="w-5 h-5"
-					aria-hidden="true"
-				>
-					<line x1="18" y1="6" x2="6" y2="18" />
-					<line x1="6" y1="6" x2="18" y2="18" />
-				</svg>
-			</button>
-		</div>
-
-		<!-- Navigation links -->
-		<div class="flex-1 p-6">
-			<div class="flex flex-col gap-2">
+<!-- Full-screen mobile menu overlay - sibling of header so it can sit beneath it -->
+<div id="mobile-navigation-menu" class="mobile-menu fixed inset-0 z-50 sm:hidden">
+	<div class="mx-auto flex h-full max-w-3xl flex-col px-8">
+		<nav class="flex flex-1 flex-col justify-center" aria-label="Mobile navigation">
+			<ul class="flex flex-col items-start gap-5">
 				{
-					menuLinks.map((link) => (
-						<a
-							href={link.path}
-							class={`mobile-menu-link lowercase text-base py-3 px-2 transition-colors rounded ${
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "text-text font-medium bg-bg-secondary"
-									: "text-text-secondary hover:text-text hover:bg-bg-secondary/50"
-							}`}
-							aria-current={
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "page"
-									: false
-							}
-							data-astro-prefetch
-						>
-							{link.title}
-						</a>
+					menuLinks.map((link, index) => (
+						<li class="mobile-menu-item" style={`--stagger: ${index}`}>
+							<a
+								href={link.path}
+								class={`mobile-menu-link font-serif lowercase text-4xl leading-none tracking-[-0.015em] transition-colors ${
+									isActive(link.path)
+										? "text-text"
+										: "text-text-secondary hover:text-text"
+								}`}
+								aria-current={isActive(link.path) ? "page" : false}
+								data-astro-prefetch
+							>
+								{link.title}
+							</a>
+						</li>
 					))
 				}
-			</div>
-		</div>
+			</ul>
+		</nav>
 
-		<!-- Social links footer -->
-		<div class="p-6 border-t border-border">
-			<p class="text-xs text-text-secondary mb-3">Connect</p>
+		<div
+			class="mobile-menu-item pb-[calc(3rem+env(safe-area-inset-bottom))]"
+			style={`--stagger: ${menuLinks.length}`}
+		>
+			<p
+				class="mb-4 font-label text-[0.68rem] font-medium uppercase tracking-[0.14em] text-text-secondary"
+			>
+				connect
+			</p>
 			<Socials />
 		</div>
-	</nav>
+	</div>
 </div>
 
 <script>
-	// Use an IIFE to avoid global pollution and handle setup cleanly
-	(function() {
+	(function () {
 		let currentCleanup: (() => void) | null = null;
 
 		function setupMobileMenu() {
-			// Clean up previous listeners if any
-			if (currentCleanup) {
-				currentCleanup();
-			}
+			currentCleanup?.();
 
-			const toggleButton = document.getElementById("toggle-navigation-menu");
-			const closeButton = document.getElementById("close-navigation-menu");
-			const mobileMenu = document.getElementById("mobile-navigation-menu");
-			const backdrop = document.getElementById("mobile-menu-backdrop");
+			const toggle = document.getElementById("toggle-navigation-menu");
+			const menu = document.getElementById("mobile-navigation-menu");
+			const wordmark = document.querySelector<HTMLAnchorElement>(
+				'#main-header a[href="/"]',
+			);
+			if (!toggle || !menu) return;
 
-			if (!toggleButton || !closeButton || !mobileMenu || !backdrop) return;
+			// <html> attributes survive view transitions; clear any stale lock.
+			document.documentElement.style.overflow = "";
 
-			const openMenu = () => {
-				mobileMenu.classList.add("open");
-				toggleButton.setAttribute("aria-expanded", "true");
-				document.body.style.overflow = "hidden";
-				closeButton.focus();
+			const menuAnchors = Array.from(
+				menu.querySelectorAll<HTMLAnchorElement>("a"),
+			);
+			const isOpen = () => menu.classList.contains("open");
+
+			const setOpen = (open: boolean) => {
+				menu.classList.toggle("open", open);
+				toggle.setAttribute("aria-expanded", String(open));
+				toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+				// The page scrolls on <html> (overflow-y: scroll), so lock there.
+				document.documentElement.style.overflow = open ? "hidden" : "";
 			};
 
-			const closeMenu = () => {
-				mobileMenu.classList.remove("open");
-				toggleButton.setAttribute("aria-expanded", "false");
-				document.body.style.overflow = "";
-				toggleButton.focus();
-			};
+			const handleToggle = () => setOpen(!isOpen());
 
-			const handleEscape = (e: KeyboardEvent) => {
-				if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
-					closeMenu();
+			// Any tap on the overlay closes it - links navigate, blank space dismisses.
+			const handleMenuClick = () => setOpen(false);
+
+			const handleKeydown = (e: KeyboardEvent) => {
+				if (!isOpen()) return;
+
+				if (e.key === "Escape") {
+					setOpen(false);
+					toggle.focus();
+					return;
+				}
+
+				// Keep Tab cycling within the visible controls while open.
+				if (e.key === "Tab") {
+					const focusables: HTMLElement[] = [
+						...(wordmark ? [wordmark] : []),
+						toggle,
+						...menuAnchors,
+					];
+					const index = focusables.indexOf(
+						document.activeElement as HTMLElement,
+					);
+					if (index === -1) return;
+					const next = index + (e.shiftKey ? -1 : 1);
+					if (next < 0) {
+						e.preventDefault();
+						focusables[focusables.length - 1].focus();
+					} else if (next >= focusables.length) {
+						e.preventDefault();
+						focusables[0].focus();
+					}
 				}
 			};
 
-			const handleLinkClick = () => closeMenu();
+			// Rotating to landscape can cross the sm breakpoint, which hides the
+			// menu via CSS - release the scroll lock too.
+			const desktopQuery = window.matchMedia("(min-width: 640px)");
+			const handleBreakpointChange = () => {
+				if (desktopQuery.matches && isOpen()) setOpen(false);
+			};
 
-			// Add event listeners
-			toggleButton.addEventListener("click", openMenu);
-			closeButton.addEventListener("click", closeMenu);
-			backdrop.addEventListener("click", closeMenu);
-			document.addEventListener("keydown", handleEscape);
+			toggle.addEventListener("click", handleToggle);
+			menu.addEventListener("click", handleMenuClick);
+			document.addEventListener("keydown", handleKeydown);
+			desktopQuery.addEventListener("change", handleBreakpointChange);
 
-			const menuLinks = mobileMenu.querySelectorAll("a[data-astro-prefetch]");
-			menuLinks.forEach((link) => {
-				link.addEventListener("click", handleLinkClick);
-			});
-
-			// Store cleanup function for next setup
 			currentCleanup = () => {
-				toggleButton.removeEventListener("click", openMenu);
-				closeButton.removeEventListener("click", closeMenu);
-				backdrop.removeEventListener("click", closeMenu);
-				document.removeEventListener("keydown", handleEscape);
-				menuLinks.forEach((link) => {
-					link.removeEventListener("click", handleLinkClick);
-				});
+				toggle.removeEventListener("click", handleToggle);
+				menu.removeEventListener("click", handleMenuClick);
+				document.removeEventListener("keydown", handleKeydown);
+				desktopQuery.removeEventListener("change", handleBreakpointChange);
 			};
 		}
 
-		// Initial setup
 		if (document.readyState === "loading") {
 			document.addEventListener("DOMContentLoaded", setupMobileMenu);
 		} else {
