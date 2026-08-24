@@ -1,0 +1,196 @@
+---
+import nySketch from "@/assets/ny-sketch.png";
+
+import { Image } from "astro:assets";
+---
+
+<div class="sketch-hero my-10 w-full max-w-2xl" data-sketch-hero>
+	<Image
+		src={nySketch}
+		alt="A thin-line pen sketch of the Brooklyn Bridge with the lower Manhattan skyline behind it"
+		class="block h-auto w-full"
+		loading="eager"
+		fetchpriority="high"
+	/>
+	<div class="sketch-ink" aria-hidden="true"></div>
+	<div class="sketch-hotspot" aria-hidden="true"></div>
+	<div class="sketch-beam" aria-hidden="true"></div>
+</div>
+
+<style>
+	.sketch-hero {
+		position: relative;
+		/* Keep the lighten blend from sampling anything outside the figure. */
+		isolation: isolate;
+		/* 1WTC spire location, tuned to the sketch's proportions. */
+		--beam-x: 74%;
+		--spire-y: 17.5%;
+	}
+
+	/* Hover-only apparatus: touch and reduced-pointer devices get the plain
+	   sketch, nothing rendered at all. */
+	.sketch-ink,
+	.sketch-hotspot,
+	.sketch-beam {
+		display: none;
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		/* A solid accent layer blended with `lighten`: white paper stays white
+		   (white wins), dark pen lines take the accent color (blue wins). The
+		   radial mask confines the effect to a soft pool under the cursor. */
+		.sketch-ink {
+			display: block;
+			position: absolute;
+			inset: 0;
+			background: var(--color-accent);
+			mix-blend-mode: lighten;
+			pointer-events: none;
+			opacity: 0;
+			transition: opacity 350ms ease;
+			-webkit-mask-image: radial-gradient(
+				circle 8.5rem at var(--mx, -999px) var(--my, -999px),
+				black 25%,
+				transparent 100%
+			);
+			mask-image: radial-gradient(
+				circle 8.5rem at var(--mx, -999px) var(--my, -999px),
+				black 25%,
+				transparent 100%
+			);
+		}
+
+		.sketch-hero.is-inked .sketch-ink {
+			opacity: 1;
+		}
+
+		.sketch-hotspot {
+			display: block;
+			position: absolute;
+			left: calc(var(--beam-x) - 5%);
+			width: 10%;
+			top: calc(var(--spire-y) - 4%);
+			height: 38%;
+		}
+
+		/* Tribute in Light: a thin beam rises from the spire while the tower
+		   is hovered. Grows from the spire tip upward, past the figure. */
+		.sketch-beam {
+			display: block;
+			position: absolute;
+			left: var(--beam-x);
+			top: -2.25rem;
+			height: calc(var(--spire-y) + 2.25rem);
+			width: 1.5px;
+			pointer-events: none;
+			background: linear-gradient(
+				to top,
+				color-mix(in srgb, var(--color-accent) 45%, transparent),
+				color-mix(in srgb, var(--color-accent) 18%, transparent) 50%,
+				transparent 90%
+			);
+			transform: translateX(-50%) scaleY(0);
+			transform-origin: bottom;
+			opacity: 0;
+			transition:
+				transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+				opacity 300ms ease;
+		}
+
+		/* A soft halo around the beam so it reads as light, not a stroke. */
+		.sketch-beam::before {
+			content: "";
+			position: absolute;
+			inset: 0 -4px;
+			background: linear-gradient(
+				to top,
+				color-mix(in srgb, var(--color-accent) 10%, transparent),
+				transparent 65%
+			);
+			filter: blur(3px);
+		}
+
+		/* Slight delay on the way in so a cursor merely passing through the
+		   skyline doesn't flash the beam. */
+		.sketch-hotspot:hover + .sketch-beam {
+			transform: translateX(-50%) scaleY(1);
+			opacity: 1;
+			transition-delay: 120ms;
+		}
+	}
+</style>
+
+<script>
+	const REDUCED_MOTION = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	);
+	const FINE_POINTER = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+	function initSketchHero(root: HTMLElement) {
+		if (root.dataset.inkReady) return;
+		root.dataset.inkReady = "true";
+		if (!FINE_POINTER.matches) return;
+
+		let targetX = 0;
+		let targetY = 0;
+		let inkX = 0;
+		let inkY = 0;
+		let raf = 0;
+		let inside = false;
+
+		const apply = () => {
+			root.style.setProperty("--mx", `${inkX.toFixed(1)}px`);
+			root.style.setProperty("--my", `${inkY.toFixed(1)}px`);
+		};
+
+		const step = () => {
+			// The spotlight trails the cursor slightly, like ink following a
+			// pen. Reduced motion tracks 1:1 instead.
+			const ease = REDUCED_MOTION.matches ? 1 : 0.16;
+			inkX += (targetX - inkX) * ease;
+			inkY += (targetY - inkY) * ease;
+			apply();
+			if (inside || Math.hypot(targetX - inkX, targetY - inkY) > 0.5) {
+				raf = requestAnimationFrame(step);
+			} else {
+				raf = 0;
+			}
+		};
+
+		const ensureLoop = () => {
+			if (!raf) raf = requestAnimationFrame(step);
+		};
+
+		root.addEventListener("pointerenter", (event: PointerEvent) => {
+			inside = true;
+			const rect = root.getBoundingClientRect();
+			// Snap to the entry point so the pool doesn't sweep in from
+			// wherever the cursor last left.
+			targetX = inkX = event.clientX - rect.left;
+			targetY = inkY = event.clientY - rect.top;
+			apply();
+			root.classList.add("is-inked");
+			ensureLoop();
+		});
+
+		root.addEventListener("pointermove", (event: PointerEvent) => {
+			const rect = root.getBoundingClientRect();
+			targetX = event.clientX - rect.left;
+			targetY = event.clientY - rect.top;
+			ensureLoop();
+		});
+
+		root.addEventListener("pointerleave", () => {
+			inside = false;
+			root.classList.remove("is-inked");
+		});
+	}
+
+	document.addEventListener("astro:page-load", () => {
+		for (const el of document.querySelectorAll<HTMLElement>(
+			"[data-sketch-hero]",
+		)) {
+			initSketchHero(el);
+		}
+	});
+</script>

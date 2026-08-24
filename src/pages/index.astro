@@ -1,10 +1,8 @@
 ---
-import nySketch from "@/assets/ny-sketch.png";
 import FormattedDate from "@/components/FormatDate.astro";
+import SketchHero from "@/components/home/SketchHero.astro";
 import { getAllPosts, sortPostsByDate } from "@/data/blog";
 import PageLayout from "@/layouts/BaseLayout.astro";
-
-import { Image } from "astro:assets";
 
 const MAX_POSTS = 5;
 const allPosts = await getAllPosts();
@@ -41,13 +39,7 @@ const recentPosts = sortPostsByDate(allPosts).slice(0, MAX_POSTS);
 			</p>
 		</div>
 
-		<Image
-			src={nySketch}
-			alt="A thin-line pen sketch of the Brooklyn Bridge with the lower Manhattan skyline behind it"
-			class="my-10 w-full max-w-2xl h-auto"
-			loading="eager"
-			fetchpriority="high"
-		/>
+		<SketchHero />
 
 		<div class="max-w-xl space-y-5 leading-relaxed text-text">
 			<p>
