@@ -3,61 +3,10 @@ import Socials from "@/components/Socials.astro";
 import { menuLinks } from "@/site.config";
 
 const url = new URL(Astro.request.url);
+
+const isCurrent = (path: string) =>
+	url.pathname === path || (path !== "/" && url.pathname.startsWith(path));
 ---
-
-<style>
-	/* Mobile menu animations */
-	.mobile-menu-container {
-		visibility: hidden;
-		pointer-events: none;
-	}
-
-	.mobile-menu-container.open {
-		visibility: visible;
-		pointer-events: auto;
-	}
-
-	/* Backdrop fade animation */
-	.mobile-menu-backdrop {
-		opacity: 0;
-		transition: opacity 300ms ease-out;
-	}
-
-	.mobile-menu-container.open .mobile-menu-backdrop {
-		opacity: 1;
-	}
-
-	/* Panel slide animation */
-	.mobile-menu-panel {
-		transform: translateX(100%);
-		transition: transform 300ms ease-out;
-	}
-
-	.mobile-menu-container.open .mobile-menu-panel {
-		transform: translateX(0);
-	}
-
-	/* Menu link hover underline effect */
-	.mobile-menu-link {
-		position: relative;
-	}
-
-	.mobile-menu-link::after {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		height: 1px;
-		width: 0;
-		background-color: var(--color-accent);
-		transition: width 200ms ease-out;
-	}
-
-	.mobile-menu-link:hover::after,
-	.mobile-menu-link[aria-current="page"]::after {
-		width: 100%;
-	}
-</style>
 
 <header id="main-header">
 	<nav class="flex items-center justify-between" aria-label="Main navigation">
@@ -75,24 +24,17 @@ const url = new URL(Astro.request.url);
 						<a
 							href={link.path}
 							class={`lowercase text-sm transition-colors relative group ${
-								url.pathname === link.path || 
-								(link.path !== "/" && url.pathname.startsWith(link.path))
+								isCurrent(link.path)
 									? "text-text"
 									: "text-text-secondary hover:text-text"
 							}`}
-							aria-current={
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "page"
-									: false
-							}
+							aria-current={isCurrent(link.path) ? "page" : false}
 							data-astro-prefetch
 						>
 							{link.title}
 							<span
 								class={`absolute -bottom-1 left-0 h-px bg-accent transition-all ${
-									url.pathname === link.path ||
-									(link.path !== "/" && url.pathname.startsWith(link.path))
+									isCurrent(link.path)
 										? "w-full"
 										: "w-0 group-hover:w-full"
 								}`}
@@ -103,186 +45,383 @@ const url = new URL(Astro.request.url);
 			</div>
 		</div>
 
-		<div class="flex items-center gap-2">
-			<!-- Mobile menu toggle -->
-			<button
-				type="button"
-				id="toggle-navigation-menu"
-				class="sm:hidden p-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors"
-				aria-expanded="false"
-				aria-label="Open main menu"
-				aria-controls="mobile-navigation-menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="w-5 h-5"
-					aria-hidden="true"
-				>
-					<line x1="3" y1="6" x2="21" y2="6" />
-					<line x1="3" y1="12" x2="21" y2="12" />
-					<line x1="3" y1="18" x2="21" y2="18" />
-				</svg>
-			</button>
-		</div>
+		<button
+			type="button"
+			id="toggle-navigation-menu"
+			class="menu-toggle sm:hidden"
+			aria-expanded="false"
+			aria-label="Open menu"
+			aria-controls="mobile-navigation-menu"
+		>
+			menu
+		</button>
 	</nav>
 </header>
 
-<!-- Mobile navigation drawer - OUTSIDE header to escape stacking context -->
-<div
-	id="mobile-navigation-menu"
-	class="mobile-menu-container fixed inset-0 z-[100]"
-	aria-label="Mobile menu"
->
-	<!-- Backdrop - invisible, just for click-to-close -->
-	<div
-		class="mobile-menu-backdrop absolute inset-0"
-		id="mobile-menu-backdrop"
-	>
+<!--
+	The mobile navigation is a full-bleed index sheet rather than a drawer: it
+	sits outside <header> so it owns its own stacking context, and its top row
+	is positioned to land exactly on the header it covers, so opening the menu
+	reads as the page expanding rather than a panel arriving.
+-->
+<div id="mobile-navigation-menu" class="menu-sheet sm:hidden">
+	<div class="menu-scrim" id="mobile-menu-scrim"></div>
+
+	<div class="menu-topline">
+		<a
+			href="/"
+			class="lowercase text-lg font-sans font-medium tracking-tight text-text"
+			data-menu-link>Nick Wall</a
+		>
+		<button
+			type="button"
+			id="close-navigation-menu"
+			class="menu-toggle menu-toggle-close"
+			aria-label="Close menu">close</button
+		>
 	</div>
 
-	<!-- Menu panel - fully solid background -->
-	<nav
-		class="mobile-menu-panel absolute right-0 top-0 h-full w-72 bg-bg border-l border-border shadow-2xl flex flex-col"
-	>
-		<!-- Header with close button -->
-		<div class="flex items-center justify-between p-6 border-b border-border">
-			<span class="text-sm font-medium text-text-secondary">Menu</span>
-			<button
-				type="button"
-				id="close-navigation-menu"
-				class="p-2 -mr-2 text-text-secondary hover:text-text hover:bg-bg-secondary transition-colors rounded"
-				aria-label="Close menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="w-5 h-5"
-					aria-hidden="true"
-				>
-					<line x1="18" y1="6" x2="6" y2="18" />
-					<line x1="6" y1="6" x2="18" y2="18" />
-				</svg>
-			</button>
-		</div>
-
-		<!-- Navigation links -->
-		<div class="flex-1 p-6">
-			<div class="flex flex-col gap-2">
-				{
-					menuLinks.map((link) => (
+	<nav class="menu-index" aria-label="Mobile navigation">
+		<ol class="menu-list">
+			{
+				menuLinks.map((link, i) => (
+					<li class="menu-item" style={`--i:${i}`}>
 						<a
 							href={link.path}
-							class={`mobile-menu-link lowercase text-base py-3 px-2 transition-colors rounded ${
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "text-text font-medium bg-bg-secondary"
-									: "text-text-secondary hover:text-text hover:bg-bg-secondary/50"
-							}`}
-							aria-current={
-								url.pathname === link.path ||
-								(link.path !== "/" && url.pathname.startsWith(link.path))
-									? "page"
-									: false
-							}
+							class="menu-link"
+							aria-current={isCurrent(link.path) ? "page" : false}
 							data-astro-prefetch
+							data-menu-link
 						>
-							{link.title}
+							<span class="menu-item-index">
+								{String(i + 1).padStart(2, "0")}
+							</span>
+							<span>
+								<span class="menu-item-title">{link.title}</span>
+								<span class="menu-item-blurb">{link.blurb}</span>
+							</span>
 						</a>
-					))
-				}
-			</div>
-		</div>
+					</li>
+				))
+			}
+		</ol>
 
-		<!-- Social links footer -->
-		<div class="p-6 border-t border-border">
-			<p class="text-xs text-text-secondary mb-3">Connect</p>
-			<Socials />
+		<div class="menu-foot" style={`--i:${menuLinks.length}`}>
+			<p class="menu-foot-label">Elsewhere</p>
+			<div class="menu-foot-socials">
+				<Socials />
+			</div>
 		</div>
 	</nav>
 </div>
 
+<style>
+	/*
+	 * The toggle is a word, not a hamburger: every other action on this site is
+	 * set as text (back to top, view all), and an icon button is the only piece
+	 * of chrome that would be.
+	 */
+	.menu-toggle {
+		margin-right: -0.5rem;
+		padding: 0.5rem;
+		font-size: 0.875rem;
+		text-transform: lowercase;
+		color: var(--color-text-secondary);
+		transition: color 200ms ease;
+	}
+
+	.menu-toggle:hover,
+	.menu-sheet.open .menu-toggle-close {
+		color: var(--color-text);
+	}
+
+	.menu-sheet {
+		/*
+		 * Fallbacks for the body/header spacing in global.css; the open handler
+		 * measures the live header and overwrites both so the sheet stays
+		 * registered to it in either page layout.
+		 */
+		--menu-top: 6rem;
+		--menu-gutter: 2rem;
+
+		position: fixed;
+		inset: 0;
+		/* Above content (10) and the back-to-top pill (40), below the palette (200). */
+		z-index: 50;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.menu-sheet.open {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	/* Paper, not a modal: the page stays faintly legible underneath. */
+	.menu-scrim {
+		position: absolute;
+		inset: 0;
+		background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		opacity: 0;
+		transition: opacity 260ms ease;
+	}
+
+	.menu-sheet.open .menu-scrim {
+		opacity: 1;
+	}
+
+	.menu-topline {
+		position: absolute;
+		top: var(--menu-top);
+		left: var(--menu-gutter);
+		right: var(--menu-gutter);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		opacity: 0;
+		transition: opacity 180ms ease;
+	}
+
+	.menu-sheet.open .menu-topline {
+		opacity: 1;
+	}
+
+	.menu-index {
+		position: absolute;
+		top: calc(var(--menu-top) + 4rem);
+		left: var(--menu-gutter);
+		right: var(--menu-gutter);
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		padding-bottom: 2rem;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.menu-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.menu-item {
+		border-top: 1px solid var(--color-border);
+		opacity: 0;
+		transform: translateY(10px);
+		transition:
+			opacity 360ms ease,
+			transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.menu-item:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.menu-foot {
+		margin-top: auto;
+		padding-top: 2.75rem;
+		opacity: 0;
+		transform: translateY(10px);
+		transition:
+			opacity 360ms ease,
+			transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	/* Entries settle in sequence on open, and leave together on close. */
+	.menu-sheet.open .menu-item,
+	.menu-sheet.open .menu-foot {
+		opacity: 1;
+		transform: none;
+		transition-delay: calc(var(--i) * 45ms + 90ms);
+	}
+
+	.menu-link {
+		position: relative;
+		display: grid;
+		grid-template-columns: 2.25rem 1fr;
+		align-items: baseline;
+		padding: 1.15rem 0;
+	}
+
+	/* Current page: the accent rule and index, as in the post table of contents. */
+	.menu-link::before {
+		content: "";
+		position: absolute;
+		left: calc(var(--menu-gutter) * -0.5);
+		top: 1.25rem;
+		bottom: 1.25rem;
+		width: 1px;
+		background: var(--color-accent);
+		opacity: 0;
+		transform: scaleY(0.5);
+		transform-origin: top;
+		transition:
+			opacity 200ms ease,
+			transform 260ms ease;
+	}
+
+	.menu-link[aria-current="page"]::before {
+		opacity: 1;
+		transform: none;
+	}
+
+	.menu-item-index {
+		font-family: var(--font-label);
+		font-size: 0.68rem;
+		font-weight: 500;
+		letter-spacing: 0.14em;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-text-secondary);
+		transition: color 200ms ease;
+	}
+
+	.menu-link[aria-current="page"] .menu-item-index {
+		color: var(--color-accent);
+	}
+
+	.menu-item-title {
+		display: block;
+		font-family: var(--font-serif);
+		font-size: 1.9rem;
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+		text-transform: lowercase;
+		color: var(--color-text);
+		transition: color 200ms ease;
+	}
+
+	.menu-item-blurb {
+		display: block;
+		margin-top: 0.35rem;
+		font-family: var(--font-serif);
+		font-size: 0.9rem;
+		line-height: 1.5;
+		color: var(--color-text-secondary);
+	}
+
+	/* Touch has no hover, so the press itself is the feedback. */
+	.menu-link:active .menu-item-title {
+		color: var(--color-accent);
+	}
+
+	.menu-foot-label {
+		margin: 0 0 0.9rem;
+		font-family: var(--font-label);
+		font-size: 0.68rem;
+		font-weight: 500;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-text-secondary);
+	}
+
+	/* Cancel the icon links' padding so the first glyph sits on the index edge. */
+	.menu-foot-socials {
+		margin-left: -0.375rem;
+	}
+
+	/* The real header would ghost through the scrim under the sheet's own copy. */
+	:global(body.menu-open) #main-header {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.menu-item,
+		.menu-foot {
+			transform: none;
+		}
+	}
+</style>
+
 <script>
-	// Use an IIFE to avoid global pollution and handle setup cleanly
-	(function() {
-		let currentCleanup: (() => void) | null = null;
+	(function () {
+		let cleanup: (() => void) | null = null;
 
-		function setupMobileMenu() {
-			// Clean up previous listeners if any
-			if (currentCleanup) {
-				currentCleanup();
-			}
+		function setup() {
+			cleanup?.();
+			cleanup = null;
 
-			const toggleButton = document.getElementById("toggle-navigation-menu");
+			/*
+			 * The scroll lock lives on <html>, which ClientRouter keeps across
+			 * swaps, so a navigation from an open menu could otherwise leave the
+			 * next page unscrollable. Always start from an unlocked state.
+			 */
+			document.documentElement.style.overflow = "";
+			document.body.classList.remove("menu-open");
+
+			const toggle = document.getElementById("toggle-navigation-menu");
 			const closeButton = document.getElementById("close-navigation-menu");
-			const mobileMenu = document.getElementById("mobile-navigation-menu");
-			const backdrop = document.getElementById("mobile-menu-backdrop");
+			const sheet = document.getElementById("mobile-navigation-menu");
+			const scrim = document.getElementById("mobile-menu-scrim");
+			const header = document.getElementById("main-header");
 
-			if (!toggleButton || !closeButton || !mobileMenu || !backdrop) return;
+			if (!toggle || !closeButton || !sheet || !scrim || !header) return;
 
 			const openMenu = () => {
-				mobileMenu.classList.add("open");
-				toggleButton.setAttribute("aria-expanded", "true");
-				document.body.style.overflow = "hidden";
+				/*
+				 * Register the sheet to the header it covers, using the header's
+				 * document offset rather than its viewport position so the top
+				 * row lands correctly even when the page is scrolled.
+				 */
+				const headerTop =
+					header.getBoundingClientRect().top + window.scrollY;
+				sheet.style.setProperty("--menu-top", `${headerTop}px`);
+				sheet.style.setProperty(
+					"--menu-gutter",
+					getComputedStyle(document.body).paddingLeft,
+				);
+
+				sheet.classList.add("open");
+				document.body.classList.add("menu-open");
+				document.documentElement.style.overflow = "hidden";
+				toggle.setAttribute("aria-expanded", "true");
 				closeButton.focus();
 			};
 
 			const closeMenu = () => {
-				mobileMenu.classList.remove("open");
-				toggleButton.setAttribute("aria-expanded", "false");
-				document.body.style.overflow = "";
-				toggleButton.focus();
+				sheet.classList.remove("open");
+				document.body.classList.remove("menu-open");
+				document.documentElement.style.overflow = "";
+				toggle.setAttribute("aria-expanded", "false");
+				toggle.focus();
 			};
 
 			const handleEscape = (e: KeyboardEvent) => {
-				if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+				if (e.key === "Escape" && sheet.classList.contains("open")) {
 					closeMenu();
 				}
 			};
 
-			const handleLinkClick = () => closeMenu();
+			const links = Array.from(
+				sheet.querySelectorAll<HTMLAnchorElement>("[data-menu-link]"),
+			);
 
-			// Add event listeners
-			toggleButton.addEventListener("click", openMenu);
+			toggle.addEventListener("click", openMenu);
 			closeButton.addEventListener("click", closeMenu);
-			backdrop.addEventListener("click", closeMenu);
+			scrim.addEventListener("click", closeMenu);
 			document.addEventListener("keydown", handleEscape);
+			links.forEach((link) => link.addEventListener("click", closeMenu));
 
-			const menuLinks = mobileMenu.querySelectorAll("a[data-astro-prefetch]");
-			menuLinks.forEach((link) => {
-				link.addEventListener("click", handleLinkClick);
-			});
-
-			// Store cleanup function for next setup
-			currentCleanup = () => {
-				toggleButton.removeEventListener("click", openMenu);
+			cleanup = () => {
+				toggle.removeEventListener("click", openMenu);
 				closeButton.removeEventListener("click", closeMenu);
-				backdrop.removeEventListener("click", closeMenu);
+				scrim.removeEventListener("click", closeMenu);
 				document.removeEventListener("keydown", handleEscape);
-				menuLinks.forEach((link) => {
-					link.removeEventListener("click", handleLinkClick);
-				});
+				links.forEach((link) =>
+					link.removeEventListener("click", closeMenu),
+				);
 			};
 		}
 
-		// Initial setup
 		if (document.readyState === "loading") {
-			document.addEventListener("DOMContentLoaded", setupMobileMenu);
+			document.addEventListener("DOMContentLoaded", setup);
 		} else {
-			setupMobileMenu();
+			setup();
 		}
 
-		// Re-setup after Astro view transitions
-		document.addEventListener("astro:page-load", setupMobileMenu);
+		document.addEventListener("astro:page-load", setup);
 	})();
 </script>

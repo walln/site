@@ -1,18 +1,23 @@
 import type { SiteConfig } from "@/types";
 import type { AstroExpressiveCodeOptions } from "astro-expressive-code";
 
-export const menuLinks: Array<{ title: string; path: string }> = [
+// `blurb` is shown only in the mobile navigation index, where there is room
+// for a line of description under each entry.
+export const menuLinks: Array<{ title: string; path: string; blurb: string }> = [
 	{
 		title: "Home",
 		path: "/",
+		blurb: "the short version",
 	},
 	{
 		title: "Blog",
 		path: "/blog",
+		blurb: "notes and essays, mostly ml",
 	},
 	{
 		title: "Resume",
 		path: "/resume",
+		blurb: "the long version",
 	},
 ];
 
