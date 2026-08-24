@@ -1,3 +1,5 @@
+import { menuLinks } from "@/site.config";
+import { navigate } from "astro:transitions/client";
 import { Command } from "cmdk";
 import { useEffect, useState } from "react";
 import "./CommandPalette.css";
@@ -14,32 +16,23 @@ interface CommandPaletteProps {
 	commands?: CommandItem[];
 }
 
-const defaultCommands: CommandItem[] = [
-	{
-		name: "home",
-		description: "Return to home",
-		shortcut: "ctrl+h",
-		action: "/",
-	},
-	{
-		name: "blog",
-		description: "View all blog posts",
-		shortcut: "ctrl+p",
-		action: "/blog",
-	},
-	{
-		name: "search",
-		description: "Search content",
-		shortcut: "ctrl+k",
-		action: "#search",
-	},
-];
+const pageDescriptions: Record<string, string> = {
+	"/": "return to the front page",
+	"/blog": "browse all posts",
+	"/resume": "experience and background",
+};
+
+const navigationCommands: CommandItem[] = menuLinks.map((link) => ({
+	name: link.title.toLowerCase(),
+	description:
+		pageDescriptions[link.path] ?? `go to ${link.title.toLowerCase()}`,
+	action: link.path,
+}));
 
 export default function CommandPaletteReact({
 	commands = [],
 }: CommandPaletteProps) {
 	const [open, setOpen] = useState(false);
-	const allCommands = [...defaultCommands, ...commands];
 
 	// Toggle the menu when ⌘K is pressed
 	useEffect(() => {
@@ -55,69 +48,70 @@ export default function CommandPaletteReact({
 	}, []);
 
 	const executeCommand = (cmd: CommandItem) => {
+		setOpen(false);
 		if (cmd.onSelect) {
 			cmd.onSelect();
-		} else if (cmd.action) {
-			if (cmd.action.startsWith("/")) {
-				window.location.href = cmd.action;
-			} else if (cmd.action === "#search") {
-				const searchBtn = document.querySelector('[aria-label="Search"]');
-				(searchBtn as HTMLElement)?.click();
-			}
+		} else if (cmd.action?.startsWith("/")) {
+			navigate(cmd.action);
 		}
-		setOpen(false);
 	};
+
+	const renderItem = (cmd: CommandItem, index: number) => (
+		<Command.Item
+			key={`${cmd.name}-${index}`}
+			value={`${cmd.name} ${cmd.description}`}
+			onSelect={() => executeCommand(cmd)}
+			className="command-item"
+		>
+			<div className="command-item-content">
+				<span className="command-name">{cmd.name}</span>
+				<span className="command-description">{cmd.description}</span>
+				{cmd.shortcut && <kbd className="command-shortcut">{cmd.shortcut}</kbd>}
+			</div>
+		</Command.Item>
+	);
 
 	return (
 		<Command.Dialog
 			open={open}
 			onOpenChange={setOpen}
-			className="command-dialog"
+			label="Command palette"
 			shouldFilter={true}
 		>
-			<div className="command-wrapper">
-				<div className="command-container">
-					<Command.Input
-						placeholder="Search commands..."
-						className="command-input"
-					/>
+			<div
+				className="command-screen"
+				onClick={(e) => {
+					if (e.target === e.currentTarget) setOpen(false);
+				}}
+			>
+				<div className="command-panel">
+					<Command.Input placeholder="where to?" className="command-input" />
 
 					<Command.List className="command-list">
 						<Command.Empty className="command-empty">
-							No results found.
+							nothing found.
 						</Command.Empty>
 
-						{allCommands.map((cmd, index) => (
-							<Command.Item
-								key={`${cmd.name}-${index}`}
-								value={`${cmd.name} ${cmd.description}`}
-								onSelect={() => executeCommand(cmd)}
-								className="command-item"
-							>
-								<div className="command-item-content">
-									<div>
-										<span className="command-name">{cmd.name}</span>
-										<span className="command-description">
-											{cmd.description}
-										</span>
-									</div>
-									{cmd.shortcut && (
-										<kbd className="command-shortcut">{cmd.shortcut}</kbd>
-									)}
-								</div>
-							</Command.Item>
-						))}
+						<Command.Group heading="go to">
+							{navigationCommands.map(renderItem)}
+						</Command.Group>
+
+						{commands.length > 0 && (
+							<Command.Group heading="commands">
+								{commands.map(renderItem)}
+							</Command.Group>
+						)}
 					</Command.List>
 
 					<div className="command-footer">
 						<span>
-							<kbd>↑↓</kbd> Navigate
+							<kbd>↑↓</kbd> navigate
 						</span>
 						<span>
-							<kbd>↵</kbd> Select
+							<kbd>↵</kbd> select
 						</span>
 						<span>
-							<kbd>Esc</kbd> Close
+							<kbd>esc</kbd> close
 						</span>
 					</div>
 				</div>

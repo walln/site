@@ -1,31 +1,56 @@
+/* Full-screen frosted takeover, the desktop twin of the mobile menu */
 [cmdk-overlay] {
 	position: fixed;
 	inset: 0;
-	background-color: color-mix(in srgb, var(--color-bg) 80%, transparent);
-	backdrop-filter: blur(8px);
+	background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
 	z-index: 200;
+	animation: palette-overlay-in 250ms ease;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	[cmdk-overlay] {
+		background-color: var(--color-bg);
+	}
+}
+
+@keyframes palette-overlay-in {
+	from {
+		opacity: 0;
+	}
 }
 
 [cmdk-dialog] {
 	position: fixed;
-	top: 20%;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 100%;
-	max-width: 560px;
-	padding: 0 1rem;
+	inset: 0;
 	z-index: 201;
 }
 
-.command-wrapper {
-	background-color: var(--color-bg);
-	border: 1px solid var(--color-border);
-	overflow: hidden;
-	box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+[cmdk-root] {
+	height: 100%;
 }
 
-.command-container {
-	padding: 0;
+.command-screen {
+	height: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.command-panel {
+	width: 100%;
+	max-width: 48rem;
+	margin-inline: auto;
+	padding: min(16vh, 10rem) 2rem 2.5rem;
+	animation: palette-panel-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes palette-panel-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.85rem);
+	}
 }
 
 .command-input {
@@ -35,123 +60,143 @@
 	border-bottom: 1px solid var(--color-border);
 	color: var(--color-text);
 	outline: none;
-	padding: 1rem 1.25rem;
-	font-family: inherit;
-	font-size: 1rem;
+	padding: 0.5rem 0 0.85rem;
+	font-family: var(--font-serif);
+	font-size: clamp(1.6rem, 3vw, 2rem);
+	letter-spacing: -0.015em;
+	transition: border-color 200ms ease;
 }
 
 .command-input::placeholder {
 	color: var(--color-text-secondary);
+	font-style: italic;
 }
 
 .command-input:focus {
 	border-bottom-color: var(--color-accent);
 }
 
+/* Focus is shown by the accent rule under the input, not the global ring */
+.command-input:focus-visible {
+	box-shadow: none;
+}
+
 .command-list {
-	max-height: 320px;
-	overflow-y: auto;
-	padding: 0.5rem;
+	margin-top: 2.75rem;
+}
+
+[cmdk-group-heading] {
+	font-family: var(--font-label);
+	font-size: 0.68rem;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--color-text-secondary);
+	margin-bottom: 0.85rem;
+}
+
+[cmdk-group] + [cmdk-group] [cmdk-group-heading] {
+	margin-top: 2.25rem;
 }
 
 .command-empty {
-	padding: 2rem;
-	text-align: center;
+	padding: 1.5rem 0;
 	color: var(--color-text-secondary);
-	font-size: 0.875rem;
+	font-family: var(--font-serif);
+	font-style: italic;
+	font-size: 1.1875rem;
 }
 
 .command-item {
-	padding: 0.75rem 1rem;
-	cursor: pointer;
-	transition: background-color 150ms ease;
-	background: transparent;
 	width: 100%;
-	text-align: left;
-	outline: none;
+	padding: 0.55rem 0;
+	cursor: pointer;
+	background: transparent;
 	border: none;
-}
-
-.command-item[aria-selected="true"] {
-	background-color: var(--color-bg-secondary);
-}
-
-.command-item:hover {
-	background-color: var(--color-bg-secondary);
+	outline: none;
+	text-align: left;
 }
 
 .command-item-content {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	align-items: baseline;
+	gap: 0.85rem;
 }
 
 .command-name {
-	color: var(--color-text);
-	font-weight: 500;
-	margin-right: 0.75rem;
-}
-
-.command-description {
+	position: relative;
+	font-family: var(--font-serif);
+	font-size: 1.5rem;
+	line-height: 1.2;
+	letter-spacing: -0.015em;
+	text-transform: lowercase;
 	color: var(--color-text-secondary);
-	font-size: 0.875rem;
+	transition: color 200ms ease;
 }
 
-.command-prefix {
-	display: none;
+/* Accent hairline grows under the selected name, mirroring the nav */
+.command-name::after {
+	content: "";
+	position: absolute;
+	bottom: -0.1em;
+	left: 0;
+	height: 1px;
+	width: 0;
+	background-color: var(--color-accent);
+	transition: width 300ms ease;
+}
+
+.command-item[aria-selected="true"] .command-name {
+	color: var(--color-text);
+}
+
+.command-item[aria-selected="true"] .command-name::after {
+	width: 100%;
+}
+
+/* Descriptions reveal for the selected row, like the home-page peeks */
+.command-description {
+	font-family: var(--font-sans);
+	font-size: 0.8125rem;
+	color: var(--color-text-secondary);
+	opacity: 0;
+	transition: opacity 200ms ease;
+}
+
+.command-item[aria-selected="true"] .command-description,
+.command-item:hover .command-description {
+	opacity: 1;
 }
 
 .command-shortcut {
-	font-size: 0.75rem;
-	border: 1px solid var(--color-border);
-	padding: 0.25rem 0.5rem;
+	margin-left: auto;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
 	color: var(--color-text-secondary);
-	font-family: inherit;
+	border: none;
 	background: transparent;
+	padding: 0;
 }
 
 .command-footer {
-	padding: 0.75rem 1.25rem;
-	border-top: 1px solid var(--color-border);
 	display: flex;
-	justify-content: center;
 	gap: 1.5rem;
-	font-size: 0.75rem;
+	margin-top: 3.5rem;
+	font-size: 0.72rem;
 	color: var(--color-text-secondary);
 }
 
 .command-footer span {
 	display: flex;
 	align-items: center;
-	gap: 0.375rem;
+	gap: 0.4rem;
 }
 
 .command-footer kbd {
-	display: inline-block;
-	padding: 0.125rem 0.375rem;
+	font-family: var(--font-mono);
 	font-size: 0.7rem;
-	border: 1px solid var(--color-border);
-	background: var(--color-bg-secondary);
-	font-family: inherit;
-}
-
-.command-title {
-	display: none;
-}
-
-/* Scrollbar styling */
-.command-list::-webkit-scrollbar {
-	width: 6px;
-}
-
-.command-list::-webkit-scrollbar-track {
+	color: var(--color-text);
+	border: none;
 	background: transparent;
-}
-
-.command-list::-webkit-scrollbar-thumb {
-	background: var(--color-border);
-}
-
-.command-list::-webkit-scrollbar-thumb:hover {
-	background: var(--color-text-secondary);
+	padding: 0;
 }
